@@ -1,0 +1,5 @@
+/venv
+/uploads
+*.log
+*.temp
+*.tmp
