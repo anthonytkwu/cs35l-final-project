@@ -1,13 +1,10 @@
 import mysql.connector
 
-# Connect to the MySQL database
 connection = mysql.connector.connect(
-    host='your_host',
-    user='your_username',
-    password='your_password',
-    database='db1'  # Make sure to use your actual database name
+  host="database-1.c94cq6qeuzwb.us-west-1.rds.amazonaws.com",
+  user="cs35l_user",
+  password="Anthony57085Giants"
 )
-
 # Create a cursor object to execute SQL queries
 cursor = connection.cursor()
 
@@ -36,3 +33,4 @@ for table_detail in table_details:
 # Close cursor and connection
 cursor.close()
 connection.close()
+
