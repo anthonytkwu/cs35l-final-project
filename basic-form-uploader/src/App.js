@@ -3,52 +3,66 @@ import './App.css';
 import React, { useState } from 'react';
 
 function App() {
-  const [ name, setName ] = useState('');
-  const [ gameID, setGameID ] = useState('');
-  const [ file, setFile ] = useState(null);
-  const [ showForm, setShowForm ] = useState(true);
-  
-  let output = "output";
-  function handleSubmit(event) {
-    setName(event.target.elements.name.value);
-    setGameID(event.target.elements,gameID.value);
-    setShowForm(false);
-    output = 'Name: ' + name + 'Game ID: ' + gameID;
+  const [name, setName] = useState('');
+  const [gameID, setGameID] = useState('');
+  const [file, setFile] = useState(null);
+  const [output, setOuput] = useState('');
+  const [showForm, setShowForm] = useState(true);
+
+  function handleNameChange(event) {
+    setName(event.target.value);
   }
 
-  function handleFileChange(e) {
-    setFile(URL.createObjectURL(e.target.files[0]));
+  function handleIDChange(event) {
+    setGameID(event.target.value);
+  }
+
+  function handleFileChange(event) {
+    const selectedFile = event.target.files[0];
+    setFile(URL.createObjectURL(selectedFile));
+  }
+
+  function handleSubmit(event) {
+    setShowForm(false);
+    setOuput('Name: ' + name + ' Game ID: ' + gameID)
   }
 
   return (
     <>
       <div>
-      {showForm && (
-        <form onSubmit={handleSubmit}>
-         <div>
-            <label>
-             Name/Id:
-             <input type="text" name="name" />
-           </label>
-         </div>
-         <div>
-          <label>
-            Game ID:
-            <input type="text" name="gameID" />
-           </label>
-         </div>
-         <div>
-          <label>
-            Add Image:
-            <input type="file" onChange={handleFileChange}/>
-            <img src={file}/>
-          </label>
-         </div>
-         <button type="submit" value="Submit">Submit</button>
-        </form>
-     )}
-     </div>
-     <div className="output">{output}</div>
+        {showForm && (<form onSubmit={handleSubmit}>
+          <div>
+            <label> Name/Id:</label>
+            <input type="text" id="name" value={name} onChange={handleNameChange} />
+          </div>
+          <div>
+            <label>Game ID:</label>
+            <input type="text" id="gameID" value={gameID} onChange={handleIDChange} />
+          </div>
+          <div>
+            <label>Add Image:</label>
+            <input type="file" id="file" accept=".svg" onChange={handleFileChange} />
+          </div>
+
+          <button type="submit" value="Submit">Submit</button>
+        </form>)
+        }
+      </div>
+      {!showForm && (
+        <div>
+          <div>
+            <h2>{output}</h2>
+          </div>
+          <div>
+            <svg
+              style={{ width: '50vw', height: '50vh' }}
+              viewBox="0 0 100 100"
+            >
+              <image href={file} width="100%" height="100%" />
+            </svg>
+          </div>
+        </div>
+      )}
     </>
   );
 }
