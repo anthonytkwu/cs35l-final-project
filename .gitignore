@@ -3,3 +3,6 @@
 *.log
 *.temp
 *.tmp
+**/__pycache__
+*.pyc
+*.__pycache__
