@@ -6,49 +6,21 @@ const COLORS = [
   "#808080",    //gray
   "#c0c0c0",    //light gray
   "#ffffff",    //white
-  "#FF5733 ",
-  "#ab8b04",
-  "#df73ff",
-  "#00ffff",
-  "#00ccff",
-  "#4666ff",
-  "#40e0d0",
-  "#67e0b3",
-  "#00e2ab",
-  "#039d63",
-  "#49f9ad",
-  "#51a944",
-  "#89f98c",
-  "#82a8f4",
-  "#9ae8e1",
-  "#a1d4cf",
-  "#f4c2c2",
-  "#fc8eac",
-  "#6e7b8b",
-  "#8b7765",
-  "#cdc5bf",
-  "#c4c3d0",
-  "#1974d2",
-  "#9966cc",
-  "#ffbf00",
-  "#b0bf1a",
-  "#431616",
-  "#7070ff",
-  "#40e0d0",
-  "#86b7e8",
-  "#f4975f",
-  "#d3b393",
-  "#c29367",
-  "#c9a079",
-  "#d59fa8",
-  "#fd6b6b",
-  "#112d31",
-  "#1bfd9c",
-  "#4d9385",
-  "#c99aa0",
-  "#75afd2",
-  "#46aefc",
-  "#cc3333",
+  "#d42a2a",    //red
+  "#d67036",    //orange
+  "#d6a336",    //yellow ochre
+  "#e8eb34",    //yellow
+  "#abeb34",    //light green
+  "#0ba133",    //green
+  "#55d498",    //blue-green
+  "#55d4cd",    //cyan
+  "#5581d4",    //pale blue
+  "#2258d6",    //blue
+  "#3c46b5",    //indigo
+  "#9e79db",    //lavender
+  "#6126bf",    //purple
+  "#9c26bf",    //magenta
+  "#ebabdd",    //pale pink
 ];
 
 export const ColorPanel = () => {

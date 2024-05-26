@@ -27,8 +27,8 @@ canvas {
 }
 
 .color {
-  width: 24px;
-  height: 24px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
   box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf,
     inset 2px 2px #0a0a0a;

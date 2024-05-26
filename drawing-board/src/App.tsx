@@ -87,7 +87,7 @@ function App() {
       clearCanvas(canvas);
 
       strokes.slice(0, strokes.length - historyIndex).forEach((stroke) => {
-        drawStroke(context, stroke.points, stroke.color);
+        drawStroke(context, stroke.points, stroke.color, stroke.size);
       });
     });
   }, [historyIndex]);
@@ -115,18 +115,6 @@ function App() {
                 /> 
             </div>
         </div>
-        
-        {/* <EditPanel />
-        <ColorPanel />
-        <FilePanel />
-        <ModalLayer />
-        <canvas
-            onMouseDown={startDrawing}
-            onMouseUp={endDrawing}
-            onMouseOut={endDrawing}
-            onMouseMove={draw}
-            ref={canvasRef}
-        /> */}
     </div>
   );
 }
