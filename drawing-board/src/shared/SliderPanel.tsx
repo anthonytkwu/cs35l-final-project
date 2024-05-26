@@ -7,7 +7,6 @@ export const SliderPanel = () => {
     const strokeSize = useSelector(currentStrokeSelector).size;
 
     const onSliderChange = (event) => {
-        //const newWidth = Number(fontSize)
         dispatch(setStrokeSize(Number(event.target.value)));
       };
 

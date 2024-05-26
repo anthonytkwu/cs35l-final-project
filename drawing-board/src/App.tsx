@@ -11,6 +11,7 @@ import { EditPanel } from "./shared/EditPanel";
 import { useCanvas } from "./CanvasContext";
 import { FilePanel } from "./shared/FilePanel";
 import { ModalLayer } from "./ModalLayer";
+import { SliderPanel } from "./shared/SliderPanel";
 
 const WIDTH = 1024;
 const HEIGHT = 768;
@@ -48,7 +49,7 @@ function App() {
       return;
     }
     requestAnimationFrame(() =>
-      drawStroke(context, currentStroke.points, currentStroke.color)
+      drawStroke(context, currentStroke.points, currentStroke.color, currentStroke.size)
     );
   }, [currentStroke]);
 
@@ -102,6 +103,7 @@ function App() {
                 <ColorPanel />
                 <EditPanel />
                 <FilePanel />
+                <SliderPanel/>
             </div>
             <div className="canvas-panel">
                 <canvas

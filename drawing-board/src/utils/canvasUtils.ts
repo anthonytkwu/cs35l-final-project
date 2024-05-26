@@ -3,12 +3,14 @@ import { Point } from "./types";
 export const drawStroke = (
   context: CanvasRenderingContext2D,
   points: Point[],
-  color: string
+  color: string,
+  size: number
 ) => {
   if (!points.length) {
     return;
   }
   context.strokeStyle = color;
+  context.lineWidth = size;
   context.beginPath();
   context.moveTo(points[0].x, points[0].y);
   points.forEach((point) => {

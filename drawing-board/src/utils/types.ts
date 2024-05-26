@@ -10,6 +10,7 @@ export type RootState = {
 export type Stroke = {
   points: Point[];
   color: string;
+  size: number;
 };
 
 export type Point = {

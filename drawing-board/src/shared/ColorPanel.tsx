@@ -2,10 +2,10 @@ import { useDispatch } from "react-redux";
 import { setStrokeColor } from "../modules/currentStroke/slice";
 
 const COLORS = [
-  "#000000",
-  "#808080",
-  "#c0c0c0",
-  "#fffff",
+  "#000000",    //black
+  "#808080",    //gray
+  "#c0c0c0",    //light gray
+  "#ffffff",    //white
   "#FF5733 ",
   "#ab8b04",
   "#df73ff",
