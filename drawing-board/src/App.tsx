@@ -13,8 +13,8 @@ import { FilePanel } from "./shared/FilePanel";
 import { ModalLayer } from "./ModalLayer";
 import { SliderPanel } from "./shared/SliderPanel";
 
-const WIDTH = 1024;
-const HEIGHT = 768;
+const WIDTH = 700;
+const HEIGHT = 450;
 
 function App() {
   const canvasRef = useCanvas();
@@ -94,16 +94,10 @@ function App() {
 
   return (
     <div className="window">
-        <div className="title-bar">
-            <div className="title-bar-text">Gartic Phone</div>
-        </div>
-        
+      
         <div className="drawing-panel">
-            <div className="tools-panel">
+            <div className="colors-panel">
                 <ColorPanel />
-                <EditPanel />
-                <FilePanel />
-                <SliderPanel/>
             </div>
             <div className="canvas-panel">
                 <canvas
@@ -113,6 +107,11 @@ function App() {
                     onMouseMove={draw}
                     ref={canvasRef}
                 /> 
+            </div>
+            <div className="tools-panel">
+                <EditPanel />
+                <FilePanel />
+                <SliderPanel/>
             </div>
         </div>
     </div>
