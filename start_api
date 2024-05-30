@@ -1,0 +1,4 @@
+#!/bin/bash
+source ~/venv/bin/activate
+cd ~/cs35l-final-project/djangoAPI
+python manage.py runserver 0.0.0.0:8000 

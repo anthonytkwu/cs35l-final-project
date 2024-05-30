@@ -1,11 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Count
 
 class Game(models.Model):
     players = models.ManyToManyField(User, related_name='games')
     created_at = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)   
 
     def __str__(self):
         return f"Game {self.id} started at {self.created_at}"
@@ -17,28 +16,32 @@ class Player(models.Model):
     def __str__(self):
         return self.user.username
 
-class Round(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='rounds')
-    phrase = models.CharField(max_length=255, blank=True, null=True)
-    drawing = models.ForeignKey('Drawing', on_delete=models.SET_NULL, null=True, related_name='rounds')
+class DrawingPhrasePair(models.Model):
+    prompt = models.CharField(max_length = 255)
+    author = models.ForeignKey(Player, on_delete=models.CASCADE, related_name = 'prompts')
+    image = models.ImageField(upload_to='drawings/', null=True)
+    artist = models.ForeignKey(Player, on_delete=models.CASCADE, related_name = 'drawings', null=True)
+    previous_pair = models.ForeignKey(self, on_delete=models.CASCADE, null=True, related_name = 'next_pair')
+    starter = models.BooleanField(default=False)
 
-    def __str__(self):
-        return f"Round in Game {self.game.id}"
+class Chain(models.Model):
+    starter = models.ForeignKey(Player, on_delete=models.CASCADE, related_name = 'started_chains')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name= 'chains')
 
-class Drawing(models.Model):
-    image = models.ImageField(upload_to='drawings/')
-    creator = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='drawings')
-
-    def __str__(self):
-        return f"Drawing by {self.creator.user.username} for Game {self.game.id}"
-
-class Phrase(models.Model):
-    text = models.CharField(max_length=255)
-    suggested_by = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='phrases')
-
-    def __str__(self):
-        return self.text
-
+'''
+The way this database works currently:
+Each game has x players
+Each player creates a DrawingPhrasePair to start the game (or with an odd number of people, a DrawingPhrasePair 
+with a null ImageField)
+Each DrawingPhrasePair keeps track of the next DrawingPhrasePair, and we know which DrawingPhrasePair is a starter
+in the game
+In the event of a game with an even number of players, we want the first person to write a phrase AND draw it (to
+make sure that the last person that goes is writing the phrase)
+In the event of a game with an odd number of player, we want the first person to write the phrase, and then the
+phrase to get passed to the next player.
+The last DrawingPhrasePair in a chain should have a null image and artist field, but the prompt and author fields
+should never be null
+'''
 
 '''
   const [name, setName] = useState('');
