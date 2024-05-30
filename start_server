@@ -1,4 +1,0 @@
-#!/bin/bash
-cd "basic-form-uploader"
-npm install
-npm start
