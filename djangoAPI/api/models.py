@@ -21,7 +21,7 @@ class DrawingPhrasePair(models.Model):
     author = models.ForeignKey(Player, on_delete=models.CASCADE, related_name = 'prompts')
     image = models.ImageField(upload_to='drawings/', null=True)
     artist = models.ForeignKey(Player, on_delete=models.CASCADE, related_name = 'drawings', null=True)
-    previous_pair = models.ForeignKey(self, on_delete=models.CASCADE, null=True, related_name = 'next_pair')
+    previous_pair = models.ForeignKey('self', on_delete=models.CASCADE, null=True, related_name = 'next_pair')
     starter = models.BooleanField(default=False)
 
 class Chain(models.Model):
