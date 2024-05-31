@@ -12,16 +12,15 @@ export const SliderPanel = () => {
 
     return (
         <div className="toolbar-element">
-            <div className="title-bar">
-                <div className="title-bar-text">Font Size: {strokeSize}</div>
+            <div className="font-size-slider">
+                <input
+                    type="range"
+                    min="2"
+                    max="25"
+                    value={strokeSize}
+                    onChange={onSliderChange}
+                />
             </div>
-        <input
-            type="range"
-            min="2"
-            max="25"
-            value={strokeSize}
-            onChange={onSliderChange}
-        />
       </div>
     );
 };

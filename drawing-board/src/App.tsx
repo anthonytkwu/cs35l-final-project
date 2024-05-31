@@ -12,9 +12,10 @@ import { useCanvas } from "./CanvasContext";
 import { FilePanel } from "./shared/FilePanel";
 import { ModalLayer } from "./ModalLayer";
 import { SliderPanel } from "./shared/SliderPanel";
+import { PromptPanel } from "./shared/PromptPanel";
 
 const WIDTH = 700;
-const HEIGHT = 450;
+const HEIGHT = 500;
 
 function App() {
   const canvasRef = useCanvas();
@@ -97,6 +98,7 @@ function App() {
       
         <div className="drawing-panel">
             <div className="colors-panel">
+                <PromptPanel/>
                 <ColorPanel />
             </div>
             <div className="canvas-panel">
