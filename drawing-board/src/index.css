@@ -1,29 +1,22 @@
-@import "../node_modules/xp.css/dist/XP.css";
-
 canvas {
     cursor: url(./assets/pencil.png) 0 34, auto;
 }
 
-.colors {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-.color {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf,
-    inset 2px 2px #0a0a0a;
-}
-
+/* overall panel */
 .drawing-panel{
     display: flex;
     flex-direction: row;
     height: 100%;
     padding: 10px;
-    border: 5px blue solid;
+    background-color: rgb(36, 36, 68);
+}
+
+/* sub-panel */
+.canvas-panel{
+    flex: auto;
+    margin: 10px;
+    border: 15px rgb(80, 83, 95) solid;
+    border-radius: 5px;
 }
 
 .colors-panel {
@@ -38,9 +31,45 @@ canvas {
     border: 5px red solid;
 }
 
-.canvas-panel{
-    flex: auto;
-    margin: 10px;
-    border: 5px red solid;
-    border-radius: 5px;
+/* colors */
+.colors {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: grey;
 }
+
+.color {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf,
+    inset 2px 2px #0a0a0a;
+}
+
+/* slider */
+
+
+
+
+
+
+
+
+.toolbar-element{
+    border: 2px yellow solid;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 10px;
+}
+
+.edit-images{
+    background-color: transparent;
+    width: 40px;
+}
+
+.edit-button{
+    background-color: transparent;
+}
+

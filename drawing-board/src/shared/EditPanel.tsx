@@ -3,28 +3,26 @@ import { useDispatch } from "react-redux";
 import { redo, undo } from "../modules/historyIndex/slice";
 import { strokesLengthSelector } from "../modules/strokes/slice";
 
+import undoImg from "../assets/undo.png";
+import redoImg from "../assets/redo.png"
+
 export const EditPanel = () => {
   const undoLimit = useSelector(strokesLengthSelector);
   const dispatch = useDispatch();
 
   return (
-    <div className="window edit">
-      <div className="title-bar">
-        <div className="title-bar-text">Edit</div>
-      </div>
-      <div className="window-body">
-        <div className="field-row">
-          <button
-            className="button redo"
-            onClick={() => dispatch(undo(undoLimit))}>
-            Undo
-          </button>
+    <div className="edit toolbar-element">
+        <button
+            className="undo edit-button"
+            onClick={() => dispatch(undo(undoLimit))} >
+            <img className="edit-images" src={undoImg}/>
+        </button>
 
-          <button className="button undo" onClick={() => dispatch(redo())}>
-            Redo
-          </button>
-        </div>
-      </div>
+        <button 
+            className="redo edit-button" 
+            onClick={() => dispatch(redo())}>
+            <img className="edit-images" src={redoImg}/>
+        </button>
     </div>
   );
 };

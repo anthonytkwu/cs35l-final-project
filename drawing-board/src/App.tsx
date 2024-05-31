@@ -110,8 +110,8 @@ function App() {
             </div>
             <div className="tools-panel">
                 <EditPanel />
-                <FilePanel />
                 <SliderPanel/>
+                <FilePanel />
             </div>
         </div>
     </div>

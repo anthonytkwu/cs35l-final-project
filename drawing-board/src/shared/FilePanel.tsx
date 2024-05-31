@@ -17,17 +17,10 @@ export const FilePanel = () => {
   };
 
   return (
-    <div className="window file">
-      <div className="title-bar">
-        <div className="title-bar-text">File</div>
-      </div>
-      <div className="window-body">
-        <div className="field-row">
-          <button className="save-button" onClick={exportToFile}>
-            Export
+    <div className="file toolbar-element">
+        <button className="save-button" onClick={exportToFile}>
+            DONE
           </button>
-        </div>
-      </div>
     </div>
   );
 };

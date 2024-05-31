@@ -11,7 +11,7 @@ export const SliderPanel = () => {
       };
 
     return (
-        <div className="window-colors-panel">
+        <div className="toolbar-element">
             <div className="title-bar">
                 <div className="title-bar-text">Font Size: {strokeSize}</div>
             </div>
