@@ -1,4 +1,4 @@
-import { clearCanvas, drawStroke, setCanvasSize } from "./utils/canvasUtils";
+import { clearCanvas, drawStroke } from "./utils/canvasUtils";
 import React, { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { beginStroke, updateStroke } from "./modules/currentStroke/slice";
@@ -14,9 +14,6 @@ import { ModalLayer } from "./ModalLayer";
 import { SliderPanel } from "./shared/SliderPanel";
 import { PromptPanel } from "./shared/PromptPanel";
 
-const WIDTH = 700;
-const HEIGHT = 500;
-
 function App() {
   const canvasRef = useCanvas();
 
@@ -29,8 +26,16 @@ function App() {
     if (!canvas || !context) {
       return;
     }
-    setCanvasSize(canvas, WIDTH, HEIGHT);
+    //Set canvas size to fill screen
+    canvas.style.width = `100%`;
+    canvas.style.height = `100%`;
 
+    //Scaling gives better on-screen resolution
+    canvas.width = canvas.offsetWidth * 2;
+    canvas.height = canvas.offsetHeight * 2;
+    canvas.getContext("2d")?.scale(2, 2);
+
+    //Initial pen attributes
     context.lineJoin = "round";
     context.lineCap = "round";
     context.lineWidth = 10;
@@ -95,12 +100,10 @@ function App() {
 
   return (
     <div className="window">
-      
+        <div className="info-panel">
+            <PromptPanel/>
+        </div>
         <div className="drawing-panel">
-            <div className="colors-panel">
-                <PromptPanel/>
-                <ColorPanel />
-            </div>
             <div className="canvas-panel">
                 <canvas
                     onMouseDown={startDrawing}
@@ -111,6 +114,7 @@ function App() {
                 /> 
             </div>
             <div className="tools-panel">
+                <ColorPanel/>
                 <EditPanel />
                 <SliderPanel/>
                 <FilePanel />

@@ -10,13 +10,17 @@ canvas {
     font-style: normal;
 }
 
+.window{
+    background:linear-gradient(rgba(208, 0, 250, 0.5),transparent);
+    background-color: rgb(68, 36, 54);
+}
+
 /* overall panel */
 .drawing-panel{
     display: flex;
     height: 100vh;
     padding: 10px;
-    background:linear-gradient(rgba(208, 0, 250, 0.5),transparent);
-    background-color: rgb(68, 36, 54);
+    
 }
 
 /* sub-panel */
@@ -27,12 +31,6 @@ canvas {
     border-radius: 5px;
 }
 
-.colors-panel {
-    float: left;
-    width: 20%;
-    border: 5px red solid;
-}
-
 .prompt-panel{
     color: white;
     font-family: 'Rubik Mono One';
@@ -41,9 +39,11 @@ canvas {
 }
 
 .tools-panel{
-    float: right;
-    width: 20%;
     border: 5px red solid;
+    float: right;
+    padding: 1%;
+    width: 15%;
+    
 }
 
 .toolbar-element{
