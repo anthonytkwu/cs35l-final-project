@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Game(models.Model):
+    game_id = models.IntegerField(default=0)
     players = models.ManyToManyField(User, related_name='games')
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)   
