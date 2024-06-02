@@ -36,3 +36,13 @@ curl -X GET http://localhost:8000/api/games/?search=123&field=game_id
 
 Find next pair in a drawing_phrase_pairs chain from drawing_phrase_pairs with id=1:
 curl -X GET http://localhost:8000/api/drawing_phrase_pairs/1/next_pair/
+
+Info on authentication:
+Register user:
+http://localhost:8000/api/user/register/
+
+Allow you to input username and password and request refresh and access tokens:
+http://localhost:8000/api/token/ 
+
+To refresh your access token, send refresh token:
+http://localhost:8000/api/token/refresh

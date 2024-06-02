@@ -1,6 +1,8 @@
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.contrib.auth.models import User
 from .models import *
 from .serializers import *
 
@@ -50,3 +52,8 @@ class ChainViewSet(BaseViewSet):
     queryset = Chain.objects.all()
     serializer_class = ChainSerializer
     search_fields = ['starter__name', 'game__title']  # example fields assuming relational fields
+
+class UserViewSet(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
