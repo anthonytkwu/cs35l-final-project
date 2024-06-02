@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { currentStrokeSelector, setStrokeSize } from "../modules/currentStroke/slice";
 import { useSelector } from "react-redux";
+import React from "react";
 
 export const SliderPanel = () => {
     const dispatch = useDispatch();

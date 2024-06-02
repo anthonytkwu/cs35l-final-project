@@ -5,6 +5,7 @@ import { strokesLengthSelector } from "../modules/strokes/slice";
 
 import undoImg from "../assets/undo.png";
 import redoImg from "../assets/redo.png"
+import React from "react";
 
 export const EditPanel = () => {
   const undoLimit = useSelector(strokesLengthSelector);

@@ -1,5 +1,7 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { currentStrokeSelector } from "../modules/currentStroke/slice";
 import { setStrokeColor } from "../modules/currentStroke/slice";
+import React from "react";
 
 const COLORS = [
   "#000000",    //black
@@ -28,6 +30,7 @@ export const ColorPanel = () => {
   const onColorChange = (color: string) => {
     dispatch(setStrokeColor(color));
   };
+  const currentStroke = useSelector(currentStrokeSelector);
 
   return (
     <div className="window-colors-panel">
@@ -42,6 +45,7 @@ export const ColorPanel = () => {
             style={{ backgroundColor: color }}></div>
         ))}
       </div>
+      <div className="current-color" style={{backgroundColor: currentStroke.color}}/>
     </div>
   );
 };

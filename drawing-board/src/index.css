@@ -20,7 +20,6 @@ canvas {
     display: flex;
     height: 100vh;
     padding: 10px;
-    
 }
 
 /* sub-panel */
@@ -39,15 +38,21 @@ canvas {
 }
 
 .tools-panel{
-    border: 5px red solid;
+    /* border: 5px red solid; */
     float: right;
-    padding: 1%;
+    padding: 0.5%;
     width: 15%;
     
 }
 
+.window-colors-panel{
+    border: 7.5px rgba(62, 20, 62, 0.815) solid;
+    background-color: rgba(62, 20, 62, 0.815);
+    border-radius: 2.5px;
+}
+
 .toolbar-element{
-    border: 2px yellow solid;
+    /* border: 2px yellow solid; */
     display: flex;
     gap: 10px;
     justify-content: center;
@@ -56,41 +61,54 @@ canvas {
 
 /* colors */
 .colors {
+    border: 3px rgba(62, 20, 62, 0.875) solid;
+    background-color: grey;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    background-color: grey;
 }
 
 .color {
-  width: 45px;
-  height: 45px;
+  width: 25%;
+  aspect-ratio: 1;
   cursor: pointer;
   box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf,
     inset 2px 2px #0a0a0a;
 }
 
+.current-color{
+    border: 3px rgba(62, 20, 62, 0.815) solid;
+    display: flex;
+    height: 10vh;
+}
+
 /* slider */
 .font-size-slider{
-    fill: aqua;
+    cursor: pointer;
 }
 
 /* undo/redo */
 .edit-images{
     background-color: transparent;
+    cursor: pointer;
     width: 40px;
 }
 
 .edit-button{
     background-color: transparent;
+    cursor: pointer;
 }
 
 /* upload */
 .save-button {
-    background-color: blue;
-    color: white;
-    font-size: larger;
+    border: 4px blueviolet solid;
+    border-radius: 10%;
+    background-color: white;
+    color: purple;
+    font-size: x-large;
     font-family: 'Rubik Mono One';
-    padding-left: 25px;
-    padding-right: 25px;
+    padding: 8%;
+    padding-left: 20%;
+    padding-right: 20%;
+    cursor: pointer;
 }
