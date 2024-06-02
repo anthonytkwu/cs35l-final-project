@@ -7,10 +7,13 @@ export const PromptPanel = () => {
 
     return (
         <div className="prompt-panel">
-          <div className="title-bar">
-            <div className="title-bar-text">Time To Draw!</div>
-          </div>
-            <div className="prompt-text">{currentGame.prompt}</div>
+            <div>
+                <div>Time To Draw!</div>
+                <div >{currentGame.prompt}</div>
+            </div>
+            <div className="round-count">
+                {currentGame.round}/{currentGame.totalRounds}
+            </div>
         </div>
       );
 }

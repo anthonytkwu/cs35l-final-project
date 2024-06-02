@@ -37,6 +37,10 @@ canvas {
     text-align: center;
 }
 
+.round-count{
+    text-align: right;
+}
+
 .tools-panel{
     /* border: 5px red solid; */
     float: right;
