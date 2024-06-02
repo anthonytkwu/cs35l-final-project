@@ -1,4 +1,6 @@
 from rest_framework import viewsets, filters
+from rest_framework.response import Response
+from rest_framework.decorators import action
 from .models import *
 from .serializers import *
 
@@ -33,6 +35,16 @@ class DrawingPhrasePairViewSet(BaseViewSet):
     queryset = DrawingPhrasePair.objects.all()
     serializer_class = DrawingPhrasePairSerializer
     search_fields = ['prompt', 'description']  # example fields
+
+    @action(detail=True, methods=['get'])
+    def next_pair(self, request, pk=None):
+        drawing_phrase_pair = self.get_object()
+        next_pair = drawing_phrase_pair.next_pair.first()  # Accessing the reverse relationship
+        if next_pair:
+            serializer = self.get_serializer(next_pair)
+            return Response(serializer.data)
+        else:
+            return Response({"message": "No next pair found."}, status=status.HTTP_404_NOT_FOUND)
 
 class ChainViewSet(BaseViewSet):
     queryset = Chain.objects.all()
