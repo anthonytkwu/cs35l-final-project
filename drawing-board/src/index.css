@@ -101,10 +101,10 @@ canvas {
 
 /* upload */
 .save-button {
-    border: 4px blueviolet solid;
+    border: 4px rgba(62, 20, 62) solid;
     border-radius: 10%;
     background-color: white;
-    color: purple;
+    color: rgba(62, 20, 62);
     font-size: x-large;
     font-family: 'Rubik Mono One';
     padding: 8%;

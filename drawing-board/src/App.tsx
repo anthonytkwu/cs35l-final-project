@@ -13,6 +13,7 @@ import { FilePanel } from "./shared/FilePanel";
 import { ModalLayer } from "./ModalLayer";
 import { SliderPanel } from "./shared/SliderPanel";
 import { PromptPanel } from "./shared/PromptPanel";
+import { currentGameSelector } from "./modules/currentGame/slice";
 
 function App() {
   const canvasRef = useCanvas();
