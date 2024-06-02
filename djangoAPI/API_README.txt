@@ -26,13 +26,13 @@ https://13.52.151.207:8000/api/chains/
 
 MAKING REQUESTS (for now they will be formatted as curl requests but can be easily moved into the react form):
 List All Games:
-curl -X GET http://localhost:8000/games/
+curl -X GET http://localhost:8000/api/games/
 
 Make a new Game Entry:
-curl -X POST http://localhost:8000/games/ -H "Content-Type: application/json" -d '{"game_id": "123", "is_active": true}'
+curl -X POST http://localhost:8000/api/games/ -H "Content-Type: application/json" -d '{"game_id": "123", "is_active": true}'
 
 Search by game_id
-curl -X GET http://localhost:8000/games/?search=123&field=game_id
+curl -X GET http://localhost:8000/api/games/?search=123&field=game_id
 
 Find next pair in a drawing_phrase_pairs chain from drawing_phrase_pairs with id=1:
 curl -X GET http://localhost:8000/api/drawing_phrase_pairs/1/next_pair/
