@@ -149,7 +149,7 @@ const Register = () => {
                         }
                     </form>
                         
-                    <p classNme='text-ascent-2 text-sm text-center'>
+                    <p className='text-ascent-2 text-sm text-center'>
                         Already have an account?{" "}
                         <Link
                             to='/login'

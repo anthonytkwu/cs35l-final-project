@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form"
 import { TbSocial } from "react-icons/tb";
@@ -10,17 +10,21 @@ import { TextInput, Loading, CustomButton} from "../components";
 import { BgImage } from "../assets";
 
 const Login = () => {
+    const navigate = useNavigate();
+
     const {
         register, 
         handleSubmit, 
         formState: { errors },
+        reset: reset,
     } = useForm({
         mode: "onChange",
-
     });
 
-    const onSubmit = async(data) => {
 
+    const onSubmit = async(data) => { 
+        console.log("Attempting to navigate to home...");
+        navigate('/home');
     };
 
     const [errMsg, setErrMsg] = useState("");
@@ -63,6 +67,7 @@ const Login = () => {
                             styles="w-full rounded-full"
                             labelStyle='ml-2'
                             error= {errors.email ? errors.email.message : ""}
+                            //make sure to validate email address + password
                         />
 
                         <TextInput 
@@ -112,7 +117,7 @@ const Login = () => {
                         }
                     </form>
                         
-                    <p classNme='text-ascent-2 text-sm text-center'>
+                    <p className='text-ascent-2 text-sm text-center'>
                         Don't have an account?
                         <Link
                             to='/register'
