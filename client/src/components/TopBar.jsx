@@ -59,9 +59,9 @@ const TopBar = () => {
             {/* ICONS */}
             <div className='flex gap-4 items-center text-ascent-1 texd-md md:text-xl'>
                 <button onClick={()=> handleTheme()}>{theme ? <BsMoon /> : <BsSunFill />}</button>
-                <div className='hidden lg:flex'>
+                {/*<div className='hidden lg:flex'>
                     <IoMdNotificationsOutline />
-                </div>
+        </div>*/}
 
                 <div>
                     <CustomButton
