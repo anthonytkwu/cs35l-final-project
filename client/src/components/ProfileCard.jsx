@@ -2,21 +2,13 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { LiaEditSolid } from "react-icons/lia";
-import {
-    BsBriefcase,
-    BsFacebook,
-    BsInstagram,
-    BsPersonFillAdd,
-} from "react-icons/bs";
-import { FaTwitterSquare } from "react-icons/fa";
-import { CiLocationOn } from "react-icons/ci";
-import moment from "moment";
+import { BsPersonFillAdd } from "react-icons/bs";
 
 import { NoProfile } from "../assets";
 import { UpdateProfile } from "../redux/userSlice";
 
 const ProfileCard = ({ user }) => {
-    const { user: data, edit } = useSelector((state) => state.user);
+    const { user: data } = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
   return (
