@@ -39,6 +39,7 @@ class Chain(models.Model):
 class Session(models.Model):
     game_code = models.IntegerField(auto_created=True, unique=True, default=0, validators=[MinValueValidator(0), MaxValueValidator(999999)])
     created_at = models.DateTimeField(auto_now_add=True)
+    master_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='master_sessions')
     users = models.ManyToManyField(User, related_name='sessions')
 
     def __str__(self):
