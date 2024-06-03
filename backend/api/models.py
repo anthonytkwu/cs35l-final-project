@@ -39,8 +39,8 @@ class Chain(models.Model):
 
 class Session(models.Model):
     game_code = models.IntegerField(auto_created=True, unique=True, default=0, validators=[MinValueValidator(0), MaxValueValidator(999999)])
-    drawTime = models.IntegerField(choices=[(30, '30 seconds'), (45, '45 seconds'), (45, '60 seconds')])
-    descTime = models.IntegerField(choices=[(30, '30 seconds'), (45, '45 seconds'), (45, '60 seconds')])
+    drawTime = models.IntegerField(choices=[(30, '30 seconds'), (45, '45 seconds'), (60, '60 seconds')])
+    descTime = models.IntegerField(choices=[(15, '15 seconds'), (30, '30 seconds'), (45, '45 seconds')])
     created_at = models.DateTimeField(auto_now_add=True)
     users = models.ManyToManyField(User, related_name='sessions')
     round = models.IntegerField(default=0, validators=[MinValueValidator(-1), MaxValueValidator(10)])
