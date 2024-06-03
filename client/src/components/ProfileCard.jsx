@@ -2,21 +2,13 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { LiaEditSolid } from "react-icons/lia";
-import {
-    BsBriefcase,
-    BsFacebook,
-    BsInstagram,
-    BsPersonFillAdd,
-} from "react-icons/bs";
-import { FaTwitterSquare } from "react-icons/fa";
-import { CiLocationOn } from "react-icons/ci";
-import moment from "moment";
+import { BsPersonFillAdd } from "react-icons/bs";
 
 import { NoProfile } from "../assets";
 import { UpdateProfile } from "../redux/userSlice";
 
 const ProfileCard = ({ user }) => {
-    const { user: data, edit } = useSelector((state) => state.user);
+    const { user: data } = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
   return (
@@ -62,7 +54,7 @@ const ProfileCard = ({ user }) => {
                 </div>
             </div>
 
-            <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
+            {/*<div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
                 <div className='flex gap-2 items-center text-ascent-2'>
                     <CiLocationOn className='text-xl text-ascent-1' />
                     <span>{user?.location ?? "Add Location"}</span>
@@ -72,9 +64,9 @@ const ProfileCard = ({ user }) => {
                     <BsBriefcase className=' text-lg text-ascent-1' />
                     <span>{user?.profession ?? "Add Profession"}</span>
                 </div>
-            </div>
+                </div>*/}
 
-            <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
+            {/*<div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
                 <p className='text-xl text-ascent-1 font-semibold'>
                     {user?.friends?.length} Friends
                 </p>
@@ -94,9 +86,9 @@ const ProfileCard = ({ user }) => {
                         {moment(user?.createdAt).fromNow()}
                     </span>
                 </div>
-            </div>
+            </div>*/}
         
-            <div className='w-full flex flex-col gap-4 py-4 pb-6'>
+            {/*<div className='w-full flex flex-col gap-4 py-4 pb-6'>
                 <p className='text-ascent-1 text-lg font-semibold'>Social Profile</p>
 
                 <div className='flex gap-2 items-center text-ascent-2'>
@@ -111,7 +103,7 @@ const ProfileCard = ({ user }) => {
                     <BsFacebook className=' text-xl text-asent-1' />
                     <span>Instagram</span>
                 </div>
-            </div>
+            </div>*/}
         </div>
     </div>
   );

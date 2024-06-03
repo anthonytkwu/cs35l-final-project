@@ -1,7 +1,7 @@
-import { Outlet, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Home, Login, Profile, Register, ResetPassword, TimerComponent, GameLobby } from "./pages";
-import { WebSocketProvider, useWebSocket } from './WebSocketContext'; // Import the WebSocket provider
+import { Home, Login, Register, ResetPassword, TimerComponent, GameLobby } from "./pages";
+import { WebSocketProvider } from './WebSocketContext'; // Import the WebSocket provider
 
 // function Layout() {
 //   const { user } = useSelector((state) => state.user);
