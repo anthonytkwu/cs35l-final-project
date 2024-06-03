@@ -19,23 +19,20 @@ function App() {
 
   return (
     <div data-theme={theme} className='w-full min-h-[100vh]'>
-      <WebSocketProvider> {/* Wrap Routes in WebSocketProvider */}
-        <Routes>
-          {/* <Route element={<Layout />}>
+      <Routes>
+        {/* <Route element={<Layout />}>
             <Route path='/' element={<Home />} />
             <Route path='/home' element={<Home />} />
             <Route path='/profile/:id?' element={<Profile />} />
           </Route> */}
 
-          <Route path='/register' element={<Register />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/reset-password' element={<ResetPassword />} />
-          <Route path='/timer-component' element={<TimerComponent />} />
-          <Route path='/game-lobby' element={<GameLobby />} />
-          <Route path='/' element={<Home />} />
-          <Route path='/home' element={<Home />} />
-        </Routes>
-      </WebSocketProvider>
+        <Route path='/register' element={<Register />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/timer-component' element={<TimerComponent />} />
+        <Route path='/game-lobby' element={<GameLobby />} />
+        <Route path='/' element={<Home />} />
+        <Route path='/home' element={<Home />} />
+      </Routes>
     </div>
   );
 }
