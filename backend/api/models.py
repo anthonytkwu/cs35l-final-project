@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.files.base import ContentFile
 
 # Create your models here.
 class Drawing(models.Model):
@@ -38,9 +39,12 @@ class Chain(models.Model):
 
 class Session(models.Model):
     game_code = models.IntegerField(auto_created=True, unique=True, default=0, validators=[MinValueValidator(0), MaxValueValidator(999999)])
+    drawTime = models.IntegerField(choices=[(30, '30 seconds'), (45, '45 seconds'), (45, '60 seconds')])
+    descTime = models.IntegerField(choices=[(30, '30 seconds'), (45, '45 seconds'), (45, '60 seconds')])
     created_at = models.DateTimeField(auto_now_add=True)
-    master_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='master_sessions')
     users = models.ManyToManyField(User, related_name='sessions')
+    round = models.IntegerField(default=0, validators=[MinValueValidator(-1), MaxValueValidator(10)])
+    # round: 0 is lobby, 1-10 is drawing/word guessing, -1 is game over
 
     def __str__(self):
         return self.game_code

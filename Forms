@@ -1,0 +1,28 @@
+function handleSubmit(event) {
+    event.preventDefault();
+    setShowForm(false);
+    setOutput('Token' + token + 'created sessio ' + session_id ' with drawing time ' + draw_time + 'd');
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('gameID', gameID);
+    formData.append('image', file);  // Append the file object directly
+
+    fetch(apiUrl, {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Network response was not ok.');
+      })
+      .then((data) => {
+        console.log(data);
+        alert('File uploaded successfully');
+      })
+      .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  }
