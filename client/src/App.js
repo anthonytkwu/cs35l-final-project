@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Home, Login, Register, ResetPassword, TimerComponent, GameLobby, StartingPromptRound } from "./pages";
 import { WebSocketProvider } from './WebSocketContext'; // Import the WebSocket provider
+import DrawingRound from "./pages/DrawingRound";
 
 // function Layout() {
 //   const { user } = useSelector((state) => state.user);
@@ -35,6 +36,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/home' element={<Home />} />
           <Route path='starting-prompt-round' element={<StartingPromptRound />} />
+          <Route path='drawing-round' element={<DrawingRound />} />
         </Routes>
       </WebSocketProvider>
     </div>

@@ -4,14 +4,14 @@ import { TextInput, TopBar2 } from "../components";
 
 const StartingPromptRound = () => {
     const navigate = useNavigate();
-    const [countdown, setCountdown] = useState(15); // Initialize countdown (5 seconds)
+    const [countdown, setCountdown] = useState(5); // Initialize countdown (5 seconds)
 
     useEffect(() => {
         const timer = setInterval(() => {
             setCountdown((prevCountdown) => {
                 if (prevCountdown <= 1) {
                     clearInterval(timer); // Stop the interval when countdown is 0
-                    navigate('/game-lobby'); // Navigate when countdown is finished
+                    navigate('/drawing-round'); // Navigate when countdown is finished
                     return 0;
                 }
                 return prevCountdown - 1; // Decrement the countdown by 1
