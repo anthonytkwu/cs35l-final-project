@@ -52,7 +52,7 @@ const GameLobby = () => {
         if (isHost) {
             ws.send(JSON.stringify({ type: 'start-game' }));
         }
-        navigate('/home');
+        navigate('/starting-prompt-round');
     };
 
     return (
