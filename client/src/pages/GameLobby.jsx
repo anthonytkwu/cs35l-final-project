@@ -19,31 +19,6 @@ const GameLobby = () => {
     const ws = useWebSocket();
 
     function handleSubmit(event) {
-        // event.preventDefault();
-        // setShowForm(false);
-        // setOutput('created by token ' + token + ' with the following attributes: draw time ' + draw_time + ' desc time ' + desc_time);
-      
-        // const formData = new FormData();
-        // formData.append('desc_time', drawingTime);  // Append the file object directly
-        // formData.append('draw_time', writingTime);
-      
-        // fetch(apiUrl, {
-        //   method: 'POST',
-        //   body: formData,
-        // })
-        //   .then((response) => {
-        //     if (response.ok) {
-        //       return response.json();
-        //     }
-        //     throw new Error('Network response was not ok.');
-        //   })
-        //   .then((data) => {
-        //     console.log(data);
-        //     alert('File uploaded successfully');
-        //   })
-        //   .catch((error) => {
-        //     console.error('There was a problem with the fetch operation:', error);
-        //   });
             console.log("blah");
         }
 
@@ -79,9 +54,6 @@ const GameLobby = () => {
     };
 
     const handleStartGame = () => {
-        // if (isHost) {
-        //     ws.send(JSON.stringify({ type: 'start-game' }));
-        // }
         handleSubmit()
         navigate('/starting-prompt-round');
     };
@@ -102,25 +74,13 @@ const GameLobby = () => {
                             ))}
                         </div>
                     </div>
-                    {/* {players.map((player, index) => (
-                        <div key={player.id} className={player.id === user.id ? 'host' : ''}>
-                            {player.name}
-                        </div>
-                    ))} */}
                 </div>
 
                 {/* CENTER */}
                 <div className='w-full lg:w-1/2 h-full p-10 2xl:px-20 flex '>
-                    {/* <div className='w-full flex gap-2 items-center mb-1 justify-center '>
-                        <span className='text-2xl text-[#065ad8] font-semibold '>
-                            Create New Lobby
-                        </span>
-                    </div> */}
-
                     <div className='settings w-full flex flex-col gap-2 items-center mb-1 justify-center '>
                         {isHost && (
                             <>
-
                                 <div className='w-full flex gap-2 items-center mb-1 justify-center '>
                                     <span className='text-2xl text-[#065ad8] font-semibold '>
                                         Choose Length of Drawing Round
@@ -177,30 +137,3 @@ const GameLobby = () => {
 };
 
 export default GameLobby;
-
-// import React, { useEffect } from 'react';
-// import { useWebSocket } from '../WebSocketContext';
-
-// function GameLobby() {
-//     const ws = useWebSocket();
-
-//     useEffect(() => {
-//         if (ws) {
-//             ws.onmessage = (event) => {
-//                 console.log("Message from server ", event.data);
-//             };
-
-//             // Example send message
-//             ws.send(JSON.stringify({ message: "Hello from Home!" }));
-//         }
-//     }, [ws]);
-
-//     return (
-//         <div>
-//             <h1>Home Page</h1>
-//             {/* Render data received via WebSocket here */}
-//         </div>
-//     );
-// }
-
-// export default GameLobby;
