@@ -13,16 +13,15 @@ class UserCreateView(generics.CreateAPIView):
 
 class SessionCreateView(generics.CreateAPIView):
     serializer_class = SessionSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def perform_create(self, serializer):
         session = serializer.save()
-        session.add_user(self.request.user)
-        return Response(session.data, status=status.HTTP_201_CREATED)
+        return Response(self.serializer_class(session).data, status=status.HTTP_201_CREATED)
     
 class SessionJoinView(generics.UpdateAPIView):
     serializer_class = JoinSessionSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def update(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -31,6 +30,7 @@ class SessionJoinView(generics.UpdateAPIView):
         try:
             session = Session.objects.get(game_code=game_code)
             session.add_user(request.user)
-            return Response(session.data, status=status.HTTP_200_OK)
+            session.save()  # Save the session after adding the user
+            return Response(SessionCreateView(session).data, status=status.HTTP_200_OK)
         except Session.DoesNotExist:
             return Response({'error': 'Session not found'}, status=status.HTTP_404_NOT_FOUND)
