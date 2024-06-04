@@ -35,20 +35,23 @@ const Home = () => {
 
     function createLobbyCall(event) {
         const access = localStorage.getItem('access');
+        console.log('Access token:', access);
         event.preventDefault();
         setShowForm(false);
         setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
-        const formData = new FormData();
-        formData.append('desc_time', desc_time);  // Append the file object directly
-        formData.append('draw_time', draw_time);
-        console.log(output);
-        console.log(access)
+      
+        const data = {
+          desc_time: desc_time,
+          draw_time: draw_time,
+        };
+      
         fetch(`${apiUrl}/api/session/create/`, {
           method: 'POST',
-          header: {
-            'Authorization' : `Bearer ${localStorage.getItem('access')}`,
+          headers: {
+            'Authorization': `Bearer ${access}`,
+            'Content-Type': 'application/json'
           },
-          body: formData,
+          body: JSON.stringify(data),
         })
           .then((response) => {
             if (response.ok) {
