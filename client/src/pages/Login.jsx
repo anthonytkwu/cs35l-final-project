@@ -3,15 +3,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form"
 import { TextInput, Loading, CustomButton} from "../components";
 import { BgImage } from "../assets";
+import { apiUrl } from "../config.js";
+
 
 const Login = () => {
     const navigate = useNavigate();
 
     const {
-        register, 
-        handleSubmit, 
+        register,
+        handleSubmit,
+        getValues,
+        setError,
         formState: { errors },
-        reset: reset,
     } = useForm({
         mode: "onChange",
     });
@@ -19,6 +22,34 @@ const Login = () => {
 
     const onSubmit = async(data) => { 
         console.log("Attempting to navigate to home...");
+
+        const formData = new FormData();
+        formData.append('username', data.username);
+        formData.append('password', data.password);
+
+        fetch(`${apiUrl}/api/user/login/`, {
+            method: 'POST',
+            body: formData,
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then((data) => {
+                console.log(data);
+                alert('Login complete, navigating to home page.');
+                navigate("/home");
+            })
+            .catch((error) => {
+                console.error('There was a problem with the fetch operation:', error);
+                setError("username", {
+                    type: "manual",
+                    message: "Problem with token creation/incorrect username or password",
+                })
+            });
+
         navigate('/home');
     };
 
