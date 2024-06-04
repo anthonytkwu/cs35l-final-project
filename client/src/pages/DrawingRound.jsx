@@ -14,6 +14,7 @@ const DrawingRound = () => {
   const [color, setColor] = useState('black');
   const [lineWidth, setLineWidth] = useState(5);
   const [isErasing, setIsErasing] = useState(false);
+  const [paths, setPaths] = useState([]); // Stores SVG paths
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -36,7 +37,13 @@ const DrawingRound = () => {
     contextRef.current.strokeStyle = isErasing ? 'white' : color;
     contextRef.current.lineWidth = isErasing ? 30 : lineWidth; // Eraser size larger for visibility
     setIsDrawing(true);
+
+    setPaths((prevPaths) => [
+      ...prevPaths,
+      { type: isErasing ? 'erase' : 'draw', color, lineWidth, points: [{ x: offsetX, y: offsetY }] },
+    ]);
   };
+  
 
   const finishDrawing = () => {
     contextRef.current.closePath();
@@ -50,6 +57,13 @@ const DrawingRound = () => {
     const { offsetX, offsetY } = nativeEvent;
     contextRef.current.lineTo(offsetX, offsetY);
     contextRef.current.stroke();
+
+    setPaths((prevPaths) => {
+      const newPaths = [...prevPaths];
+      const currentPath = newPaths[newPaths.length - 1];
+      currentPath.points.push({ x: offsetX, y: offsetY });
+      return newPaths;
+    });
   };
 
   const undo = () => {
@@ -60,6 +74,8 @@ const DrawingRound = () => {
     setLines(newLines);
 
     contextRef.current.putImageData(newLines[newLines.length - 1] || new ImageData(canvasRef.current.width, canvasRef.current.height), 0, 0);
+
+    setPaths((prevPaths) => prevPaths.slice(0, -1));
   };
 
   const redo = () => {
@@ -73,15 +89,16 @@ const DrawingRound = () => {
   };
 
   const saveAsSVG = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const svgPaths = paths.map((path) => {
+      const pathData = path.points
+        .map((point, index) => (index === 0 ? `M${point.x},${point.y}` : `L${point.x},${point.y}`))
+        .join(' ');
+      return `<path d="${pathData}" stroke="${path.color}" stroke-width="${path.lineWidth}" fill="none" />`;
+    }).join('');
+
     const svgContent = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}">
-        <foreignObject width="100%" height="100%">
-          <canvas xmlns="http://www.w3.org/1999/xhtml" width="${canvas.width}" height="${canvas.height}">
-            ${ctx.getImageData(0, 0, canvas.width, canvas.height)}
-          </canvas>
-        </foreignObject>
+      <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+        ${svgPaths}
       </svg>
     `;
     const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
