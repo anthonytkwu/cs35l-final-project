@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useWebSocket } from '../WebSocketContext';
 import { useForm } from "react-hook-form";
 import { TopBar2, TextInput, Loading, CustomButton } from "../components";
 
@@ -16,40 +15,12 @@ const GameLobby = () => {
     const [drawingTime, setDrawingTime] = useState(60);
     const [writingTime, setWritingTime] = useState(30);
     const [apiUrl, setApiUrl] = useState("")
-    const ws = useWebSocket();
 
     function handleSubmit(event) {
             console.log("blah");
         }
 
-    useEffect(() => {
-        if (ws) {
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                switch (data.type) {
-                    case 'update-players':
-                        setPlayers(data.players);
-                        break;
-                    case 'update-host':
-                        setIsHost(user.id === data.hostId);
-                        break;
-                    case 'start-game':
-                        navigate('/game');
-                        break;
-                }
-            };
-
-            // Send a message when the component mounts
-            ws.send(JSON.stringify({ type: 'join-lobby', userId: user.id }));
-        }
-
-        return () => {
-            ws.send(JSON.stringify({ type: 'leave-lobby', userId: user.id }));
-        };
-    }, [ws, user.id, navigate]);
-
     const handleLeaveLobby = () => {
-        ws.send(JSON.stringify({ type: 'leave-lobby', userId: user.id }));
         navigate('/home');
     };
 
@@ -90,8 +61,6 @@ const GameLobby = () => {
                                 <div className='w-full flex gap-2 items-center mb-10 justify-center '>
                                     <select value={drawingTime} onChange={e => setDrawingTime(e.target.value)}>
                                         <option value={30}>30s</option>
-                                        <option value={60}>60s</option>
-                                        <option value={90}>90s</option>
                                     </select>
                                 </div>
 
@@ -104,8 +73,6 @@ const GameLobby = () => {
                                 <div className='w-full flex gap-2 items-center mb-10 justify-center '>
                                     <select value={writingTime} onChange={e => setWritingTime(e.target.value)}>
                                         <option value={15}>15s</option>
-                                        <option value={30}>30s</option>
-                                        <option value={45}>45s</option>
                                     </select>
                                 </div>
 

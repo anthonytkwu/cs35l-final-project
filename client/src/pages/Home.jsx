@@ -36,7 +36,7 @@ const Home = () => {
         // Simulate API call to create a lobby
         // Example: await api.createLobby(data.lobbyCode);
         console.log("Creating lobby with code:", data.createLobbyCode);
-        handleSubmit()
+        createLobbyCall()
         setIsSubmitting(false);
         navigate(`/game-lobby`);
         {/* Use this version once we get backend working. 
