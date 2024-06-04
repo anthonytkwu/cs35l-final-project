@@ -58,7 +58,6 @@ const Home = () => {
             // Example: await api.createLobby(data.lobbyCode);
             createLobbyCall()
             setIsSubmitting(false);
-            navigate(`/game-lobby`);
             {/* Use this version once we get backend working. 
             While developing frontend, just use 'game-lobby' w/o "/" */}
             //navigate(`/game-lobby/${data.createLobbyCode}`); // Navigate to lobby page
@@ -68,6 +67,7 @@ const Home = () => {
           .catch((error) => {
             console.error('There was a problem with the fetch operation:', error);
           });
+        navigate(`/game-lobby`);
         console.log('blag')
         }
 
