@@ -12,17 +12,12 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
     
-class DrawingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Drawing
-        fields = ['id', 'drawing', 'created_at', 'author']
-        extra_kwards = {'author': {'read_only': True}}
-
 class SessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
         fields = ['game_code', 'draw_time', 'desc_time', 'created_at', 'users', 'round']
-        read_only_fields = ['game_code', 'created_at', 'round']
 
-class JoinSessionSerializer(serializers.Serializer):
-    game_code = serializers.IntegerField()
+class SessionCreateSerializer(serializers.ModelSerializer):
+    draw_time = serializers.IntegerField()
+    desc_time = serializers.IntegerField()
+    user = serializers.TimeField()
