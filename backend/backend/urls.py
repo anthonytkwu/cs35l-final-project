@@ -28,4 +28,5 @@ urlpatterns = [
     path('api/session/create/', SessionCreateView.as_view(), name='create-session'),
     path('api/session/<str:game_code>/join/', SessionJoinView.as_view(), name='join-session'),
     path('api/session/<str:game_code>/wait/', SessionWaitView.as_view(), name='wait-session'),
+    path('api/session/<str:game_code>/start/', SessionStartView.as_view(), name='start-session'),
 ]
