@@ -12,3 +12,5 @@
 node_modules/
 drawing-board/
 .DS_Store
+.vscode/
+.DS_Store
