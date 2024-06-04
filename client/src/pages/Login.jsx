@@ -8,7 +8,6 @@ import { apiUrl } from "../config.js";
 
 const Login = () => {
     const navigate = useNavigate();
-
     const {
         register,
         handleSubmit,
@@ -33,9 +32,19 @@ const Login = () => {
         })
             .then((response) => {
                 if (response.ok) {
-                    return response.json();
+                    response.json().then(obj => {
+
+                        console.log('access: ' + obj.access);
+                        console.log('refresh: ' + obj.refresh);
+                        localStorage.setItem('access', obj.access);
+                        localStorage.setItem('refresh', obj.refresh);
+                        return obj;
+                    }).catch(error => {
+                        console.error('Error parsing JSON:', error);
+                    });
+                } else {
+                    console.error('Response not OK:', response.statusText);
                 }
-                throw new Error('Network response was not ok.');
             })
             .then((data) => {
                 console.log(data);

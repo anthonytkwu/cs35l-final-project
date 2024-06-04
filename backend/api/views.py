@@ -17,6 +17,7 @@ class SessionCreateView(generics.CreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
+        print(self.request.is_secure())
         if serializer.is_valid():
             serializer.save(users=[self.request.user])
         else:

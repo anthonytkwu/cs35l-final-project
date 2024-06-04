@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { TopBar, ProfileCard, TextInput, Loading, CustomButton } from "../components";
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../config.js";
 
 //import { Link } from "react-router-dom";
 //import { BgImage } from "../assets";
@@ -13,7 +14,6 @@ const Home = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [draw_time, setDrawingTime] = useState(60);
     const [desc_time, setWritingTime] = useState(30);
-    const [apiUrl, setApiUrl] = useState("http://127.0.0.1:8000/api/session/create")
     const [output, setOutput] = useState('');
     const [showForm, setShowForm] = useState(true);
     const navigate = useNavigate();
@@ -34,6 +34,7 @@ const Home = () => {
     } = useForm({ mode: "onChange" });
 
     function createLobbyCall(event) {
+        const access = localStorage.getItem('access');
         event.preventDefault();
         setShowForm(false);
         setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
@@ -41,12 +42,17 @@ const Home = () => {
         formData.append('desc_time', desc_time);  // Append the file object directly
         formData.append('draw_time', draw_time);
         console.log(output);
-        fetch(apiUrl, {
+        console.log(access)
+        fetch(`${apiUrl}/api/session/create/`, {
           method: 'POST',
+          header: {
+            'Authorization' : `Bearer ${localStorage.getItem('access')}`,
+          },
           body: formData,
         })
           .then((response) => {
             if (response.ok) {
+              console.log(access)
               return response.json();
             }
             throw new Error('Network response was not ok.');
