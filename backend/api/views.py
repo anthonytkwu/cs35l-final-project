@@ -13,7 +13,7 @@ class UserCreateView(generics.CreateAPIView):
 
 class SessionCreateView(generics.CreateAPIView):
     serializer_class = SessionSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
         session = serializer.save()
@@ -21,7 +21,7 @@ class SessionCreateView(generics.CreateAPIView):
     
 class SessionJoinView(generics.UpdateAPIView):
     serializer_class = JoinSessionSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
 
     def update(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
