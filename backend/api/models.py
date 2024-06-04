@@ -45,6 +45,7 @@ class Session(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     users = models.ManyToManyField(User, related_name='sessions')
     round = models.IntegerField(default=0, validators=[MinValueValidator(-1), MaxValueValidator(10)])
+    last_modified = models.DateTimeField(auto_now=True)
     # round: 0 is lobby, 1-10 is drawing/word guessing, -1 is game over
 
     def save(self, *args, **kwargs):
