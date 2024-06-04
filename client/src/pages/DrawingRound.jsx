@@ -1,9 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
-import './DrawingRound.css';
-
-import undoImg from "../assets/drawingBoard/undo.png";
-import redoImg from "../assets/drawingBoard/redo.png"
 import { ColorPicker, EraseButton, FontSizeSlider, RedoButton, SaveButton, UndoButton } from '../components/DrawingRoundComponents';
+import './DrawingRound.css';
 
 const DrawingRound = () => {
   const canvasRef = useRef(null);
@@ -105,7 +102,7 @@ const DrawingRound = () => {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'drawing.svg';
-    link.click();
+    link.click();    
   };
 
   return (
