@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form"
 import { TextInput, Loading, CustomButton} from "../components";
 import { BgImage } from "../assets";
-import { apiUrl } from "./config.js";
+import { apiUrl } from "../config.js";
 
 const Register = () => {
     const {

@@ -32,7 +32,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/timer-component' element={<TimerComponent />} />
           <Route path='/game-lobby' element={<GameLobby />} />
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<Login />} />
           <Route path='/home' element={<Home />} />
           <Route path='starting-prompt-round' element={<StartingPromptRound />} />
           <Route path='drawing-round' element={<DrawingRound />} />
