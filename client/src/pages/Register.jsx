@@ -20,10 +20,10 @@ const Register = () => {
 
     const onSubmit = async (data) => {
         const formData = new FormData();
-        formData.append('username', data.Username);
+        formData.append('username', data.username);
         formData.append('password', data.password);
 
-        fetch(apiUrl, {
+        fetch(`${apiUrl}/api/user/register/`, {
             method: 'POST',
             body: formData,
         })
@@ -35,7 +35,7 @@ const Register = () => {
             })
             .then((data) => {
                 console.log(data);
-                alert('File uploaded successfully');
+                alert('Registration complete, routing to login page.');
                 navigate("/login");
             })
             .catch((error) => {
