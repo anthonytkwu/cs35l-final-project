@@ -40,6 +40,7 @@ const Home = () => {
         const formData = new FormData();
         formData.append('desc_time', desc_time);  // Append the file object directly
         formData.append('draw_time', draw_time);
+        console.log(output);
         fetch(apiUrl, {
           method: 'POST',
           body: formData,
@@ -52,7 +53,17 @@ const Home = () => {
           })
           .then((data) => {
             console.log(data);
-            alert('File uploaded successfully');
+            setIsSubmitting(true);
+            // Simulate API call to create a lobby
+            // Example: await api.createLobby(data.lobbyCode);
+            createLobbyCall()
+            setIsSubmitting(false);
+            navigate(`/game-lobby`);
+            {/* Use this version once we get backend working. 
+            While developing frontend, just use 'game-lobby' w/o "/" */}
+            //navigate(`/game-lobby/${data.createLobbyCode}`); // Navigate to lobby page
+    
+            resetCreate();
           })
           .catch((error) => {
             console.error('There was a problem with the fetch operation:', error);
@@ -61,18 +72,7 @@ const Home = () => {
         }
 
     const onCreateLobby = async (data) => {
-        setIsSubmitting(true);
-        // Simulate API call to create a lobby
-        // Example: await api.createLobby(data.lobbyCode);
-        console.log("Creating lobby with code:", data.createLobbyCode);
-        createLobbyCall()
-        setIsSubmitting(false);
-        navigate(`/game-lobby`);
-        {/* Use this version once we get backend working. 
-        While developing frontend, just use 'game-lobby' w/o "/" */}
-        //navigate(`/game-lobby/${data.createLobbyCode}`); // Navigate to lobby page
 
-        resetCreate();
     };
 
     const onJoinLobby = async (data) => {
