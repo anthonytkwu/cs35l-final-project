@@ -3,6 +3,7 @@ import './DrawingRound.css';
 
 import undoImg from "../assets/drawingBoard/undo.png";
 import redoImg from "../assets/drawingBoard/redo.png"
+import { ColorPicker, EraseButton, FontSizeSlider, RedoButton, SaveButton, UndoButton } from '../components/DrawingRoundComponents';
 
 const DrawingRound = () => {
   const canvasRef = useRef(null);
@@ -16,21 +17,13 @@ const DrawingRound = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    //Set canvas size to fill screen
-    canvas.style.width = `100%`;
-    canvas.style.height = `100%`;
-
-    // //Scaling gives better on-screen resolution
-    canvas.width = canvas.offsetWidth * 4;
-    canvas.height = canvas.offsetHeight * 4;
-    canvas.getContext("2d")?.scale(2, 2);
-
-    // canvas.width = 800 * 2; // Adjust canvas width
-    // canvas.height = 600 * 2; // Adjust canvas height
-    //canvas.style.width = '800px';
-    //canvas.style.height = '600px';
-
     const context = canvas.getContext('2d');
+
+    canvas.width = 900 * 2; // Adjust canvas width
+    canvas.height = 400 * 2; // Adjust canvas height
+    canvas.style.width = '900px';
+    canvas.style.height = '400px';
+    
     context.scale(2, 2);
     context.lineCap = 'round';
     contextRef.current = context;
@@ -115,33 +108,17 @@ const DrawingRound = () => {
         </div>
         {/* set controls */}
         <div className="controls">
-            {/* undo/redo */}
             <div className="undo-redo">
-                <button onClick={undo}>
-                    <img src={undoImg}/>
-                </button>
-                <button onClick={redo}>
-                    <img src={redoImg}/>
-                </button>
+                <UndoButton onClick={undo}/>
+                <RedoButton onClick={redo}/>
             </div>
-            {/* erase */}
-            <button onClick={() => setIsErasing(!isErasing)}>
-                {isErasing ? 'Stop Erasing' : 'Erase'}
-            </button>
-            {/* save */}
-            <button onClick={saveAsSVG}>Save as SVG</button>
-            {/* set color */}
-            <input
-                type="color"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}/>
-            {/* set fontsize */}
-            <input
-                type="range"
-                min="1"
-                max="20"
-                value={lineWidth}
-                onChange={(e) => setLineWidth(e.target.value)}/>
+            <EraseButton isErasing={isErasing} onClick={() => setIsErasing(!isErasing)}/>
+            <ColorPicker 
+                color={color} 
+                onChange={(e) => setColor(e.target.value)}
+                style={{height: "100px"}}  />
+            <FontSizeSlider lineWidth={lineWidth} onChange={(e) => setLineWidth(e.target.value)}/>
+            <SaveButton onClick={saveAsSVG}/>
         </div>
       </div>
     </div>
