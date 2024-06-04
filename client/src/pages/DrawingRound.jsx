@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { ColorPicker, EraseButton, FontSizeSlider, RedoButton, SaveButton, UndoButton } from '../components/DrawingRoundComponents';
-import './DrawingRound.css';
+import { ColorPicker, EraseButton, FontSizeSlider, RedoButton, SaveButton, UndoButton } from '../components/DrawingComponents';
+import { TopBar2 } from '../components';
 
 const DrawingRound = () => {
   const canvasRef = useRef(null);
@@ -106,35 +106,37 @@ const DrawingRound = () => {
   };
 
   return (
-    <div className="DrawingRound">
-      <div className="prompt-box">
-        <span>Prompt: </span>
-        <input type="text" placeholder="Enter your prompt here" />
-      </div>
-      <div className="canvas-and-controls">
-        {/* set canvas */}
-        <div>
-            <canvas
-                ref={canvasRef}
-                onMouseDown={startDrawing}
-                onMouseUp={finishDrawing}
-                onMouseMove={draw}/>
+    <div className="flex flex-col justify-start bg-bgColor">
+        <div><TopBar2/></div>
+        <div className="w-full flex justify-center p-5 bg-[rgb(var(--color-grey))]">
+            <span className='colored-subtitle-text pr-2'>Your Prompt is:</span>
+            <span className='text-ascent-1 text-xl font-semibold'>_PROMPT GOES HERE_</span>
         </div>
-        {/* set controls */}
-        <div className="controls">
-            <div className="undo-redo">
-                <UndoButton onClick={undo}/>
-                <RedoButton onClick={redo}/>
+        <div className="flex justify-between">
+            {/* set canvas */}
+            <div>
+                <canvas
+                    ref={canvasRef}
+                    className='m-5 bg-white'
+                    onMouseDown={startDrawing}
+                    onMouseUp={finishDrawing}
+                    onMouseMove={draw}/>
             </div>
-            <EraseButton isErasing={isErasing} onClick={() => setIsErasing(!isErasing)}/>
-            <ColorPicker 
-                color={color} 
-                onChange={(e) => setColor(e.target.value)}
-                style={{height: "100px"}}  />
-            <FontSizeSlider lineWidth={lineWidth} onChange={(e) => setLineWidth(e.target.value)}/>
-            <SaveButton onClick={saveAsSVG}/>
+            {/* set controls */}
+            <div className="flex flex-col float-right w-1/5 m-[1%] p-[1%] gap-[10px] bg-[rgb(var(--color-grey))]">
+                <div className="flex flex-row gap-2">
+                    <UndoButton onClick={undo}/>
+                    <RedoButton onClick={redo}/>
+                </div>
+                <EraseButton isErasing={isErasing} onClick={() => setIsErasing(!isErasing)}/>
+                <ColorPicker 
+                    color={color} 
+                    onChange={(e) => setColor(e.target.value)}
+                    style={{height: "100px"}}  />
+                <FontSizeSlider lineWidth={lineWidth} onChange={(e) => setLineWidth(e.target.value)}/>
+                <SaveButton onClick={saveAsSVG}/>
+            </div>
         </div>
-      </div>
     </div>
   );
 };

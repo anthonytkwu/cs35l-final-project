@@ -78,7 +78,7 @@
     --color-ascent2: 89 91 100;
     --color-blue: 6 90 216;
     --color-white: 255 255 255;
-
+    --color-grey: 192 192 200;
   }
 
   [data-theme="dark"] {
@@ -89,6 +89,7 @@
     --color-ascent2: 164 161 162;
     --color-blue: 6 90 216;
     --color-white: 255 255 255;
+    --color-grey: 42 46 49;
   }
 }
 
@@ -140,7 +141,7 @@
 }
 
 .lobby-input-style{
-  padding-bottom: 5rem;  
+  padding-bottom: 1.5rem;  
   display: flex;
   flex-direction: column;
   gap: 1.0rem;

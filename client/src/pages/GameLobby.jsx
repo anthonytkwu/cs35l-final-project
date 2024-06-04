@@ -79,7 +79,7 @@ const GameLobby = () => {
                         {isHost && (
                             <>
                                 <div className='w-full flex gap-2 items-center mb-1 justify-center '>
-                                    <span className='text-2xl text-[#065ad8] font-semibold '>
+                                    <span className='colored-subtitle-text'>
                                         Choose Length of Drawing Round
                                     </span>
                                 </div>
@@ -93,7 +93,7 @@ const GameLobby = () => {
                                 </div>
 
                                 <div className='w-full flex gap-2 items-center mb-1 justify-center '>
-                                    <span className='text-2xl text-[#065ad8] font-semibold '>
+                                    <span className='colored-subtitle-text'>
                                         Choose Length of Prompt Round
                                     </span>
                                 </div>
@@ -105,20 +105,15 @@ const GameLobby = () => {
                                         <option value={45}>45s</option>
                                     </select>
                                 </div>
-
-                                <div className='w-full flex gap-2 items-center mb-5 justify-center '>
-                                    <CustomButton
+                                
+                                <CustomButton
                                         onClick={handleStartGame}
-                                        containerStyles={'inline-flex justify-center rounded-md bg-blue px-8 py-3 text-sm font-medium text-white outline-none'}
-                                        title='Start Game'
-                                    />
-                                </div>
-
+                                        containerStyles={'colored-button-style'}
+                                        title='Start Game'/>
                                 <CustomButton
                                     onClick={handleLeaveLobby}
-                                    containerStyles={'inline-flex justify-center rounded-md bg-blue px-8 py-3 text-sm font-medium text-white outline-none'}
-                                    title='Leave Lobby'
-                                />
+                                    containerStyles={'colored-button-style'}
+                                    title='Leave Lobby'/>
                             </>
                         )}
                         {!isHost && (
