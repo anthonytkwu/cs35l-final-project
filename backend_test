@@ -1,0 +1,25 @@
+#!/bin/zsh
+curl -s -X POST http://localhost:8000/api/user/register/ \
+     -H "Content-Type: application/json" \
+     -d '{"username": "testuser1", "password": "testpassword"}'
+
+TOKEN=$(curl -s -X POST http://localhost:8000/api/user/login/ \
+     -H "Content-Type: application/json" \
+     -d '{"username": "testuser2", "password": "testpassword"}' \
+     | jq -r '.access')
+
+
+# RESPONSE=$(curl -s -X POST http://localhost:8000/api/session/create/ \
+#      -H "Content-Type: application/json" \
+#      -H "Authorization: Bearer $TOKEN" \
+#      -d '{"draw_time": 30, "desc_time": 30}')
+
+RESPONSE=$(curl -s -X GET http://localhost:8000/api/session/763950/join/ \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer $TOKEN")
+
+
+# curl -s -X POST http://localhost:8000/api/session/763950/wait/ \
+#      -H "Content-Type: application/json" \
+#      -H "Authorization: Bearer $TOKEN" \
+#      -d $RESPONSE | cat >output.html
