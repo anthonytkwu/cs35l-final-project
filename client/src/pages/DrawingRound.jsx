@@ -1,6 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './DrawingRound.css';
 
+import undoImg from "../assets/drawingBoard/undo.png";
+import redoImg from "../assets/drawingBoard/redo.png"
+
 const DrawingRound = () => {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -13,10 +16,19 @@ const DrawingRound = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    canvas.width = 800 * 2; // Adjust canvas width
-    canvas.height = 600 * 2; // Adjust canvas height
-    canvas.style.width = '800px';
-    canvas.style.height = '600px';
+    //Set canvas size to fill screen
+    canvas.style.width = `100%`;
+    canvas.style.height = `100%`;
+
+    // //Scaling gives better on-screen resolution
+    canvas.width = canvas.offsetWidth * 4;
+    canvas.height = canvas.offsetHeight * 4;
+    canvas.getContext("2d")?.scale(2, 2);
+
+    // canvas.width = 800 * 2; // Adjust canvas width
+    // canvas.height = 600 * 2; // Adjust canvas height
+    //canvas.style.width = '800px';
+    //canvas.style.height = '600px';
 
     const context = canvas.getContext('2d');
     context.scale(2, 2);
@@ -93,32 +105,44 @@ const DrawingRound = () => {
         <input type="text" placeholder="Enter your prompt here" />
       </div>
       <div className="canvas-and-controls">
-        <div className="controls">
-          <button onClick={undo}>Undo</button>
-          <button onClick={redo}>Redo</button>
-          <button onClick={() => setIsErasing(!isErasing)}>
-            {isErasing ? 'Stop Erasing' : 'Erase'}
-          </button>
-          <button onClick={saveAsSVG}>Save as SVG</button>
-          <input
-            type="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-          />
-          <input
-            type="range"
-            min="1"
-            max="20"
-            value={lineWidth}
-            onChange={(e) => setLineWidth(e.target.value)}
-          />
+        {/* set canvas */}
+        <div>
+            <canvas
+                ref={canvasRef}
+                onMouseDown={startDrawing}
+                onMouseUp={finishDrawing}
+                onMouseMove={draw}/>
         </div>
-        <canvas
-          ref={canvasRef}
-          onMouseDown={startDrawing}
-          onMouseUp={finishDrawing}
-          onMouseMove={draw}
-        />
+        {/* set controls */}
+        <div className="controls">
+            {/* undo/redo */}
+            <div className="undo-redo">
+                <button onClick={undo}>
+                    <img src={undoImg}/>
+                </button>
+                <button onClick={redo}>
+                    <img src={redoImg}/>
+                </button>
+            </div>
+            {/* erase */}
+            <button onClick={() => setIsErasing(!isErasing)}>
+                {isErasing ? 'Stop Erasing' : 'Erase'}
+            </button>
+            {/* save */}
+            <button onClick={saveAsSVG}>Save as SVG</button>
+            {/* set color */}
+            <input
+                type="color"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}/>
+            {/* set fontsize */}
+            <input
+                type="range"
+                min="1"
+                max="20"
+                value={lineWidth}
+                onChange={(e) => setLineWidth(e.target.value)}/>
+        </div>
       </div>
     </div>
   );
