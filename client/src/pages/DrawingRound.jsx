@@ -9,9 +9,10 @@ const DrawingRound = () => {
   const [lines, setLines] = useState([]);
   const [redoLines, setRedoLines] = useState([]);
   const [color, setColor] = useState('black');
-  const [lineWidth, setLineWidth] = useState(5);
+  const [lineWidth, setLineWidth] = useState(10);
   const [isErasing, setIsErasing] = useState(false);
   const [paths, setPaths] = useState([]); // Stores SVG paths
+  const [prompt, setPrompt] = useState("insert actual prompt from server here");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -109,7 +110,7 @@ const DrawingRound = () => {
     <div className="DrawingRound">
       <div className="prompt-box">
         <span>Prompt: </span>
-        <input type="text" placeholder="Enter your prompt here" />
+        <div className="Prompt"> {prompt} </div>
       </div>
       <div className="canvas-and-controls">
         {/* set canvas */}
