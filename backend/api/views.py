@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .serializers import *
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import *
+import time
 
 # Create your views here.
 class UserCreateView(generics.CreateAPIView):
@@ -25,6 +26,7 @@ class SessionCreateView(generics.CreateAPIView):
 class SessionJoinView(generics.RetrieveAPIView):
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
+    permission_classes = (IsAuthenticated,)
     lookup_field = 'game_code'
 
     def get_object(self):
@@ -46,3 +48,35 @@ class SessionJoinView(generics.RetrieveAPIView):
         session.users.add(request.user)
         serializer = self.get_serializer(session)
         return Response(serializer.data)
+    
+class SessionWaitView(generics.GenericAPIView):
+    queryset = Session.objects.all()
+    serializer_class = SessionSerializer
+    permission_classes = (AllowAny,)
+    lookup_field = 'game_code'
+
+    def post(self, request, *args, **kwargs):
+        game_code = self.kwargs.get('game_code')
+        if request.data['game_code'] != int(game_code):
+            return Response({'detail': 'Game code does not match'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        client_session_state = request.data['last_modified']
+
+        try:
+            session = Session.objects.get(game_code=game_code)
+        except Session.DoesNotExist:
+            return Response({'detail': 'Session not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        timeout = 10  # timeout period in seconds
+        start_time = time.time()
+
+        while True:
+            # Retrieve the current state of the session
+            server_session_state = SessionSerializer(session).data['last_modified']
+
+            # Check if the session on the server side has changed
+            if client_session_state != server_session_state or time.time() - start_time > timeout:
+                return Response(SessionSerializer(session).data, status=status.HTTP_200_OK)
+            # Sleep for a short time to avoid busy waiting
+            time.sleep(0.5)
