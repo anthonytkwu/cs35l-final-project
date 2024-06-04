@@ -32,6 +32,21 @@ const Home = () => {
         formState: { errors: errorsJoin },
         reset: resetJoin,
     } = useForm({ mode: "onChange" });
+<<<<<<< HEAD
+    
+    const onCreateLobby = async (data) => {
+        setIsSubmitting(true);
+        // Simulate API call to create a lobby
+        // Example: await api.createLobby(data.lobbyCode);
+        console.log("Creating lobby with code:", data.createLobbyCode);
+        handleSubmit()
+        setIsSubmitting(false);
+        navigate(`/game-lobby`);
+        {/* Use this version once we get backend working. 
+        While developing frontend, just use 'game-lobby' w/o "/" */}
+        //navigate(`/game-lobby/${data.createLobbyCode}`); // Navigate to lobby page
+        resetCreate();
+=======
 
     function createLobbyCall(event) {
         event.preventDefault();
@@ -73,6 +88,7 @@ const Home = () => {
 
     const onCreateLobby = async (data) => {
 
+>>>>>>> 8a22a3734b0dba94b3253794009733aeb3e99a50
     };
 
     const onJoinLobby = async (data) => {
