@@ -21,7 +21,7 @@ class DrawingSerializer(serializers.ModelSerializer):
 class SessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
-        fields = ['id', 'game_code', 'draw_time', 'desc_time', 'created_at', 'users', 'round']
+        fields = ['game_code', 'draw_time', 'desc_time', 'created_at', 'users', 'round']
         read_only_fields = ['game_code', 'created_at', 'round']
 
 class JoinSessionSerializer(serializers.Serializer):
