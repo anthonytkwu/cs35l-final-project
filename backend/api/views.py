@@ -12,26 +12,37 @@ class UserCreateView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
 
 class SessionCreateView(generics.CreateAPIView):
-    serializer_class = SessionCreateSerializer
-    permission_classes = (AllowAny,)
+    queryset = Session.objects.all()
+    serializer_class = SessionSerializer
+    permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
-        session = Session
-        serializer.draw_time
-        return Response(SessionSerializer(session).data, status=status.HTTP_201_CREATED)
+        if serializer.is_valid():
+            serializer.save(users=[self.request.user])
+        else:
+            print(serializer.errors)
     
-# class SessionJoinView(generics.UpdateAPIView):
-#     serializer_class = JoinSessionSerializer
-#     permission_classes = (AllowAny,)
+class SessionJoinView(generics.RetrieveAPIView):
+    queryset = Session.objects.all()
+    serializer_class = SessionSerializer
+    lookup_field = 'game_code'
 
-#     def update(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         game_code = serializer.validated_data['game_code']
-#         try:
-#             session = Session.objects.get(game_code=game_code)
-#             session.add_user(request.user.id)
-#             session.save()  # Save the session after adding the user
-#             return Response(CreateSessionSerializer(session).data, status=status.HTTP_200_OK)
-#         except Session.DoesNotExist:
-#             return Response({'error': 'Session not found'}, status=status.HTTP_404_NOT_FOUND)
+    def get_object(self):
+        game_code = self.kwargs.get('game_code')
+        try:
+            session = Session.objects.get(game_code=game_code)
+            return session
+        except Session.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    def retrieve(self, request, *args, **kwargs):
+        session = self.get_object()
+        if request.user in session.users.all():
+            return Response({'detail': 'User already in session'}, status=status.HTTP_400_BAD_REQUEST)
+        elif session.round != 0:
+            return Response({'detail': 'Session in progress'}, status=status.HTTP_400_BAD_REQUEST)
+        elif session.users.count() >= 10:
+            return Response({'detail': 'Session full'}, status=status.HTTP_400_BAD_REQUEST)
+        session.users.add(request.user)
+        serializer = self.get_serializer(session)
+        return Response(serializer.data)

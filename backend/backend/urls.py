@@ -26,5 +26,5 @@ urlpatterns = [
     path('api/user/refresh/', TokenRefreshView.as_view(), name='refresh'),
     path('api-auth/', include('rest_framework.urls')),
     path('api/session/create', SessionCreateView.as_view(), name='create-session'),
-    # path('api/session/join', SessionJoinView.as_view(), name='join-session'),
+    path('api/session/join/<str:game_code>/', SessionJoinView.as_view(), name='join-session'),
 ]
