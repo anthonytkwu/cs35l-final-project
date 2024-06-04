@@ -11,6 +11,9 @@ const Home = () => {
     const { user } = useSelector((state) => state.user);
     const [errMsg, setErrMsg] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [drawingTime, setDrawingTime] = useState(60);
+    const [writingTime, setWritingTime] = useState(30);
+    const [apiUrl, setApiUrl] = useState("")
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -28,11 +31,39 @@ const Home = () => {
         reset: resetJoin,
     } = useForm({ mode: "onChange" });
 
+    function createLobbyCall(event) {
+        //event.preventDefault();
+        //setShowForm(false);
+        //setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
+        //const formData = new FormData();
+        //formData.append('desc_time', drawingTime);  // Append the file object directly
+        //formData.append('draw_time', writingTime);
+        //fetch(apiUrl, {
+        //  method: 'POST',
+        //  body: formData,
+        //})
+        //  .then((response) => {
+        //    if (response.ok) {
+        //      return response.json();
+        //    }
+        //    throw new Error('Network response was not ok.');
+        //  })
+        //  .then((data) => {
+        //    console.log(data);
+        //    alert('File uploaded successfully');
+        //  })
+        //  .catch((error) => {
+        //    console.error('There was a problem with the fetch operation:', error);
+        //  });
+        console.log('blag')
+        }
+
     const onCreateLobby = async (data) => {
         setIsSubmitting(true);
         // Simulate API call to create a lobby
         // Example: await api.createLobby(data.lobbyCode);
         console.log("Creating lobby with code:", data.createLobbyCode);
+        handleSubmit()
         setIsSubmitting(false);
         navigate(`/game-lobby`);
         {/* Use this version once we get backend working. 
