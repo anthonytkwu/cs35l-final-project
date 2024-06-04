@@ -165,7 +165,7 @@ const Register = () => {
 
                     <div className='mt-16 text-center'>
                         <p className='text-white text-base'>
-                            Connect with friends & draw some bullshit!
+                            Connect with friends & draw!
                         </p>
                     </div>
                 </div>

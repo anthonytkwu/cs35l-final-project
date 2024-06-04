@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form"
 import { TextInput, Loading, CustomButton} from "../components";
 import { BgImage } from "../assets";
+import api from "../api"
+import { ACCESS_TOKEN, REFRESH_TOKEN, apiUrl } from "../config";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -10,6 +12,7 @@ const Login = () => {
     const {
         register, 
         handleSubmit, 
+        setError,
         formState: { errors },
         reset: reset,
     } = useForm({
@@ -17,9 +20,33 @@ const Login = () => {
     });
 
 
-    const onSubmit = async(data) => { 
-        console.log("Attempting to navigate to home...");
-        navigate('/home');
+    const onSubmit = async (data) => {
+        const formData = new FormData();
+        formData.append('username', data.Username);
+        formData.append('password', data.password);
+
+        fetch(apiUrl, {
+            method: 'POST',
+            body: formData,
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then((data) => {
+                console.log(data);
+                alert('File uploaded successfully');
+                navigate("/login");
+            })
+            .catch((error) => {
+                console.error('There was a problem with the fetch operation:', error);
+                setError("username", {
+                    type: "manual",
+                    message: "Username is already taken",
+                })
+            });
     };
 
     const [errMsg] = useState("");
@@ -119,7 +146,7 @@ const Login = () => {
 
                     <div className='mt-16 text-center'>
                         <p className='text-white text-base'>
-                            Connect with friends & draw some bullshit!
+                            Connect with friends & draw!
                         </p>
                     </div>
                 </div>
