@@ -4,8 +4,6 @@ import { TopBar, ProfileCard, TextInput, Loading, CustomButton } from "../compon
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
 
-//import { Link } from "react-router-dom";
-//import { BgImage } from "../assets";
 
 const Home = () => {
     const { user } = useSelector((state) => state.user);
@@ -105,12 +103,12 @@ const Home = () => {
                 {/* CENTER */}
                 <div className='w-full lg:w-1/2 h-full p-10 2xl:px-20 flex flex-col justify-center '>
                     <div className='w-full flex gap-2 items-center mb-1 justify-center'>
-                        <span className='text-2xl text-[#065ad8] font-semibold '>
+                        <span className='colored-subtitle-text'>
                             Create New Lobby
                         </span> 
                     </div>
                     {/* Create Lobby Form */}
-                    <form className='pb-20 flex flex-col gap-5' onSubmit={createLobbyCall}>
+                    <form className='lobby-input-style' onSubmit={createLobbyCall}>
                         <TextInput
                             name='createLobbyCode'
                             placeholder='123456'
@@ -128,24 +126,23 @@ const Home = () => {
                                  }
                             })}
                             styles='w-full rounded-full'
-                            error={errorsCreate.createLobbyCode ? errorsCreate.createLobbyCode.message : ""}
-                        />
+                            error={errorsCreate.createLobbyCode ? errorsCreate.createLobbyCode.message : ""}/>
 
                         {isSubmitting ? <Loading /> : <CustomButton
                                     type='submit'
-                                    containerStyles={'inline-flex justify-center rounded-md bg-blue px-8 py-3 text-sm font-medium text-white outline-none'}
-                                    title='Create'
-                                />}
+                                    containerStyles={'colored-button-style'}
+                                    title='Create'/>
+                        }
                     </form>
 
                     <div className='w-full flex gap-2 items-center mb-1 justify-center'>
-                        <span className='text-2xl text-[#065ad8] font-semibold '>
+                        <span className='colored-subtitle-text'>
                             Join Existing Lobby
                         </span> 
                     </div>
 
                     {/* Join Lobby Form */}
-                    <form className='pb-8 flex flex-col gap-5' onSubmit={handleSubmitJoin(onJoinLobby)}>
+                    <form className='lobby-input-style' onSubmit={handleSubmitJoin(onJoinLobby)}>
                         <TextInput
                             name='joinLobbyCode'
                             placeholder='123456'
@@ -163,14 +160,13 @@ const Home = () => {
                                 }
                             })}
                             styles='w-full rounded-full'
-                            error={errorsJoin.joinLobbyCode ? errorsJoin.joinLobbyCode.message : ""}
-                        />
+                            error={errorsJoin.joinLobbyCode ? errorsJoin.joinLobbyCode.message : ""}/>
 
                         {isSubmitting ? <Loading /> : <CustomButton
-                                    type='submit'
-                                    containerStyles={'inline-flex justify-center rounded-md bg-blue px-8 py-3 text-sm font-medium text-white outline-none'}
-                                    title='Join'
-                                />}
+                            type='submit'
+                            containerStyles={'colored-button-style'}
+                            title='Join'/>
+                        }
                         {errMsg && <span className="text-red-500">{errMsg.message}</span>}
                     </form>
                 </div>

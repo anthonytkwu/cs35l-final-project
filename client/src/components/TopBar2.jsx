@@ -22,7 +22,6 @@ const TopBar2 = () => {
 
      const handleTheme = () => {
         const themeValue = theme === "light" ? "dark" : "light";
-
         dispatch(SetTheme(themeValue));
      };
 
@@ -40,15 +39,6 @@ const TopBar2 = () => {
             {/* ICONS */}
             <div className='flex gap-4 items-center text-ascent-1 texd-md md:text-xl'>
                 <button onClick={()=> handleTheme()}>{theme ? <BsMoon /> : <BsSunFill />}</button>
-
-                {/* <div>
-                    <CustomButton
-                        //onClick={() => dispatch(Logout())}
-                        onClick={() => navigate('/home')}
-                        title='Exit Game'
-                        containerStyles='text-sm text-ascent-1 px-4 md:px-6 py-1 md:py-2 border border-[#666] rounded-full'
-                    />
-                </div> */}
             </div>
         </div>
     );

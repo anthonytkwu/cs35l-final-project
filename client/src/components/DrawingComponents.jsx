@@ -15,13 +15,13 @@ export const RedoButton = ({ onClick }) => (
 );
 
 export const EraseButton = ({ isErasing, onClick }) => (
-  <button onClick={onClick}>
+  <button onClick={onClick} className='colored-button-style'>
     {isErasing ? 'Stop Erasing' : 'Erase'}
   </button>
 );
 
 export const SaveButton = ({ onClick }) => (
-  <button onClick={onClick}>
+  <button onClick={onClick} className='colored-button-style'>
     SUBMIT
   </button>
 );
