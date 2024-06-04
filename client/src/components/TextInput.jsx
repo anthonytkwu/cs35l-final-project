@@ -20,8 +20,7 @@ const TextInput = React.forwardRef(
                         className={`bg-secondary rounded border border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text-[#666] ${styles}`}
                         {...register}
                         aria-invalid={error ? 'true' : 'false'}
-                        disabled={disabled}
-                    />
+                        disabled={disabled}/>
                 </div>
                 {error && (
                     <span className='text-xs text-[#f64949fe] mt-0.5 '>

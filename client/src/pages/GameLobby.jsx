@@ -5,9 +5,6 @@ import { useWebSocket } from '../WebSocketContext';
 import { useForm } from "react-hook-form";
 import { TopBar2, TextInput, Loading, CustomButton } from "../components";
 
-//import { useDispatch } from "react-redux";
-
-
 const GameLobby = () => {
     const navigate = useNavigate();
     const { user } = useSelector(state => state.user);
