@@ -11,9 +11,11 @@ const Home = () => {
     const { user } = useSelector((state) => state.user);
     const [errMsg, setErrMsg] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [drawingTime, setDrawingTime] = useState(60);
-    const [writingTime, setWritingTime] = useState(30);
-    const [apiUrl, setApiUrl] = useState("")
+    const [draw_time, setDrawingTime] = useState(60);
+    const [desc_time, setWritingTime] = useState(30);
+    const [apiUrl, setApiUrl] = useState("http://127.0.0.1:8000/api/session/create")
+    const [output, setOutput] = useState('');
+    const [showForm, setShowForm] = useState(true);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -32,29 +34,29 @@ const Home = () => {
     } = useForm({ mode: "onChange" });
 
     function createLobbyCall(event) {
-        //event.preventDefault();
-        //setShowForm(false);
-        //setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
-        //const formData = new FormData();
-        //formData.append('desc_time', drawingTime);  // Append the file object directly
-        //formData.append('draw_time', writingTime);
-        //fetch(apiUrl, {
-        //  method: 'POST',
-        //  body: formData,
-        //})
-        //  .then((response) => {
-        //    if (response.ok) {
-        //      return response.json();
-        //    }
-        //    throw new Error('Network response was not ok.');
-        //  })
-        //  .then((data) => {
-        //    console.log(data);
-        //    alert('File uploaded successfully');
-        //  })
-        //  .catch((error) => {
-        //    console.error('There was a problem with the fetch operation:', error);
-        //  });
+        event.preventDefault();
+        setShowForm(false);
+        setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
+        const formData = new FormData();
+        formData.append('desc_time', desc_time);  // Append the file object directly
+        formData.append('draw_time', draw_time);
+        fetch(apiUrl, {
+          method: 'POST',
+          body: formData,
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          })
+          .then((data) => {
+            console.log(data);
+            alert('File uploaded successfully');
+          })
+          .catch((error) => {
+            console.error('There was a problem with the fetch operation:', error);
+          });
         console.log('blag')
         }
 
@@ -63,7 +65,7 @@ const Home = () => {
         // Simulate API call to create a lobby
         // Example: await api.createLobby(data.lobbyCode);
         console.log("Creating lobby with code:", data.createLobbyCode);
-        handleSubmit()
+        createLobbyCall()
         setIsSubmitting(false);
         navigate(`/game-lobby`);
         {/* Use this version once we get backend working. 
@@ -108,7 +110,7 @@ const Home = () => {
                         </span> 
                     </div>
                     {/* Create Lobby Form */}
-                    <form className='pb-20 flex flex-col gap-5' onSubmit={handleSubmitCreate(onCreateLobby)}>
+                    <form className='pb-20 flex flex-col gap-5' onSubmit={createLobbyCall}>
                         <TextInput
                             name='createLobbyCode'
                             placeholder='123456'
