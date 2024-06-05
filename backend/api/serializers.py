@@ -21,9 +21,15 @@ class SessionSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['users'] = [user.username for user in instance.users.all()]
-        representation['user_chains'] = list()
-        for chain in instance.chains.all():
-            representation['user_chains'].append({chain.users.all()[instance.round].username: chain.id})
+        if instance.round != -2:
+            representation['chains'] = list()
+            for chain in instance.chains.all():
+                representation['chains'].append({chain.users.all()[instance.round].username: chain.id})
+        else:
+            representation['chains'] = {}
+            for chain in instance.chains.all():
+                representation['chains'][chain.id] = [user.username for user in chain.users.all()]
+
         return representation
 
 class DrawingSerializer(serializers.ModelSerializer):
@@ -47,3 +53,4 @@ class DescSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['author'] = instance.author.username
         return representation
+    
