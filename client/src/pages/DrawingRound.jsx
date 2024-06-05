@@ -12,6 +12,7 @@ const DrawingRound = () => {
   const [lineWidth, setLineWidth] = useState(5);
   const [isErasing, setIsErasing] = useState(false);
   const [paths, setPaths] = useState([]); // Stores SVG paths
+  const [redoPaths, setRedoPaths] = useState([]); // Stores redo SVG paths
   const [prompt, setPrompt] = useState("_PROMPT GOES HERE_"); // stores game-prompt from server
 
   useEffect(() => {
@@ -41,13 +42,13 @@ const DrawingRound = () => {
       { type: isErasing ? 'erase' : 'draw', color, lineWidth, points: [{ x: offsetX, y: offsetY }] },
     ]);
   };
-  
 
   const finishDrawing = () => {
     contextRef.current.closePath();
     setIsDrawing(false);
     setLines([...lines, contextRef.current.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height)]);
     setRedoLines([]);
+    setRedoPaths([]);
   };
 
   const draw = ({ nativeEvent }) => {
@@ -73,7 +74,10 @@ const DrawingRound = () => {
 
     contextRef.current.putImageData(newLines[newLines.length - 1] || new ImageData(canvasRef.current.width, canvasRef.current.height), 0, 0);
 
-    setPaths((prevPaths) => prevPaths.slice(0, -1));
+    const newPaths = [...paths];
+    const redoPath = newPaths.pop();
+    setRedoPaths([...redoPaths, redoPath]);
+    setPaths(newPaths);
   };
 
   const redo = () => {
@@ -84,6 +88,11 @@ const DrawingRound = () => {
     setLines([...lines, line]);
 
     contextRef.current.putImageData(line, 0, 0);
+
+    const newRedoPaths = [...redoPaths];
+    const path = newRedoPaths.pop();
+    setRedoPaths(newRedoPaths);
+    setPaths([...paths, path]);
   };
 
   const saveAsSVG = () => {
