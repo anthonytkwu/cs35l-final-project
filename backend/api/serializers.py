@@ -16,9 +16,23 @@ class SessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
         fields = '__all__'
-        read_only_fields = ['game_code', 'created_at', 'users', 'round', 'last_modified']
-
+        read_only_fields = ['game_code', 'created_at', 'users', 'round', 'last_modified', 'chains']
+        
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['users'] = [user.username for user in instance.users.all()]
+        representation['user_chains'] = list()
+        for chain in instance.chains.all():
+            representation['user_chains'].append({chain.users.all()[instance.round].username: chain.id})
+        return representation
+
+class DrawingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Drawing
+        fields = '__all__'
+        read_only_fields = ['author', 'created_at', 'chain']
+        
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['author'] = instance.author.username
         return representation
