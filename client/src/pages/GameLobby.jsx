@@ -50,15 +50,15 @@ const GameLobby = () => {
             async function fetchData() {
                 try {
                     console.log("Fetching game information...");
-                    const data = await getGameInformation(gameId);
+                    const data = await getGameInformation(localStorage.getItem('game_code'));
                     setGameInfo(data); // Set gameInfo state variable with fetched data
+                    console.log(data.users)
                 } catch (error) {
                     setErrMsg({ message: error.message, status: 'failed' });
                 }
             }
     
             fetchData();
-            console.log(gameInfo);
         }, [gameId]);
 
     const handleLeaveLobby = () => {

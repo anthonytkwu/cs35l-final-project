@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useWebSocket } from '../WebSocketContext';
+//import { useWebSocket } from '../WebSocketContext';
 import { useForm } from "react-hook-form";
 import { TopBar2, TextInput, Loading, CustomButton } from "../components";
 import { apiUrl } from "../config.js";
@@ -18,7 +18,7 @@ const CreateLobby = () => {
     const [showForm, setShowForm] = useState(true);
     const [draw_time, setDrawingTime] = useState(60);
     const [desc_time, setWritingTime] = useState(30);
-    const ws = useWebSocket();
+    //const ws = useWebSocket();
 
     const {
         register: registerCreate,
@@ -63,6 +63,9 @@ const CreateLobby = () => {
           })
           .then((data) => {
             console.log(data);
+            const game_code = data.game_code;
+            localStorage.setItem('game_code', game_code)
+            //console.log(game_code)
             setIsSubmitting(true);
             setIsSubmitting(false);
             navigate(`/game-lobby`);
@@ -74,34 +77,8 @@ const CreateLobby = () => {
           });
       }
 
-    useEffect(() => {
-        if (ws) {
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                switch (data.type) {
-                    case 'update-players':
-                        setPlayers(data.players);
-                        break;
-                    case 'update-host':
-                        setIsHost(user.id === data.hostId);
-                        break;
-                    case 'start-game':
-                        navigate('/game');
-                        break;
-                }
-            };
-
-            // Send a message when the component mounts
-            ws.send(JSON.stringify({ type: 'join-lobby', userId: user.id }));
-        }
-
-        return () => {
-            ws.send(JSON.stringify({ type: 'leave-lobby', userId: user.id }));
-        };
-    }, [ws, user.id, navigate]);
 
     const handleLeaveLobby = () => {
-        ws.send(JSON.stringify({ type: 'leave-lobby', userId: user.id }));
         navigate('/home');
     };
 

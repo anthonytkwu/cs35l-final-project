@@ -2,15 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TextInput, TopBar2 } from "../components";
 
-const StartingPromptRound = (gameData) => {
+const StartingPromptRound = () => {
     const location = useLocation();
     const {gameId} = location.state || {};
     const navigate = useNavigate();
     const [description, setDescription] = useState('');
     const [isEditing, setIsEditing] = useState(true);
     const [countdown, setCountdown] = useState(5); // Initialize countdown (5 seconds)
-
-    console.log(gameData);
 
     const handleInputChange = (e) => {
         setDescription(e.target.value);
