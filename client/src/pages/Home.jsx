@@ -67,9 +67,10 @@ const Home = () => {
           })
           .then((data) => {
             console.log(data);
+            const game_code = data.game_code;
             setIsSubmitting(true);
             setIsSubmitting(false);
-            navigate(`/game-lobby`);
+            navigate(`/game-lobby`, {state: {gameId: game_code}});
             resetCreate();
           })
           .catch((error) => {

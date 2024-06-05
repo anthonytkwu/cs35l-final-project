@@ -1,49 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useWebSocket } from '../WebSocketContext';
-import { useForm } from "react-hook-form";
+import { getGameInformation } from "../api";
 import { TopBar2, TextInput, Loading, CustomButton, UserCard } from "../components";
 
 const GameLobby = () => {
+    const location = useLocation();
     const navigate = useNavigate();
+    const {gameId} = location.state || {};
+    const [gameInfo, setGameInfo] = useState(null);
+    const [errMsg, setErrMsg] = useState("");
     const { user } = useSelector(state => state.user);
     const [players, setPlayers] = useState([]);
     const [isHost, setIsHost] = useState(true);
     const [drawingTime, setDrawingTime] = useState(60);
     const [writingTime, setWritingTime] = useState(30);
-    const [apiUrl, setApiUrl] = useState("")
     const ws = useWebSocket();
 
     function handleSubmit(event) {
             console.log("blah");
         }
 
-    useEffect(() => {
-        if (ws) {
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                switch (data.type) {
-                    case 'update-players':
-                        setPlayers(data.players);
-                        break;
-                    case 'update-host':
-                        setIsHost(user.id === data.hostId);
-                        break;
-                    case 'start-game':
-                        navigate('/game');
-                        break;
+        useEffect(() => {
+            async function fetchData() {
+                try {
+                    console.log("Fetching game information...");
+                    const data = await getGameInformation(gameId);
+                    setGameInfo(data); // Set gameInfo state variable with fetched data
+                } catch (error) {
+                    setErrMsg({ message: error.message, status: 'failed' });
                 }
-            };
-
-            // Send a message when the component mounts
-            ws.send(JSON.stringify({ type: 'join-lobby', userId: user.id }));
-        }
-
-        return () => {
-            ws.send(JSON.stringify({ type: 'leave-lobby', userId: user.id }));
-        };
-    }, [ws, user.id, navigate]);
+            }
+    
+            fetchData();
+            console.log(gameInfo);
+        }, [gameId]);
 
     const handleLeaveLobby = () => {
         ws.send(JSON.stringify({ type: 'leave-lobby', userId: user.id }));
@@ -52,7 +44,7 @@ const GameLobby = () => {
 
     const handleStartGame = () => {
         handleSubmit()
-        navigate('/starting-prompt-round');
+        navigate('/starting-prompt-round', {state: {gameId: gameId}});
     };
 
     return (
