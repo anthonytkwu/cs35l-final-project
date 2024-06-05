@@ -20,7 +20,6 @@ class SessionCreateView(generics.CreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
-        print(self.request.is_secure())
         if serializer.is_valid():
             serializer.save(users=[self.request.user])
         else:
@@ -50,7 +49,7 @@ class SessionJoinView(generics.RetrieveAPIView):
             else:
                 return Response({'detail': 'Session full'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(session)
-        return Response({'detail': 'Joined session'}, status=status.HTTP_200_OK)
+        return Response(serializer.data)
     
 class SessionInfoView(generics.RetrieveAPIView):
     queryset = Session.objects.all()
@@ -122,6 +121,7 @@ class SessionStartView(generics.UpdateAPIView):
             session = Session.objects.get(game_code=game_code)
         except Session.DoesNotExist:
             return Response({'detail': 'Session not found'}, status=status.HTTP_404_NOT_FOUND)
+        
         if session.users.count() < 2:
             return Response({'detail': 'Not enough players'}, status=status.HTTP_400_BAD_REQUEST)
         elif session.round != -1:
