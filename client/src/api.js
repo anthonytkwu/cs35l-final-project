@@ -1,4 +1,3 @@
-//import axios from "axios"
 import { apiUrl } from "./config.js";
 import { ACCESS_TOKEN } from "./config"
 
@@ -16,7 +15,6 @@ export async function getGameInformation(gameId) {
         if (!access) {
             throw new Error('Authentication token is missing');
         }
-
         const response = await fetch(`${apiUrl}/api/session/${gameId}/info/`, {
             method: 'GET',
             headers: {
@@ -28,7 +26,6 @@ export async function getGameInformation(gameId) {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-
         return await response.json();
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);

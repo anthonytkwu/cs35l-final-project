@@ -6,17 +6,14 @@ import { getGameInformation } from "../api";
 import { TopBar2, TextInput, Loading, CustomButton, UserCard } from "../components";
 
 const GameLobby = () => {
-    const location = useLocation();
     const navigate = useNavigate();
-    const {gameId} = location.state || {};
     const [gameInfo, setGameInfo] = useState(null);
     const [errMsg, setErrMsg] = useState("");
     const { user } = useSelector(state => state.user);
     const [players, setPlayers] = useState([]);
     const [isHost, setIsHost] = useState(true);
-    const [drawingTime, setDrawingTime] = useState(60);
-    const [writingTime, setWritingTime] = useState(30);
-    //const ws = useWebSocket();
+    const [drawingTime, setDrawingTime] = useState("...");
+    const [writingTime, setWritingTime] = useState("...");
 
     const PlayerList = ({ players }) => {
         return (
@@ -42,24 +39,21 @@ const GameLobby = () => {
         );
     };
 
-    function handleSubmit(event) {
-        console.log("blah");
+    async function fetchData() {
+        try {
+            console.log("Fetching game information...");
+            const data = await getGameInformation(localStorage.getItem('game_code'));
+            setGameInfo(data); // Set gameInfo state variable with fetched data
+            setDrawingTime(data.draw_time);
+            setWritingTime(data.desc_time);
+        } catch (error) {
+            setErrMsg({ message: error.message, status: 'failed' });
+        }
     }
 
-        useEffect(() => {
-            async function fetchData() {
-                try {
-                    console.log("Fetching game information...");
-                    const data = await getGameInformation(localStorage.getItem('game_code'));
-                    setGameInfo(data); // Set gameInfo state variable with fetched data
-                    console.log(data.users)
-                } catch (error) {
-                    setErrMsg({ message: error.message, status: 'failed' });
-                }
-            }
-    
-            fetchData();
-        }, [gameId]);
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const handleLeaveLobby = () => {
         //ws.send(JSON.stringify({ type: 'leave-lobby', userId: user.id }));
@@ -67,8 +61,7 @@ const GameLobby = () => {
     };
 
     const handleStartGame = () => {
-        handleSubmit()
-        navigate('/starting-prompt-round', {state: {gameId: gameId}});
+        navigate('/starting-prompt-round');
     };
 
     return (
@@ -113,32 +106,6 @@ const GameLobby = () => {
                                     onClick={handleStartGame}
                                     containerStyles={'colored-button-style'}
                                     title='Start Game' />
-                                <CustomButton
-                                    onClick={handleLeaveLobby}
-                                    containerStyles={'colored-button-style'}
-                                    title='Leave Lobby' />
-                            </>
-                        )}
-                        {!isHost && (
-                            <>
-                                <div className='w-full flex gap-2 items-center mb-1 justify-center '>
-                                    <span className='colored-subtitle-text'>
-                                        Number of people in Lobby: {players.length}
-                                    </span>
-                                </div>
-
-                                <div className='w-full flex gap-2 items-center mb-1 justify-center '>
-                                    <span className='colored-subtitle-text'>
-                                        Length of Drawing Round: {drawingTime}
-                                    </span>
-                                </div>
-
-                                <div className='w-full flex gap-2 items-center mb-1 justify-center '>
-                                    <span className='colored-subtitle-text'>
-                                        Length of Prompt Round: {writingTime}
-                                    </span>
-                                </div>
-
                                 <CustomButton
                                     onClick={handleLeaveLobby}
                                     containerStyles={'colored-button-style'}

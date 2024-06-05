@@ -10,19 +10,8 @@ const Home = () => {
     const { user } = useSelector((state) => state.user);
     const [errMsg, setErrMsg] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [draw_time, setDrawingTime] = useState(60);
-    const [desc_time, setWritingTime] = useState(30);
-    const [output, setOutput] = useState('');
-    const [showForm, setShowForm] = useState(true);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    const {
-        register: registerCreate,
-        handleSubmit: handleSubmitCreate,
-        formState: { errors: errorsCreate },
-        reset: resetCreate,
-    } = useForm({ mode: "onChange" });
 
     const {
         register: registerJoin,
@@ -32,58 +21,8 @@ const Home = () => {
     } = useForm({ mode: "onChange" });
 
     function createLobbyCall(event) {
-        //        event.preventDefault();
-        //        const access = localStorage.getItem('access');
-        //      
-        //        if (!access) {
-        //          setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
-        //          return;
-        //        }
-        //      
-        //        setShowForm(false);
-        //        setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
-        //      
-        //        const data = {
-        //          desc_time: desc_time,
-        //          draw_time: draw_time,
-        //        };
-        //      
-        //        fetch(`${apiUrl}/api/session/create/`, {
-        //          method: 'POST',
-        //          headers: {
-        //            'Authorization': `Bearer ${access}`,
-        //            'Content-Type': 'application/json'
-        //          },
-        //          body: JSON.stringify(data),
-        //        })
-        //          .then((response) => {
-        //            if (response.ok) {
-        //              return response.json();
-        //            }
-        //            return response.text().then((text) => {
-        //              console.error('Response text:', text);
-        //              throw new Error(text);
-        //            });
-        //          })
-        //          .then((data) => {
-        //            console.log(data);
-        //            const game_code = data.game_code;
-        //            setIsSubmitting(true);
-        //            setIsSubmitting(false);
-        //            navigate(`/create-lobby`, {state: {gameId: game_code}});
-        //            resetCreate();
-        //          })
-        //          .catch((error) => {
-        //            console.error('There was a problem with the fetch operation:', error);
-        //            setErrMsg({ message: 'There was a problem creating the lobby', status: 'failed' });
-        //          });
         navigate(`/create-lobby`);
     }
-
-
-    const onCreateLobby = async (data) => {
-
-    };
 
     const onJoinLobby = async (data) => {
         setIsSubmitting(true);
@@ -121,30 +60,6 @@ const Home = () => {
                     </div>
                     {/* Create Lobby Form */}
                     <form className='lobby-input-style' onSubmit={createLobbyCall}>
-                        {/* <TextInput
-                            name='createLobbyCode'
-                            placeholder='123456'
-                            label='Enter Six Digit Code'
-                            type='text'
-                            register={registerCreate("createLobbyCode", {
-                                required: "Lobby code is required",
-                                minLength: {
-                                    value: 6,
-                                    message: "Lobby code must be 6 digits"
-                                },
-                                maxLength: {
-                                    value: 6,
-                                    message: "Lobby code must be 6 digits"
-                                }
-                            })}
-                            styles='w-full rounded-full'
-                            error={errorsCreate.createLobbyCode ? errorsCreate.createLobbyCode.message : ""} />
-
-                        {isSubmitting ? <Loading /> : <CustomButton
-                            type='submit'
-                            containerStyles={'colored-button-style'}
-                            title='Create' />
-                        } */}
                         <CustomButton
                             type='submit'
                             containerStyles={'colored-button-style'}

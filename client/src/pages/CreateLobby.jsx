@@ -1,42 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-//import { useWebSocket } from '../WebSocketContext';
-import { useForm } from "react-hook-form";
 import { TopBar2, TextInput, Loading, CustomButton } from "../components";
 import { apiUrl } from "../config.js";
 
 
 const CreateLobby = () => {
     const navigate = useNavigate();
-    const { user } = useSelector(state => state.user);
     const [errMsg, setErrMsg] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [players, setPlayers] = useState([]);
     const [isHost, setIsHost] = useState(true);
     const [output, setOutput] = useState('');
-    const [showForm, setShowForm] = useState(true);
     const [draw_time, setDrawingTime] = useState(60);
     const [desc_time, setWritingTime] = useState(30);
-    //const ws = useWebSocket();
-
-    const {
-        register: registerCreate,
-        handleSubmit: handleSubmitCreate,
-        formState: { errors: errorsCreate },
-        reset: resetCreate,
-    } = useForm({ mode: "onChange" });
 
 
     function createLobbyCall() {
         const access = localStorage.getItem('access');
-      
         if (!access) {
           setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
           return;
         }
-      
-        setShowForm(false);
         setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
       
         const data = {
@@ -63,13 +46,8 @@ const CreateLobby = () => {
           })
           .then((data) => {
             console.log(data);
-            const game_code = data.game_code;
-            localStorage.setItem('game_code', game_code)
-            //console.log(game_code)
-            setIsSubmitting(true);
-            setIsSubmitting(false);
+            localStorage.setItem('game_code', data.game_code);
             navigate(`/game-lobby`);
-            resetCreate();
           })
           .catch((error) => {
             console.error('There was a problem with the fetch operation:', error);
@@ -77,15 +55,12 @@ const CreateLobby = () => {
           });
       }
 
-
     const handleLeaveLobby = () => {
         navigate('/home');
     };
 
-    const handleStartGame = () => {
+    const handleCreateLobby = () => {
         createLobbyCall()
-        //navigate('/starting-prompt-round');
-        //navigate('/game-lobby');
     };
 
     return (
@@ -93,20 +68,6 @@ const CreateLobby = () => {
             <TopBar2 />
 
             <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full'>
-                {/* LEFT */}
-                <div className='player-list hidden w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto'>
-                    {/* <div className='w-full bg-primary flex flex-col items-center shadow-sm rounded-xl px-6 py-4 '>
-                        <div className='w-full flex items-center justify-between border-b pb-5 border-[#66666645]'>
-                            {players.map((player, index) => (
-                                <div key={player.id} className={player.id === user.id ? 'host' : ''}>
-                                    {player.name}
-                                </div>
-                            ))}
-                        </div>
-                    </div> */}
-                </div>
-
-                {/* CENTER */}
                 <div className='w-full lg:w-1/2 h-full p-10 2xl:px-20 flex '>
                     <div className='settings w-full flex flex-col gap-2 items-center mb-1 justify-center '>
                         {isHost && (
@@ -140,7 +101,7 @@ const CreateLobby = () => {
                                 </div>
                                 
                                 <CustomButton
-                                        onClick={handleStartGame}
+                                        onClick={handleCreateLobby}
                                         containerStyles={'colored-button-style'}
                                         title='Confirm Settings'/>
                                 <CustomButton
