@@ -1,10 +1,10 @@
 import React from "react";
 import emptyPFP from "../assets/userprofile.png"
 
-const UserCard = ({ user }) => {
-    const username = user ? user.username : "JOHN DOE";
+const UserCard = ({ _username }) => {
+    const username = _username ? _username : "NO NAME";
     return (
-        <div className="user-card-style bg-bgColor"> 
+        <div className="user-card-style bg-bgColor mb-1"> 
             <img 
                 src={emptyPFP} 
                 alt="emptyPFP" 

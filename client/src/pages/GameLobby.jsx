@@ -17,25 +17,14 @@ const GameLobby = () => {
 
     const PlayerList = ({ players }) => {
         return (
-            <div className="player-list">
+            <div className='h-full p-[5%] rounded-[5vh] gap-[10px] overflow-y-auto bg-[rgb(var(--color-grey))]'>
                 {/* Map over the players array and render each player */}
                 {players.map((player, index) => (
-                    <div key={index} className="player">
-                        <UserCard />
+                    <div key={index}>
+                        <UserCard _username={player}/>
                     </div>
                 ))}
             </div>
-        );
-    };
-
-    const UpdatePlayersButton = ({ setPlayers }) => {
-        const addPlayer = () => {
-            // Update the state by adding a new player to the list
-            setPlayers(prevPlayers => [...prevPlayers, `Player ${prevPlayers.length + 1}`]);
-        };
-
-        return (
-            <button onClick={addPlayer}>Add Player</button>
         );
     };
 
@@ -46,6 +35,7 @@ const GameLobby = () => {
             setGameInfo(data); // Set gameInfo state variable with fetched data
             setDrawingTime(data.draw_time);
             setWritingTime(data.desc_time);
+            setPlayers(data.users);
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
         }
@@ -70,13 +60,9 @@ const GameLobby = () => {
 
             <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full'>
                 {/* LEFT */}
-                <div className='player-list hidden w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto'>
-                    <div className='w-full bg-primary flex flex-col items-center shadow-sm rounded-xl px-6 py-4 '>
-                        {/* <div className='w-full flex items-center justify-between border-b pb-5 border-[#66666645]'>
-                        </div> */}
-                        <PlayerList players={players} />
-                        <UpdatePlayersButton setPlayers={setPlayers} />
-                    </div>
+                <div className='hidden w-1/3 lg:w-1/4 h-full md:flex flex-col ml-[2%]'>
+                    <span className='colored-subtitle-text ml-1'>Player(s): </span>
+                    <PlayerList players={players} />
                 </div>
 
                 {/* CENTER */}
@@ -86,7 +72,7 @@ const GameLobby = () => {
                             <>
                                 <div className='w-full flex gap-2 items-center mb-1 justify-center '>
                                     <span className='colored-subtitle-text'>
-                                        Number of people in Lobby: {players.length}
+                                        Players in Lobby: {players.length}
                                     </span>
                                 </div>
 
