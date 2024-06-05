@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useWebSocket } from '../WebSocketContext';
 import { useForm } from "react-hook-form";
-import { TopBar2, TextInput, Loading, CustomButton } from "../components";
+import { TopBar2, TextInput, Loading, CustomButton, UserCard } from "../components";
 
 const GameLobby = () => {
     const navigate = useNavigate();
@@ -56,7 +56,7 @@ const GameLobby = () => {
     };
 
     return (
-        <div className='game-lobby w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
+        <div className='game-lobby w-full px-0 pb-20 2xl:px-40 bg-bgColor h-screen overflow-hidden'>
             <TopBar2 />
 
             <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full'>
