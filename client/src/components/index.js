@@ -6,4 +6,4 @@ import ProfileCard from "./ProfileCard";
 import TopBar2 from "./TopBar2";
 import UserCard from "./UserCard";
 
-export { Loading, TextInput, CustomButton, TopBar, ProfileCard, TopBar2, UserCard, UserCard};
+export { Loading, TextInput, CustomButton, TopBar, ProfileCard, TopBar2, UserCard};
