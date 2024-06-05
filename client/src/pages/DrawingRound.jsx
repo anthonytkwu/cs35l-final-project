@@ -39,7 +39,7 @@ const DrawingRound = () => {
 
     setPaths((prevPaths) => [
       ...prevPaths,
-      { type: isErasing ? 'erase' : 'draw', color, lineWidth, points: [{ x: offsetX, y: offsetY }] },
+      { type: isErasing ? 'erase' : 'draw', color: isErasing ? 'white' : color, lineWidth: isErasing ? 30 : lineWidth, points: [{ x: offsetX, y: offsetY }] },
     ]);
   };
 
