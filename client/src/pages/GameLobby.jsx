@@ -16,7 +16,7 @@ const GameLobby = () => {
     const [isHost, setIsHost] = useState(true);
     const [drawingTime, setDrawingTime] = useState(60);
     const [writingTime, setWritingTime] = useState(30);
-    const ws = useWebSocket();
+    //const ws = useWebSocket();
 
     const PlayerList = ({ players }) => {
         return (
@@ -62,7 +62,7 @@ const GameLobby = () => {
         }, [gameId]);
 
     const handleLeaveLobby = () => {
-        ws.send(JSON.stringify({ type: 'leave-lobby', userId: user.id }));
+        //ws.send(JSON.stringify({ type: 'leave-lobby', userId: user.id }));
         navigate('/home');
     };
 

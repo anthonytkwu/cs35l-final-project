@@ -1,4 +1,4 @@
-import axios from "axios"
+//import axios from "axios"
 import { apiUrl } from "./config.js";
 import { ACCESS_TOKEN } from "./config"
 
@@ -17,7 +17,7 @@ export async function getGameInformation(gameId) {
             throw new Error('Authentication token is missing');
         }
 
-        const response = await fetch(`${apiUrl}/api/session/${gameId}/info`, {
+        const response = await fetch(`${apiUrl}/api/session/${gameId}/info/`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${access}`,
