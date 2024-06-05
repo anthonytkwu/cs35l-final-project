@@ -123,7 +123,7 @@ Session Info:
             "created_at":"2024-06-05T09:40:05.224256Z",
             "round":-1,
             "last_modified":"2024-06-05T09:40:05.224297Z",
-            "users":["testuser1","testuser2","testuser3"], # NOTE THERE IS A NEW USER JOINING THE SESSION! AFTER TIME OUT (10 seconds) THE SERVER WILL PROVIDE A RESPONSE AND IT MAY LOOK EXACTLY THE SAME
+            "users":["testuser1","testuser2","testuser3"],
             "chains":[]
         }
     Response (in session):
