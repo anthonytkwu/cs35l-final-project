@@ -13,10 +13,10 @@ TOKEN=$(curl -s -X POST http://localhost:8000/api/user/login/ \
      | jq -r '.access')
 
 
-# RESPONSE=$(curl -s -X POST http://localhost:8000/api/session/create/ \
-#      -H "Content-Type: application/json" \
-#      -H "Authorization: Bearer $TOKEN" \
-#      -d '{"draw_time": 30, "desc_time": 30}')
+RESPONSE=$(curl -s -X POST http://localhost:8000/api/session/create/ \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer $TOKEN" \
+     -d '{"draw_time": 30, "desc_time": 30}')
 
 RESPONSE=$(curl -s -X GET http://localhost:8000/api/session/283145/join/ \
      -H "Content-Type: application/json" \
@@ -32,3 +32,8 @@ curl -s -X POST http://localhost:8000/api/session/645146/0/11/desc \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer $TOKEN" \
      -d '{description: "test"}'
+
+curl -s -X POST http://localhost:8000/api/session/145078/1/13/draw/ \
+     -H "Content-Type: multipart/form-data" \
+     -H "Authorization: Bearer $TOKEN" \
+     -F "drawing=@/Users/anthonywu/Downloads/penguin.svg"

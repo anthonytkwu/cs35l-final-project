@@ -1,0 +1,189 @@
+User Registeration:
+    Actions: POST
+    URL: api/user/register/
+    Request (DOES NOT REQUIRE AUTH):
+        {
+        "username": "urname",
+        "password": "somepassword"
+        }
+    Response:
+        {
+            "id": 4,
+            "username": "urname",
+            "password": "pbkdf2_sha256$720000$ShxF3kDmSt4iN4wE2gRcAN$AdkzARb2i5SosJwVQ+2Utmfru+2FAOZgglvDJn5Kywo="
+        }
+
+User Login:
+    Actions: POST
+    URL: api/user/login/
+    Request (DOES NOT REQUIRE AUTH):
+        {
+        "username": "urname",
+        "password": "somepassword"
+        }
+    Response:
+        {
+            "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNzY2NjQ5NywiaWF0IjoxNzE3NTgwMDk3LCJqdGkiOiI0MzUxMzQwMTQ2ZTE0NGYxYjRhZmE5MTZlYmMwMTE5NSIsInVzZXJfaWQiOjF9.Rj4AL3D3CwoVzgoi6JKLp9_BjW5WfF_Aka-oJQnJ5UA",
+            "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE3NTgxODk3LCJpYXQiOjE3MTc1ODAwOTcsImp0aSI6IjkwNmE5YTQ2NDU4NzQzMWY5ZmIxZDBkOWZmZTM2NzhlIiwidXNlcl9pZCI6MX0.zPeRd92dDsJND-ipK_mIAX2Cv4zX6VCwj_2uX0h-sZc"
+        }
+    Error Response:
+        {
+            "detail": "No active account found with the given credentials"
+        }
+
+Token Refresh:
+    Actions: POST
+    URL: api/user/refresh/
+    Request (DOES NOT REQUIRE AUTH):
+        {
+            "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNzY2NjQ5NywiaWF0IjoxNzE3NTgwMDk3LCJqdGkiOiI0MzUxMzQwMTQ2ZTE0NGYxYjRhZmE5MTZlYmMwMTE5NSIsInVzZXJfaWQiOjF9.Rj4AL3D3CwoVzgoi6JKLp9_BjW5WfF_Aka-oJQnJ5UA"
+        }
+    Response:
+        {
+            "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE3NTgyMDc3LCJpYXQiOjE3MTc1ODAwOTcsImp0aSI6ImI1M2FlZDRhMzcwMzQyMzNiZmYyNGZjZDliNjFhYjAxIiwidXNlcl9pZCI6MX0.2QysdV2JkLObSPMxOujHRrucALMQTKaAGduZhYXLHlQ"
+        }
+    Error Response:
+        {
+            "detail": "Token is invalid or expired",
+            "code": "token_not_valid"
+        }
+
+Session Creation:
+    Actions: POST
+    URL: api/session/create/
+    Request:
+        {"draw_time": 30, "desc_time": 30}
+    Response:
+        {
+            "game_code":145078,
+            "draw_time":30,
+            "desc_time":30,
+            "created_at":"2024-06-05T09:40:05.224256Z",
+            "round":-1,
+            "last_modified":"2024-06-05T09:40:05.224297Z",
+            "users":["testuser2"],
+            "chains":[]
+        }
+
+Session Join:
+    Actions: GET
+    URL: api/session/<str:game_code>/info/
+    Request:
+        {}
+    Response:
+        {
+            "game_code":145078,
+            "draw_time":30,
+            "desc_time":30,
+            "created_at":"2024-06-05T09:40:05.224256Z",
+            "round":-1,
+            "last_modified":"2024-06-05T09:40:05.224297Z",
+            "users":["testuser1",
+            "testuser2"],
+            "chains":[]
+        }
+
+Session Info When Change:
+    Actions: POST
+    URL: api/session/<str:game_code>/wait/
+    Request:
+        {
+            "game_code":145078,
+            "draw_time":30,
+            "desc_time":30,
+            "created_at":"2024-06-05T09:40:05.224256Z",
+            "round":-1,
+            "last_modified":"2024-06-05T09:40:05.224297Z",
+            "users":["testuser1",
+            "testuser2"],
+            "chains":[]
+        }
+    Response:
+        {
+            "game_code":145078,
+            "draw_time":30,
+            "desc_time":30,
+            "created_at":"2024-06-05T09:40:05.224256Z",
+            "round":-1,
+            "last_modified":"2024-06-05T09:40:05.224297Z",
+            "users":["testuser1","testuser2","testuser3"], # NOTE THERE IS A NEW USER JOINING THE SESSION! AFTER TIME OUT (10 seconds) THE SERVER WILL PROVIDE A RESPONSE AND IT MAY LOOK EXACTLY THE SAME
+            "chains":[]
+        }
+
+Session Info:
+    Actions: GET
+    URL: api/session/<str:game_code>/info/
+    Request:
+        {}
+    Response (in lobby):
+        {
+            "game_code":145078,
+            "draw_time":30,
+            "desc_time":30,
+            "created_at":"2024-06-05T09:40:05.224256Z",
+            "round":-1,
+            "last_modified":"2024-06-05T09:40:05.224297Z",
+            "users":["testuser1","testuser2","testuser3"], # NOTE THERE IS A NEW USER JOINING THE SESSION! AFTER TIME OUT (10 seconds) THE SERVER WILL PROVIDE A RESPONSE AND IT MAY LOOK EXACTLY THE SAME
+            "chains":[]
+        }
+    Response (in session):
+        {
+            "game_code":145078,
+            "draw_time":30,
+            "desc_time":30,
+            "created_at":"2024-06-05T09:40:05.224256Z",
+            "round":0,
+            "last_modified":"2024-06-05T10:23:06.208955Z",
+            "users":["testuser1","testuser2","testuser3"],
+            "chains":[{"testuser2":13},{"testuser3":14},{"testuser1":15}]
+        }
+    Response (end of game):
+        {
+            "game_code":145078,
+            "draw_time":30,
+            "desc_time":30,
+            "created_at":"2024-06-05T09:40:05.224256Z",
+            "round":-2,
+            "last_modified":"2024-06-05T10:29:27.715387Z",
+            "users":["testuser1","testuser2","testuser3"],
+            "chains":{
+                        "13":["testuser2","testuser3","testuser1"],
+                        "14":["testuser3","testuser1","testuser2"],
+                        "15":["testuser1","testuser2","testuser3"]
+                     }
+        }
+
+Session Start:
+    Actions: PUT
+    URL: api/session/<str:game_code>/start/
+    Request:
+        {}
+    Response:
+        {
+            "game_code":145078,
+            "draw_time":30,
+            "desc_time":30,
+            "created_at":"2024-06-05T09:40:05.224256Z",
+            "round":0,
+            "last_modified":"2024-06-05T10:23:06.208955Z",
+            "users":["testuser1","testuser2","testuser3"],
+            "chains":[{"testuser2":13},{"testuser3":14},{"testuser1":15}]
+        }
+    (requires 3 or more people to be in the session, game must have not started yet)
+    
+Upload Drawing
+    Actions: POST
+    -H "Content-Type: multipart/form-data"
+    URL: api/session/<str:game_code>/<int:round>/<int:chain>/draw/
+    Request:
+        {}
+    Form Data:
+        drawing=@/path/to/your/svg/img.svg
+    Response:
+        {}
+
+Upload Description
+    Actions: POST
+    URL: api/session/<str:game_code>/<int:round>/<int:chain>/draw/
+    Request:
+    

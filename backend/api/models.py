@@ -75,9 +75,6 @@ class Session(models.Model):
         self.save()
         return
         
-        
-        
-    
 class Chain(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='chains')
     users = models.ManyToManyField(User, through='ChainUser')

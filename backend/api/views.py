@@ -45,7 +45,7 @@ class SessionJoinView(generics.RetrieveAPIView):
             return Response({'detail': 'Session in progress'}, status=status.HTTP_400_BAD_REQUEST)
         if request.user not in session.users.all():
             if session.users.count() < 10:
-                session.users.add(request.user)
+                session.add_user(request.user)
             else:
                 return Response({'detail': 'Session full'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(session)
@@ -86,13 +86,14 @@ class SessionWaitView(generics.GenericAPIView):
         except Session.DoesNotExist:
             return Response({'detail': 'Session not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        timeout = 10  # timeout period in seconds
+        timeout = 1000  # timeout period in seconds
         start_time = time.time()
 
         if session.round == -1:
             client_session_state = request.data['last_modified']
             while True:
                 # Retrieve the current state of the session
+                session.refresh_from_db()
                 server_session_state = SessionSerializer(session).data['last_modified']
 
                 # Check if the session on the server side has changed
@@ -103,11 +104,11 @@ class SessionWaitView(generics.GenericAPIView):
         else:
             client_session_state = request.data['round']
             while True:
+                session.refresh_from_db()
                 server_session_state = SessionSerializer(session).data['round']
                 if client_session_state != server_session_state or time.time() - start_time > timeout:
                     return Response(SessionSerializer(session).data, status=status.HTTP_200_OK)
                 time.sleep(0.5)
-
 
 class SessionStartView(generics.UpdateAPIView):
     queryset = Session.objects.all()
@@ -132,7 +133,7 @@ class SessionStartView(generics.UpdateAPIView):
 class DrawingCreateView(generics.CreateAPIView):
     queryset = Drawing.objects.all()
     serializer_class = DrawingSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def perform_create(self, serializer):
         game_code = int(self.kwargs.get('game_code'))
