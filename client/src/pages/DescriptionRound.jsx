@@ -3,7 +3,7 @@ import { TextInput, TopBar2 } from '../components';
 import { getGameInformation } from "../api";
 import exampleDrawing from "../assets/temp/example-drawing.png";
 
-const DescriptionRound = (gameId) => {
+const DescriptionRound = () => {
     const [errMsg, setErrMsg] = useState("");
     const [gameInfo, setGameInfo] = useState(null);
     const [description, setDescription] = useState('');
@@ -17,19 +17,20 @@ const DescriptionRound = (gameId) => {
         setIsEditing(!isEditing);
     };
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                console.log("Fetching game information...");
-                const data = await getGameInformation(gameId);
-                setGameInfo(data); // Set gameInfo state variable with fetched data
-            } catch (error) {
-                setErrMsg({ message: error.message, status: 'failed' });
-            }
+    async function fetchData() {
+        try {
+            console.log("Fetching game information...");
+            const data = await getGameInformation(localStorage.getItem('game_code'));
+            setGameInfo(data); // Set gameInfo state variable with fetched data
+            console.log(data);
+        } catch (error) {
+            setErrMsg({ message: error.message, status: 'failed' });
         }
+    }
 
+    useEffect(() => {
         fetchData();
-    }, [gameId]);
+    }, []);
 
     return (
         <div className="flex flex-col justify-start bg-bgColor">

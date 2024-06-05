@@ -2,32 +2,45 @@ import React, { useState, useEffect } from "react";
 import { TopBar2, UserCard} from '../components';
 import { getGameInformation } from "../api";
 
-const GameReview = (gameId) => {
+const GameReview = () => {
     const [errMsg, setErrMsg] = useState("");
     const [gameInfo, setGameInfo] = useState(null);
+    const [players, setPlayers] = useState([]);
+
+    const PlayerList = ({ players }) => {
+        return (
+            <div className='player-list-container-style bg-[rgb(var(--color-grey))]'>
+                {/* Map over the players array and render each player */}
+                {players.map((player, index) => (
+                    <div key={index}>
+                        <UserCard _username={player}/>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
+    async function fetchData() {
+        try {
+            console.log("Fetching game information...");
+            const data = await getGameInformation(localStorage.getItem('game_code'));
+            setGameInfo(data); // Set gameInfo state variable with fetched data
+            setPlayers(data.users);
+        } catch (error) {
+            setErrMsg({ message: error.message, status: 'failed' });
+        }
+    }
 
     useEffect(() => {
-        async function fetchData() {
-            try {
-                console.log("Fetching game information...");
-                const data = await getGameInformation(gameId);
-                setGameInfo(data); // Set gameInfo state variable with fetched data
-            } catch (error) {
-                setErrMsg({ message: error.message, status: 'failed' });
-            }
-        }
-
         fetchData();
-    }, [gameId]);
+    }, []);
 
     return (
         <div className="flex flex-col justify-start h-screen bg-bgColor">
             <div><TopBar2/></div>
             <div className='flex flex-row gap-[10px] justify-center m-[2%]'>
-                <div className='flex flex-col items-center gap-0.5 w-1/5 h-[75vh] rounded-[5vh] p-2 bg-[rgb(var(--color-grey))]'>
-                    <UserCard/>
-                    <UserCard/>
-                    <UserCard/>
+                <div className='w-1/5 h-[75vh] rounded-[5vh] bg-[rgb(var(--color-grey))]'>
+                    <PlayerList players={players} />
                 </div>
                 <div className='w-2/5 h-[75vh] rounded-[5vh] bg-[rgb(var(--color-grey))]'>
 

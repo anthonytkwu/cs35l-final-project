@@ -1,36 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getGameInformation } from "../api";
 import { TextInput, TopBar2 } from "../components";
 
 const StartingPromptRound = () => {
-    const location = useLocation();
-    const {gameId} = location.state || {};
     const navigate = useNavigate();
+    const [errMsg, setErrMsg] = useState("");
+    const [gameInfo, setGameInfo] = useState(null);
     const [description, setDescription] = useState('');
     const [isEditing, setIsEditing] = useState(true);
     const [countdown, setCountdown] = useState(5); // Initialize countdown (5 seconds)
 
-    const handleInputChange = (e) => {
-        setDescription(e.target.value);
-    };
-
-    const handleButtonClick = () => {
-        setIsEditing(!isEditing);
-    };
+    async function fetchData() {
+        try {
+            console.log("Fetching game information...");
+            const data = await getGameInformation(localStorage.getItem('game_code'));
+            setGameInfo(data); // Set gameInfo state variable with fetched data
+        } catch (error) {
+            setErrMsg({ message: error.message, status: 'failed' });
+        }
+    }
 
     useEffect(() => {
         const timer = setInterval(() => {
             setCountdown((prevCountdown) => {
                 if (prevCountdown <= 1) {
-                    clearInterval(timer); // Stop the interval when countdown is 0
+                    clearInterval(timer); 
                     //navigate('/drawing-round'); // Navigate when countdown is finished
                     return 0;
                 }
-                return prevCountdown - 1; // Decrement the countdown by 1
+                return prevCountdown - 1;
             });
-        }, 1000); // Update every second
+        }, 1000);
 
-        return () => clearInterval(timer); // Cleanup the interval on component unmount
+        return () => clearInterval(timer);
     }, [navigate]);
 
     const [isReady, setIsReady] = useState(false);    // Tracks whether the player is ready
@@ -44,6 +47,14 @@ const StartingPromptRound = () => {
             // Optionally handle the case when the player toggles off ready
             console.log('Player is not ready!');
         }
+    };
+
+    const handleInputChange = (e) => {
+        setDescription(e.target.value);
+    };
+
+    const handleButtonClick = () => {
+        setIsEditing(!isEditing);
     };
 
 

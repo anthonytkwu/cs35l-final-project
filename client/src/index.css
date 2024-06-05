@@ -141,10 +141,18 @@
 }
 
 .lobby-input-style{
-  padding-bottom: 1.5rem;  
-  display: flex;
-  flex-direction: column;
-  gap: 1.0rem;
+    padding-bottom: 1.5rem;  
+    display: flex;
+    flex-direction: column;
+    gap: 1.0rem;
+}
+
+.player-list-container-style{
+    overflow-y: auto; 
+    height: 100%; 
+    padding: 5%;
+    border-radius: 5vh;
+    gap: 10px;
 }
 
 .user-card-style{
@@ -154,7 +162,6 @@
     height: 50px;
     border-radius: 2.5vh;
 }
-
 
 @media (min-width: 768px) {
     .application-title-text {

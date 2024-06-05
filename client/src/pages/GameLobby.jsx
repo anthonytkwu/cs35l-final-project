@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useWebSocket } from '../WebSocketContext';
 import { getGameInformation } from "../api";
 import { TopBar2, TextInput, Loading, CustomButton, UserCard } from "../components";
 
@@ -9,7 +8,6 @@ const GameLobby = () => {
     const navigate = useNavigate();
     const [gameInfo, setGameInfo] = useState(null);
     const [errMsg, setErrMsg] = useState("");
-    const { user } = useSelector(state => state.user);
     const [players, setPlayers] = useState([]);
     const [isHost, setIsHost] = useState(true);
     const [drawingTime, setDrawingTime] = useState("...");
@@ -17,7 +15,7 @@ const GameLobby = () => {
 
     const PlayerList = ({ players }) => {
         return (
-            <div className='h-full p-[5%] rounded-[5vh] gap-[10px] overflow-y-auto bg-[rgb(var(--color-grey))]'>
+            <div className='player-list-container-style bg-[rgb(var(--color-grey))]'>
                 {/* Map over the players array and render each player */}
                 {players.map((player, index) => (
                     <div key={index}>
