@@ -9,4 +9,4 @@ import DrawingRound from "./DrawingRound";
 import DescriptionRound from "./DescriptionRound";
 import GameReview from "./GameReview";
 
-export { Login, Home, Register, TimerComponent, GameLobby, StartingPromptRound, DrawingRound, DescriptionRound, GameReview};
+export { Login, Home, Register, TimerComponent, GameLobby, CreateLobby, StartingPromptRound, DrawingRound, DescriptionRound, GameReview};

@@ -18,6 +18,30 @@ const GameLobby = () => {
     const [writingTime, setWritingTime] = useState(30);
     const ws = useWebSocket();
 
+    const PlayerList = ({ players }) => {
+        return (
+            <div className="player-list">
+                {/* Map over the players array and render each player */}
+                {players.map((player, index) => (
+                    <div key={index} className="player">
+                        <UserCard />
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
+    const UpdatePlayersButton = ({ setPlayers }) => {
+        const addPlayer = () => {
+            // Update the state by adding a new player to the list
+            setPlayers(prevPlayers => [...prevPlayers, `Player ${prevPlayers.length + 1}`]);
+        };
+
+        return (
+            <button onClick={addPlayer}>Add Player</button>
+        );
+    };
+
     function handleSubmit(event) {
         console.log("blah");
     }
