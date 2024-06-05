@@ -1,6 +1,17 @@
 import { Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Home, Login, Register, TimerComponent, GameLobby, StartingPromptRound, DrawingRound, DescriptionRound, GameReview } from "./pages";
+import { 
+  Home, 
+  Login, 
+  Register, 
+  TimerComponent, 
+  GameLobby, 
+  StartingPromptRound, 
+  DrawingRound, 
+  DescriptionRound, 
+  GameReview, 
+  GameSettings
+} from "./pages";
 import { WebSocketProvider } from './WebSocketContext'; // Import the WebSocket provider
 
 // function Layout() {
@@ -29,8 +40,9 @@ function App() {
           <Route path='/home' element={<Home />} />
           <Route path='/starting-prompt-round' element={<StartingPromptRound />} />
           <Route path='/drawing-round' element={<DrawingRound />} />
-          <Route path='/description-round' element={<DescriptionRound/>} />
-          <Route path='/game-review' element={<GameReview/>} />
+          <Route path='/description-round' element={<DescriptionRound />} />
+          <Route path='/game-review' element={<GameReview />} />
+          <Route path='/game-settings' element={<GameSettings />} />
         </Routes>
       </WebSocketProvider>
     </div>

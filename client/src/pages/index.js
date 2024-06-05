@@ -8,5 +8,6 @@ import StartingPromptRound from "./StartingPromptRound";
 import DrawingRound from "./DrawingRound";
 import DescriptionRound from "./DescriptionRound";
 import GameReview from "./GameReview";
+import GameSettings from "./GameSettings";
 
-export { Login, Home, Register, Profile, TimerComponent, GameLobby, StartingPromptRound, DrawingRound, DescriptionRound, GameReview};
+export { Login, Home, Register, Profile, TimerComponent, GameLobby, StartingPromptRound, DrawingRound, DescriptionRound, GameReview, GameSettings};
