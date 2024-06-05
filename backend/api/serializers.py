@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .models import Session, Drawing
+from .models import *
 from rest_framework import serializers
 
 class UserSerializer(serializers.ModelSerializer):
@@ -29,6 +29,17 @@ class SessionSerializer(serializers.ModelSerializer):
 class DrawingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Drawing
+        fields = '__all__'
+        read_only_fields = ['author', 'created_at', 'chain']
+        
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['author'] = instance.author.username
+        return representation
+
+class DescSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Description
         fields = '__all__'
         read_only_fields = ['author', 'created_at', 'chain']
         

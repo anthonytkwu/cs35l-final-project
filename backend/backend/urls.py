@@ -31,5 +31,5 @@ urlpatterns = [
     path('api/session/<str:game_code>/info/', SessionInfoView.as_view(), name='info-session'),
     path('api/session/<str:game_code>/start/', SessionStartView.as_view(), name='start-session'),
     path('api/session/<str:game_code>/<int:round>/<int:chain>/image', DrawingCreateView.as_view(), name='draw-session'),
-    # path('api/session/<str:game_code>/<int:round>/<int:chain>/desc', .as_view(), name='desc-session'),
+    path('api/session/<str:game_code>/<int:round>/<int:chain>/desc', DescCreateView.as_view(), name='desc-session'),
 ]

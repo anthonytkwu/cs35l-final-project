@@ -39,13 +39,13 @@ class SessionJoinView(generics.RetrieveAPIView):
         
     def retrieve(self, request, *args, **kwargs):
         session = self.get_object()
-        if request.user in session.users.all():
-            return Response({'detail': 'User already in session'}, status=status.HTTP_400_BAD_REQUEST)
-        elif session.round != 0:
+        if session.round != -1:
             return Response({'detail': 'Session in progress'}, status=status.HTTP_400_BAD_REQUEST)
-        elif session.users.count() >= 10:
-            return Response({'detail': 'Session full'}, status=status.HTTP_400_BAD_REQUEST)
-        session.add_user(request.user)
+        if request.user not in session.users.all():
+            if session.users.count() < 10:
+                session.users.add(request.user)
+            else:
+                return Response({'detail': 'Session full'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(session)
         return Response(serializer.data)
     
@@ -115,11 +115,10 @@ class SessionStartView(generics.UpdateAPIView):
         
         if session.users.count() < 2:
             return Response({'detail': 'Not enough players'}, status=status.HTTP_400_BAD_REQUEST)
-        elif session.round != 0:
+        elif session.round != -1:
             return Response({'detail': 'Session in progress'}, status=status.HTTP_400_BAD_REQUEST)
         session.start_round()
         return Response(SessionSerializer(session).data)
-    
     
 class DrawingCreateView(generics.CreateAPIView):
     queryset = Drawing.objects.all()
@@ -129,7 +128,7 @@ class DrawingCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         game_code = int(self.kwargs.get('game_code'))
         round = int(self.kwargs.get('round'))
-        chain_id = self.kwargs.get('chain')
+        chain_id = int(self.kwargs.get('chain'))
 
         if Session.objects.get(game_code=game_code).round != round:
             return Response({'detail': 'Round mismatch'}, status=status.HTTP_400_BAD_REQUEST)
@@ -138,9 +137,12 @@ class DrawingCreateView(generics.CreateAPIView):
         if Chain.objects.get(id=chain_id).session.game_code != game_code:
             return Response({'detail': 'Chain mismatch'}, status=status.HTTP_400_BAD_REQUEST)
 
+        chain = Chain.objects.get(id=chain_id)
+        user = self.request.user
+        if user != chain.users.all()[round]:
+            return Response({'detail': 'Not your turn'}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            chain = Chain.objects.get(id=chain_id)
-            user = User.objects.get(id=2)#self.request.user
             if serializer.is_valid():
                 serializer.save(author=user, chain=chain)
             else:
@@ -159,3 +161,38 @@ class DrawingCreateView(generics.CreateAPIView):
         self.perform_create(self.serializer_class(drawing_instance, data=request.data, context={'request': request}))
         headers = self.get_success_headers(DrawingSerializer(instance=drawing_instance).data)
         return Response(DrawingSerializer(instance=drawing_instance).data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class DescCreateView(generics.CreateAPIView):
+    queryset = Description.objects.all()
+    serializer_class = DescSerializer
+    permission_classes = (AllowAny,)
+
+    def perform_create(self, serializer):
+        game_code = int(self.kwargs.get('game_code'))
+        round = int(self.kwargs.get('round'))
+        chain_id = int(self.kwargs.get('chain'))
+        print(Session.objects.get(game_code=game_code).round)
+        if Session.objects.get(game_code=game_code).round != round:
+            return Response({'detail': 'Round mismatch'}, status=status.HTTP_400_BAD_REQUEST)
+        if round < 0 or round % 2 == 1:
+            return Response({'detail': 'Round is not desc'}, status=status.HTTP_400_BAD_REQUEST)
+        if Chain.objects.get(id=chain_id).session.game_code != game_code:
+            return Response({'detail': 'Chain mismatch'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        chain = Chain.objects.get(id=chain_id)
+        user = User.objects.get(id=2)
+        # user = self.request.user
+        # if user != chain.users.all()[round]:
+        #     return Response({'detail': 'Not your turn'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            if serializer.is_valid():
+                serializer.save(author=user, chain=chain, description=self.request.data['description'])
+            else:
+                print(serializer.errors)
+        except Chain.DoesNotExist:
+            return Response({'detail': 'Chain not found'}, status=status.HTTP_404_NOT_FOUND)
+        except User.DoesNotExist:
+            return Response({'detail': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    
