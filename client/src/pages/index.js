@@ -5,5 +5,7 @@ import Profile from "./Profile";
 import TimerComponent from "./TimerComponent";
 import GameLobby from "./GameLobby";
 import StartingPromptRound from "./StartingPromptRound";
+import DrawingRound from "./DrawingRound";
+import DescriptionRound from "./DescriptionRound";
 
-export { Login, Home, Register, Profile, TimerComponent, GameLobby, StartingPromptRound };
+export { Login, Home, Register, Profile, TimerComponent, GameLobby, StartingPromptRound, DrawingRound, DescriptionRound};
