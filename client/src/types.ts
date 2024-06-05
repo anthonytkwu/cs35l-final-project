@@ -1,17 +1,27 @@
-export type DrawRound = {
-    gameId: number;
-    playerId: number;
-    round: number;
-    totalRounds: number;
+export interface User{
+    username: String;
+    password: String;
+    firstName?: String;
+    lastName?: String;
+    email?: String;
+    gamesPlayed?: Number;
+}
+
+export interface DrawRound {
+    gameId: Number;
+    playerId: Number;
+    round: Number;
+    totalRounds: Number;
     prompt: string;
 }
 
-export type PromptRound = {
-    gameId: number;
-    playerId: number;
+export interface StartPromptRound {
+    gameId: Number;
+    playerId: Number;
+    imageId: Number;
 }
 
-export type InitPromptRound = {
-    gameId: number;
-    playerId: number;
+export interface InitPromptRound {
+    gameId: Number;
+    playerId: Number;
 }
