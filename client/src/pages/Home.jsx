@@ -34,48 +34,52 @@ const Home = () => {
     } = useForm({ mode: "onChange" });
 
     function createLobbyCall(event) {
-        const access = localStorage.getItem('access');
         event.preventDefault();
+        const access = localStorage.getItem('access');
+      
+        if (!access) {
+          setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
+          return;
+        }
+      
         setShowForm(false);
         setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
-        const formData = new FormData();
-        formData.append('desc_time', desc_time);  // Append the file object directly
-        formData.append('draw_time', draw_time);
-        console.log(output);
-        console.log(access)
+      
+        const data = {
+          desc_time: desc_time,
+          draw_time: draw_time,
+        };
+      
         fetch(`${apiUrl}/api/session/create/`, {
           method: 'POST',
-          header: {
-            'Authorization' : `Bearer ${localStorage.getItem('access')}`,
+          headers: {
+            'Authorization': `Bearer ${access}`,
+            'Content-Type': 'application/json'
           },
-          body: formData,
+          body: JSON.stringify(data),
         })
           .then((response) => {
             if (response.ok) {
-              console.log(access)
               return response.json();
             }
-            throw new Error('Network response was not ok.');
+            return response.text().then((text) => {
+              console.error('Response text:', text);
+              throw new Error(text);
+            });
           })
           .then((data) => {
             console.log(data);
             setIsSubmitting(true);
-            // Simulate API call to create a lobby
-            // Example: await api.createLobby(data.lobbyCode);
-            createLobbyCall()
             setIsSubmitting(false);
-            {/* Use this version once we get backend working. 
-            While developing frontend, just use 'game-lobby' w/o "/" */}
-            //navigate(`/game-lobby/${data.createLobbyCode}`); // Navigate to lobby page
-    
+            navigate(`/game-lobby`);
             resetCreate();
           })
           .catch((error) => {
             console.error('There was a problem with the fetch operation:', error);
+            setErrMsg({ message: 'There was a problem creating the lobby', status: 'failed' });
           });
-        navigate(`/game-lobby`);
-        console.log('blag')
-        }
+      }
+      
 
     const onCreateLobby = async (data) => {
 
