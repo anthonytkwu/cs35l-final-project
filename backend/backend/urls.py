@@ -30,6 +30,8 @@ urlpatterns = [
     path('api/session/<str:game_code>/wait/', SessionWaitView.as_view(), name='wait-session'),
     path('api/session/<str:game_code>/info/', SessionInfoView.as_view(), name='info-session'),
     path('api/session/<str:game_code>/start/', SessionStartView.as_view(), name='start-session'),
-    path('api/session/<str:game_code>/<int:round>/<int:chain>/image', DrawingCreateView.as_view(), name='draw-session'),
-    # path('api/session/<str:game_code>/<int:round>/<int:chain>/desc', .as_view(), name='desc-session'),
+    path('api/session/<str:game_code>/<int:round>/<int:chain>/draw/', DrawingCreateView.as_view(), name='draw-session'),
+    path('api/session/<str:game_code>/<int:round>/<int:chain>/desc/', DescCreateView.as_view(), name='desc-session'),
+    path('api/session/<str:game_code>/<int:round>/<int:chain>/getDraw/', DrawingRetrieveView.as_view(), name='get-drawing'),
+    path('media/<str:filename>/', MediaRetrieveView.as_view(), name='get-media'),
 ]
