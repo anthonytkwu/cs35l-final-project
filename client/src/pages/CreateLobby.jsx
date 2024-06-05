@@ -4,20 +4,75 @@ import { useSelector } from 'react-redux';
 import { useWebSocket } from '../WebSocketContext';
 import { useForm } from "react-hook-form";
 import { TopBar2, TextInput, Loading, CustomButton } from "../components";
+import { apiUrl } from "../config.js";
 
-const GameLobby = () => {
+
+const CreateLobby = () => {
     const navigate = useNavigate();
     const { user } = useSelector(state => state.user);
+    const [errMsg, setErrMsg] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [players, setPlayers] = useState([]);
     const [isHost, setIsHost] = useState(true);
-    const [drawingTime, setDrawingTime] = useState(60);
-    const [writingTime, setWritingTime] = useState(30);
-    const [apiUrl, setApiUrl] = useState("")
+    const [output, setOutput] = useState('');
+    const [showForm, setShowForm] = useState(true);
+    const [draw_time, setDrawingTime] = useState(60);
+    const [desc_time, setWritingTime] = useState(30);
     const ws = useWebSocket();
 
-    function handleSubmit(event) {
-            console.log("blah");
+    const {
+        register: registerCreate,
+        handleSubmit: handleSubmitCreate,
+        formState: { errors: errorsCreate },
+        reset: resetCreate,
+    } = useForm({ mode: "onChange" });
+
+
+    function createLobbyCall() {
+        const access = localStorage.getItem('access');
+      
+        if (!access) {
+          setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
+          return;
         }
+      
+        setShowForm(false);
+        setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
+      
+        const data = {
+          desc_time: desc_time,
+          draw_time: draw_time,
+        };
+      
+        fetch(`${apiUrl}/api/session/create/`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${access}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+            return response.text().then((text) => {
+              console.error('Response text:', text);
+              throw new Error(text);
+            });
+          })
+          .then((data) => {
+            console.log(data);
+            setIsSubmitting(true);
+            setIsSubmitting(false);
+            navigate(`/create-lobby`);
+            resetCreate();
+          })
+          .catch((error) => {
+            console.error('There was a problem with the fetch operation:', error);
+            setErrMsg({ message: 'There was a problem creating the lobby', status: 'failed' });
+          });
+      }
 
     useEffect(() => {
         if (ws) {
@@ -51,7 +106,7 @@ const GameLobby = () => {
     };
 
     const handleStartGame = () => {
-        handleSubmit()
+        createLobbyCall()
         navigate('/starting-prompt-round');
     };
 
@@ -85,10 +140,10 @@ const GameLobby = () => {
                                 </div>
 
                                 <div className='w-full flex gap-2 items-center mb-10 justify-center '>
-                                    <select value={drawingTime} onChange={e => setDrawingTime(e.target.value)}>
+                                    <select value={draw_time} onChange={e => setDrawingTime(e.target.value)}>
                                         <option value={30}>30s</option>
+                                        <option value={45}>45s</option>
                                         <option value={60}>60s</option>
-                                        <option value={90}>90s</option>
                                     </select>
                                 </div>
 
@@ -99,7 +154,7 @@ const GameLobby = () => {
                                 </div>
 
                                 <div className='w-full flex gap-2 items-center mb-10 justify-center '>
-                                    <select value={writingTime} onChange={e => setWritingTime(e.target.value)}>
+                                    <select value={desc_time} onChange={e => setWritingTime(e.target.value)}>
                                         <option value={15}>15s</option>
                                         <option value={30}>30s</option>
                                         <option value={45}>45s</option>
@@ -118,7 +173,7 @@ const GameLobby = () => {
                         )}
                         {!isHost && (
                             <div>
-                                Drawing Time: {drawingTime}s, Writing Time: {writingTime}s
+                                Drawing Time: {draw_time}s, Writing Time: {desc_time}s
                             </div>
                         )}
                     </div>
@@ -128,4 +183,4 @@ const GameLobby = () => {
     );
 };
 
-export default GameLobby;
+export default CreateLobby;

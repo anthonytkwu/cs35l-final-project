@@ -31,101 +31,32 @@ const Home = () => {
         reset: resetJoin,
     } = useForm({ mode: "onChange" });
 
-    function createLobbyCall(event) {
-        event.preventDefault();
-        const access = localStorage.getItem('access');
-       
-        if (!access) {
-          setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
-          return;
-        }
-      
-        setShowForm(false);
-        setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
-      
-        const data = {
-          desc_time: desc_time,
-          draw_time: draw_time,
-        };
-      
-        fetch(`${apiUrl}/api/session/create/`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${access}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data),
-        })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            }
-            return response.text().then((text) => {
-              console.error('Response text:', text);
-              throw new Error(text);
-            });
-          })
-          .then((data) => {
-            console.log(data);
-            setIsSubmitting(true);
-            setIsSubmitting(false);
-            navigate(`/game-lobby`);
-            resetCreate();
-          })
-          .catch((error) => {
-            console.error('There was a problem with the fetch operation:', error);
-            setErrMsg({ message: 'There was a problem creating the lobby', status: 'failed' });
-          });
-      }
+    function createLobbyCall() {
+        navigate(`/create-lobby`);
+    }
       
 
+    const onCreateLobby = async (data) => {
+
+    };
 
     const onJoinLobby = async (data) => {
-        console.log("Attempting to join game...");
-    
-        const access = localStorage.getItem('access');
-        if (!access) {
-            setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
-            return;
+        setIsSubmitting(true);
+        // Simulate API call to join a lobby
+        // Example: const exists = await api.joinLobby(data.lobbyCode);
+        console.log("Joining lobby with code:", data.joinLobbyCode);
+
+        setIsSubmitting(false);
+        if (true /* Replace with actual check from API response */) {
+            navigate(`/create-lobby`);
+            {/* Same thing here. use 'game-lobby' for now */}
+            //navigate(`/game-lobby/${data.joinLobbyCode}`);
+        } else {
+            setErrMsg({ message: "Lobby does not exist", status: "failed" });
         }
-    
-        setShowForm(false);
-        setOutput('joining game');
-    
-        const gameData = {
-            game_id: data.joinLobbyCode, // Using the game_id from the form directly
-        };
-    
-        try {
-            const response = await fetch(`${apiUrl}/api/session/${gameData.game_id}/join/`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${access}`,
-                    'Content-Type': 'application/json'
-                },
-            });
-    
-            if (response.ok) {
-                const responseData = await response.json();
-                console.log(responseData);
-                setIsSubmitting(true);
-                setIsSubmitting(false);
-                navigate(`/game-lobby`);
-                resetJoin(); // Ensure to reset the form here
-            } else {
-                const errorText = await response.text();
-                console.error('Response text:', errorText);
-                throw new Error(errorText);
-            }
-        } catch (error) {
-            console.error('There was a problem with the fetch operation:', error);
-            setErrMsg({ message: 'There was a problem joining the lobby', status: 'failed' });
-        }
+        resetJoin();
     };
-    
-    // Example of integrating this function with your form
-    // <form className='lobby-input-style' onSubmit={handleSubmitJoin(onJoinLobby)}>
-    
+
     return (
         <div className='w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
             <TopBar />

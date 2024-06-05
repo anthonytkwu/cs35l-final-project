@@ -3,7 +3,7 @@ import Home from "./Home";
 import Register from "./Register";
 import Profile from "./Profile";
 import TimerComponent from "./TimerComponent";
-import GameLobby from "./GameLobby";
+import CreateLobby from "./CreateLobby";
 import StartingPromptRound from "./StartingPromptRound";
 
-export { Login, Home, Register, Profile, TimerComponent, GameLobby, StartingPromptRound };
+export { Login, Home, Register, Profile, TimerComponent, CreateLobby, StartingPromptRound };
