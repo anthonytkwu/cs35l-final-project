@@ -4,8 +4,7 @@ import { TopBar, ProfileCard, TextInput, Loading, CustomButton } from "../compon
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
 import { apiUrl } from "../config.js";
-import { refreshToken } from "../hooks/RefreshToken.js";
-import { intercept } from "../hooks/Intercept.js";
+
 
 const Home = () => {
     const { user } = useSelector((state) => state.user);
