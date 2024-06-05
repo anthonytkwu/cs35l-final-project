@@ -14,12 +14,12 @@ TOKEN=$(curl -s -X POST http://localhost:8000/api/user/login/ \
 #      -H "Authorization: Bearer $TOKEN" \
 #      -d '{"draw_time": 30, "desc_time": 30}')
 
-RESPONSE=$(curl -s -X GET http://localhost:8000/api/session/763950/join/ \
+RESPONSE=$(curl -s -X GET http://localhost:8000/api/session/283145/join/ \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer $TOKEN")
 
 
-# curl -s -X POST http://localhost:8000/api/session/763950/wait/ \
-#      -H "Content-Type: application/json" \
-#      -H "Authorization: Bearer $TOKEN" \
-#      -d $RESPONSE | cat >output.html
+curl -s -X POST http://localhost:8000/api/session/283145/wait/ \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer $TOKEN" \
+     -d '$RESPONSE' | cat >output.html

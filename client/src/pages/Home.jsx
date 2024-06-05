@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { TopBar, ProfileCard, TextInput, Loading, CustomButton } from "../components";
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../config.js";
 
 
 const Home = () => {
@@ -11,7 +12,6 @@ const Home = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [draw_time, setDrawingTime] = useState(60);
     const [desc_time, setWritingTime] = useState(30);
-    const [apiUrl, setApiUrl] = useState("http://127.0.0.1:8000/api/session/create")
     const [output, setOutput] = useState('');
     const [showForm, setShowForm] = useState(true);
     const navigate = useNavigate();
@@ -33,41 +33,51 @@ const Home = () => {
 
     function createLobbyCall(event) {
         event.preventDefault();
+        const access = localStorage.getItem('access');
+      
+        if (!access) {
+          setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
+          return;
+        }
+      
         setShowForm(false);
         setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
-        const formData = new FormData();
-        formData.append('desc_time', desc_time);  // Append the file object directly
-        formData.append('draw_time', draw_time);
-        console.log(output);
-        fetch(apiUrl, {
+      
+        const data = {
+          desc_time: desc_time,
+          draw_time: draw_time,
+        };
+      
+        fetch(`${apiUrl}/api/session/create/`, {
           method: 'POST',
-          body: formData,
+          headers: {
+            'Authorization': `Bearer ${access}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data),
         })
           .then((response) => {
             if (response.ok) {
               return response.json();
             }
-            throw new Error('Network response was not ok.');
+            return response.text().then((text) => {
+              console.error('Response text:', text);
+              throw new Error(text);
+            });
           })
           .then((data) => {
             console.log(data);
             setIsSubmitting(true);
-            // Simulate API call to create a lobby
-            // Example: await api.createLobby(data.lobbyCode);
-            createLobbyCall()
             setIsSubmitting(false);
-            {/* Use this version once we get backend working. 
-            While developing frontend, just use 'game-lobby' w/o "/" */}
-            //navigate(`/game-lobby/${data.createLobbyCode}`); // Navigate to lobby page
-    
+            navigate(`/game-lobby`);
             resetCreate();
           })
           .catch((error) => {
             console.error('There was a problem with the fetch operation:', error);
+            setErrMsg({ message: 'There was a problem creating the lobby', status: 'failed' });
           });
-        navigate(`/game-lobby`);
-        console.log('blag')
-        }
+      }
+      
 
     const onCreateLobby = async (data) => {
 
