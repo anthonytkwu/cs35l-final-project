@@ -147,7 +147,7 @@ Session Info:
             "last_modified":"2024-06-05T10:29:27.715387Z",
             "users":["testuser1","testuser2","testuser3"],
             "chains":{
-                        "13":["testuser2","testuser3","testuser1"],
+                        "13":["testuser2","testuser3","testuser1"], <- chain 13 had testuser2 round=0 (desc), testuser3 for round=1 (drawing), etc I know there are issues right now with early stopping... rounds should only be N - 1 for N players if N is even.
                         "14":["testuser3","testuser1","testuser2"],
                         "15":["testuser1","testuser2","testuser3"]
                      }
@@ -167,7 +167,7 @@ Session Start:
             "round":0,
             "last_modified":"2024-06-05T10:23:06.208955Z",
             "users":["testuser1","testuser2","testuser3"],
-            "chains":[{"testuser2":13},{"testuser3":14},{"testuser1":15}]
+            "chains":[{"testuser2":13},{"testuser3":14},{"testuser1":15}] <- this means testuser2 is on chain_id=13, test_user3 is on chain_id=14, etc for round=0
         }
     (requires 3 or more people to be in the session, game must have not started yet)
     
