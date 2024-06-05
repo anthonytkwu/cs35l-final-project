@@ -15,7 +15,7 @@ export const refreshToken = async () => {
             body: JSON.stringify(refreshBody),
         });
 
-        // if response is goo it refreshes the access token
+        // if response is good it refreshes the access token
         if (response.ok) {
             const obj = await response.json();
             console.log('refreshed access: ' + obj.access);
