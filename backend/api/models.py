@@ -43,7 +43,10 @@ class Session(models.Model):
             for i in range(n):
                 for j in range(n):
                     result[j].append(users[(i + j) % n])
-            
+                    
+            if n % 2 == 0:
+                result = [chain[:-1] for chain in result]
+
             return result
         
         self.round = 0
