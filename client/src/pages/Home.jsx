@@ -48,7 +48,7 @@ const Home = () => {
 
         setIsSubmitting(false);
         if (true /* Replace with actual check from API response */) {
-            navigate(`/create-lobby`);
+            navigate(`/game-lobby`);
             {/* Same thing here. use 'game-lobby' for now */}
             //navigate(`/game-lobby/${data.joinLobbyCode}`);
         } else {

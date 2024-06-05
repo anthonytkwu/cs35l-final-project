@@ -65,7 +65,7 @@ const CreateLobby = () => {
             console.log(data);
             setIsSubmitting(true);
             setIsSubmitting(false);
-            navigate(`/create-lobby`);
+            navigate(`/game-lobby`);
             resetCreate();
           })
           .catch((error) => {
@@ -107,7 +107,8 @@ const CreateLobby = () => {
 
     const handleStartGame = () => {
         createLobbyCall()
-        navigate('/starting-prompt-round');
+        //navigate('/starting-prompt-round');
+        //navigate('/game-lobby');
     };
 
     return (
@@ -117,7 +118,7 @@ const CreateLobby = () => {
             <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full'>
                 {/* LEFT */}
                 <div className='player-list hidden w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto'>
-                    <div className='w-full bg-primary flex flex-col items-center shadow-sm rounded-xl px-6 py-4 '>
+                    {/* <div className='w-full bg-primary flex flex-col items-center shadow-sm rounded-xl px-6 py-4 '>
                         <div className='w-full flex items-center justify-between border-b pb-5 border-[#66666645]'>
                             {players.map((player, index) => (
                                 <div key={player.id} className={player.id === user.id ? 'host' : ''}>
@@ -125,7 +126,7 @@ const CreateLobby = () => {
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* CENTER */}
@@ -164,11 +165,11 @@ const CreateLobby = () => {
                                 <CustomButton
                                         onClick={handleStartGame}
                                         containerStyles={'colored-button-style'}
-                                        title='Start Game'/>
+                                        title='Confirm Settings'/>
                                 <CustomButton
                                     onClick={handleLeaveLobby}
                                     containerStyles={'colored-button-style'}
-                                    title='Leave Lobby'/>
+                                    title='Return Home'/>
                             </>
                         )}
                         {!isHost && (
