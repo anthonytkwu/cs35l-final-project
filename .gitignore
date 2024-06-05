@@ -13,3 +13,4 @@ node_modules/
 drawing-board/
 .DS_Store
 .vscode/
+backend/api/migrations/
