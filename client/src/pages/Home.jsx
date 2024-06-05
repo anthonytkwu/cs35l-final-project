@@ -31,52 +31,9 @@ const Home = () => {
         reset: resetJoin,
     } = useForm({ mode: "onChange" });
 
-    function createLobbyCall(event) {
-        event.preventDefault();
-        const access = localStorage.getItem('access');
-      
-        if (!access) {
-          setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
-          return;
-        }
-      
-        setShowForm(false);
-        setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
-      
-        const data = {
-          desc_time: desc_time,
-          draw_time: draw_time,
-        };
-      
-        fetch(`${apiUrl}/api/session/create/`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${access}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data),
-        })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            }
-            return response.text().then((text) => {
-              console.error('Response text:', text);
-              throw new Error(text);
-            });
-          })
-          .then((data) => {
-            console.log(data);
-            setIsSubmitting(true);
-            setIsSubmitting(false);
-            navigate(`/game-lobby`);
-            resetCreate();
-          })
-          .catch((error) => {
-            console.error('There was a problem with the fetch operation:', error);
-            setErrMsg({ message: 'There was a problem creating the lobby', status: 'failed' });
-          });
-      }
+    function createLobbyCall() {
+        navigate(`/create-lobby`);
+    }
       
 
     const onCreateLobby = async (data) => {
