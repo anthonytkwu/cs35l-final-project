@@ -12,6 +12,7 @@ const DrawingRound = () => {
   const [lineWidth, setLineWidth] = useState(5);
   const [isErasing, setIsErasing] = useState(false);
   const [paths, setPaths] = useState([]); // Stores SVG paths
+  const [prompt, setPrompt] = useState("_PROMPT GOES HERE_"); // stores game-prompt from server
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -110,7 +111,7 @@ const DrawingRound = () => {
         <div><TopBar2/></div>
         <div className="w-full flex justify-center p-5 bg-[rgb(var(--color-grey))]">
             <span className='colored-subtitle-text pr-2'>Your Prompt is:</span>
-            <span className='text-ascent-1 text-xl font-semibold'>_PROMPT GOES HERE_</span>
+            <span className='text-ascent-1 text-xl font-semibold'>{ prompt }</span>
         </div>
         <div className="flex justify-between">
             {/* set canvas */}
