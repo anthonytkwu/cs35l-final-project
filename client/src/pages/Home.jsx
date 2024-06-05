@@ -32,54 +32,54 @@ const Home = () => {
     } = useForm({ mode: "onChange" });
 
     function createLobbyCall(event) {
-//        event.preventDefault();
-//        const access = localStorage.getItem('access');
-//      
-//        if (!access) {
-//          setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
-//          return;
-//        }
-//      
-//        setShowForm(false);
-//        setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
-//      
-//        const data = {
-//          desc_time: desc_time,
-//          draw_time: draw_time,
-//        };
-//      
-//        fetch(`${apiUrl}/api/session/create/`, {
-//          method: 'POST',
-//          headers: {
-//            'Authorization': `Bearer ${access}`,
-//            'Content-Type': 'application/json'
-//          },
-//          body: JSON.stringify(data),
-//        })
-//          .then((response) => {
-//            if (response.ok) {
-//              return response.json();
-//            }
-//            return response.text().then((text) => {
-//              console.error('Response text:', text);
-//              throw new Error(text);
-//            });
-//          })
-//          .then((data) => {
-//            console.log(data);
-//            const game_code = data.game_code;
-//            setIsSubmitting(true);
-//            setIsSubmitting(false);
-//            navigate(`/create-lobby`, {state: {gameId: game_code}});
-//            resetCreate();
-//          })
-//          .catch((error) => {
-//            console.error('There was a problem with the fetch operation:', error);
-//            setErrMsg({ message: 'There was a problem creating the lobby', status: 'failed' });
-//          });
+        //        event.preventDefault();
+        //        const access = localStorage.getItem('access');
+        //      
+        //        if (!access) {
+        //          setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
+        //          return;
+        //        }
+        //      
+        //        setShowForm(false);
+        //        setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
+        //      
+        //        const data = {
+        //          desc_time: desc_time,
+        //          draw_time: draw_time,
+        //        };
+        //      
+        //        fetch(`${apiUrl}/api/session/create/`, {
+        //          method: 'POST',
+        //          headers: {
+        //            'Authorization': `Bearer ${access}`,
+        //            'Content-Type': 'application/json'
+        //          },
+        //          body: JSON.stringify(data),
+        //        })
+        //          .then((response) => {
+        //            if (response.ok) {
+        //              return response.json();
+        //            }
+        //            return response.text().then((text) => {
+        //              console.error('Response text:', text);
+        //              throw new Error(text);
+        //            });
+        //          })
+        //          .then((data) => {
+        //            console.log(data);
+        //            const game_code = data.game_code;
+        //            setIsSubmitting(true);
+        //            setIsSubmitting(false);
+        //            navigate(`/create-lobby`, {state: {gameId: game_code}});
+        //            resetCreate();
+        //          })
+        //          .catch((error) => {
+        //            console.error('There was a problem with the fetch operation:', error);
+        //            setErrMsg({ message: 'There was a problem creating the lobby', status: 'failed' });
+        //          });
         navigate(`/create-lobby`);
     }
-      
+
 
     const onCreateLobby = async (data) => {
 
@@ -94,7 +94,7 @@ const Home = () => {
         setIsSubmitting(false);
         if (true /* Replace with actual check from API response */) {
             navigate(`/game-lobby`);
-            {/* Same thing here. use 'game-lobby' for now */}
+            {/* Same thing here. use 'game-lobby' for now */ }
             //navigate(`/game-lobby/${data.joinLobbyCode}`);
         } else {
             setErrMsg({ message: "Lobby does not exist", status: "failed" });
@@ -117,11 +117,11 @@ const Home = () => {
                     <div className='w-full flex gap-2 items-center mb-1 justify-center'>
                         <span className='colored-subtitle-text'>
                             Create New Lobby
-                        </span> 
+                        </span>
                     </div>
                     {/* Create Lobby Form */}
                     <form className='lobby-input-style' onSubmit={createLobbyCall}>
-                        <TextInput
+                        {/* <TextInput
                             name='createLobbyCode'
                             placeholder='123456'
                             label='Enter Six Digit Code'
@@ -132,25 +132,29 @@ const Home = () => {
                                     value: 6,
                                     message: "Lobby code must be 6 digits"
                                 },
-                                 maxLength: {
-                                     value: 6,
-                                     message: "Lobby code must be 6 digits"
-                                 }
+                                maxLength: {
+                                    value: 6,
+                                    message: "Lobby code must be 6 digits"
+                                }
                             })}
                             styles='w-full rounded-full'
-                            error={errorsCreate.createLobbyCode ? errorsCreate.createLobbyCode.message : ""}/>
+                            error={errorsCreate.createLobbyCode ? errorsCreate.createLobbyCode.message : ""} />
 
                         {isSubmitting ? <Loading /> : <CustomButton
-                                    type='submit'
-                                    containerStyles={'colored-button-style'}
-                                    title='Create'/>
-                        }
+                            type='submit'
+                            containerStyles={'colored-button-style'}
+                            title='Create' />
+                        } */}
+                        <CustomButton
+                            type='submit'
+                            containerStyles={'colored-button-style'}
+                            title='Create' />
                     </form>
 
                     <div className='w-full flex gap-2 items-center mb-1 justify-center'>
                         <span className='colored-subtitle-text'>
                             Join Existing Lobby
-                        </span> 
+                        </span>
                     </div>
 
                     {/* Join Lobby Form */}
@@ -172,19 +176,19 @@ const Home = () => {
                                 }
                             })}
                             styles='w-full rounded-full'
-                            error={errorsJoin.joinLobbyCode ? errorsJoin.joinLobbyCode.message : ""}/>
+                            error={errorsJoin.joinLobbyCode ? errorsJoin.joinLobbyCode.message : ""} />
 
                         {isSubmitting ? <Loading /> : <CustomButton
                             type='submit'
                             containerStyles={'colored-button-style'}
-                            title='Join'/>
+                            title='Join' />
                         }
                         {errMsg && <span className="text-red-500">{errMsg.message}</span>}
                     </form>
                 </div>
 
             </div>
-            
+
             {/* RIGHT */}
         </div>
     );
