@@ -2,7 +2,7 @@ import { apiUrl } from "../config";
 import { refreshToken } from "./RefreshToken";
 
 
-export const intercept = async (json_body, destination, api_method, navigate) => {
+export const intercept = async (destination, api_method, json_body, navigate) => {
     const access = localStorage.getItem('access');
 
     const request = async (access) => {
@@ -19,7 +19,7 @@ export const intercept = async (json_body, destination, api_method, navigate) =>
 
     try {
         // try a request
-        const response = await request(access);
+        let response = await request(access);
 
         if (response.status == 401) {
             console.log('refreshing access token.');
