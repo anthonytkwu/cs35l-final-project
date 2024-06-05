@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextInput, TopBar2 } from '../components';
+import { getGameInformation } from "../api";
 import exampleDrawing from "../assets/temp/example-drawing.png";
 
-const DescriptionRound = () => {
+const DescriptionRound = (gameId) => {
+    const [errMsg, setErrMsg] = useState("");
+    const [gameInfo, setGameInfo] = useState(null);
     const [description, setDescription] = useState('');
     const [isEditing, setIsEditing] = useState(true);
 
@@ -13,6 +16,20 @@ const DescriptionRound = () => {
     const handleButtonClick = () => {
         setIsEditing(!isEditing);
     };
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                console.log("Fetching game information...");
+                const data = await getGameInformation(gameId);
+                setGameInfo(data); // Set gameInfo state variable with fetched data
+            } catch (error) {
+                setErrMsg({ message: error.message, status: 'failed' });
+            }
+        }
+
+        fetchData();
+    }, [gameId]);
 
     return (
         <div className="flex flex-col justify-start bg-bgColor">

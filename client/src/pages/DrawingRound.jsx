@@ -1,32 +1,47 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { ColorPicker, EraseButton, FontSizeSlider, RedoButton, SaveButton, UndoButton } from '../components/DrawingComponents';
 import { TopBar2 } from '../components';
+import { getGameInformation } from "../api";
 
-const DrawingRound = () => {
+const DrawingRound = (gameId) => {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [lines, setLines] = useState([]);
   const [redoLines, setRedoLines] = useState([]);
-  const [color, setColor] = useState('black');
+  const [color, setColor] = useState('#000000');
   const [lineWidth, setLineWidth] = useState(5);
   const [isErasing, setIsErasing] = useState(false);
   const [paths, setPaths] = useState([]); // Stores SVG paths
   const [prompt, setPrompt] = useState("_PROMPT GOES HERE_"); // stores game-prompt from server
+  const [errMsg, setErrMsg] = useState("");
+  const [gameInfo, setGameInfo] = useState(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
 
-    canvas.width = 900 * 2; // Adjust canvas width
-    canvas.height = 400 * 2; // Adjust canvas height
-    canvas.style.width = '900px';
-    canvas.style.height = '400px';
-    
-    context.scale(2, 2);
-    context.lineCap = 'round';
-    contextRef.current = context;
-  }, []);
+        canvas.width = 900 * 2; // Adjust canvas width
+        canvas.height = 400 * 2; // Adjust canvas height
+        canvas.style.width = '900px';
+        canvas.style.height = '400px';
+        
+        context.scale(2, 2);
+        context.lineCap = 'round';
+        contextRef.current = context;
+        //get game information
+        async function fetchData() {
+            try {
+                console.log("Fetching game information...");
+                const data = await getGameInformation(gameId);
+                setGameInfo(data); // Set gameInfo state variable with fetched data
+            } catch (error) {
+                setErrMsg({ message: error.message, status: 'failed' });
+            }
+        }
+
+        fetchData();
+    }, [gameId]);
 
   const startDrawing = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
