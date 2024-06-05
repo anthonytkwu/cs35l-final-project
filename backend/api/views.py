@@ -41,13 +41,15 @@ class SessionJoinView(generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         session = self.get_object()
         if request.user in session.users.all():
-            return Response({'detail': 'User already in session'}, status=status.HTTP_400_BAD_REQUEST)
+            serializer = self.get_serializer(session)
+            return Response({'detail': 'Joined session'}, status=status.HTTP_200_OK)
         elif session.round != 0:
             return Response({'detail': 'Session in progress'}, status=status.HTTP_400_BAD_REQUEST)
         elif session.users.count() >= 10:
             return Response({'detail': 'Session full'}, status=status.HTTP_400_BAD_REQUEST)
         session.add_user(request.user)
         serializer = self.get_serializer(session)
+        return Response({'detail': 'Joined session'}, status=status.HTTP_200_OK)
     
 class SessionInfoView(generics.RetrieveAPIView):
     queryset = Session.objects.all()
@@ -112,7 +114,6 @@ class SessionStartView(generics.UpdateAPIView):
             session = Session.objects.get(game_code=game_code)
         except Session.DoesNotExist:
             return Response({'detail': 'Session not found'}, status=status.HTTP_404_NOT_FOUND)
-        
         if session.users.count() < 2:
             return Response({'detail': 'Not enough players'}, status=status.HTTP_400_BAD_REQUEST)
         elif session.round != 0:

@@ -34,7 +34,7 @@ const Home = () => {
     function createLobbyCall(event) {
         event.preventDefault();
         const access = localStorage.getItem('access');
-      
+       
         if (!access) {
           setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
           return;
@@ -79,27 +79,53 @@ const Home = () => {
       }
       
 
-    const onCreateLobby = async (data) => {
-
-    };
 
     const onJoinLobby = async (data) => {
-        setIsSubmitting(true);
-        // Simulate API call to join a lobby
-        // Example: const exists = await api.joinLobby(data.lobbyCode);
-        console.log("Joining lobby with code:", data.joinLobbyCode);
-
-        setIsSubmitting(false);
-        if (true /* Replace with actual check from API response */) {
-            navigate(`/game-lobby`);
-            {/* Same thing here. use 'game-lobby' for now */}
-            //navigate(`/game-lobby/${data.joinLobbyCode}`);
-        } else {
-            setErrMsg({ message: "Lobby does not exist", status: "failed" });
+        console.log("Attempting to join game...");
+    
+        const access = localStorage.getItem('access');
+        if (!access) {
+            setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
+            return;
         }
-        resetJoin();
+    
+        setShowForm(false);
+        setOutput('joining game');
+    
+        const gameData = {
+            game_id: data.joinLobbyCode, // Using the game_id from the form directly
+        };
+    
+        try {
+            const response = await fetch(`${apiUrl}/api/session/${gameData.game_id}/join/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${access}`,
+                    'Content-Type': 'application/json'
+                },
+            });
+    
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData);
+                setIsSubmitting(true);
+                setIsSubmitting(false);
+                navigate(`/game-lobby`);
+                resetJoin(); // Ensure to reset the form here
+            } else {
+                const errorText = await response.text();
+                console.error('Response text:', errorText);
+                throw new Error(errorText);
+            }
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+            setErrMsg({ message: 'There was a problem joining the lobby', status: 'failed' });
+        }
     };
-
+    
+    // Example of integrating this function with your form
+    // <form className='lobby-input-style' onSubmit={handleSubmitJoin(onJoinLobby)}>
+    
     return (
         <div className='w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
             <TopBar />
