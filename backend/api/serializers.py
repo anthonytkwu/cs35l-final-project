@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .models import Session, Drawing
+from .models import *
 from rest_framework import serializers
 
 class UserSerializer(serializers.ModelSerializer):
@@ -21,9 +21,15 @@ class SessionSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['users'] = [user.username for user in instance.users.all()]
-        representation['user_chains'] = list()
-        for chain in instance.chains.all():
-            representation['user_chains'].append({chain.users.all()[instance.round].username: chain.id})
+        if instance.round != -2:
+            representation['chains'] = list()
+            for chain in instance.chains.all():
+                representation['chains'].append({chain.users.all()[instance.round].username: chain.id})
+        else:
+            representation['chains'] = {}
+            for chain in instance.chains.all():
+                representation['chains'][chain.id] = [user.username for user in chain.users.all()]
+
         return representation
 
 class DrawingSerializer(serializers.ModelSerializer):
@@ -36,3 +42,15 @@ class DrawingSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['author'] = instance.author.username
         return representation
+
+class DescSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Description
+        fields = '__all__'
+        read_only_fields = ['author', 'created_at', 'chain']
+        
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['author'] = instance.author.username
+        return representation
+    

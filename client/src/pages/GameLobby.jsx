@@ -19,8 +19,8 @@ const GameLobby = () => {
     const ws = useWebSocket();
 
     function handleSubmit(event) {
-            console.log("blah");
-        }
+        console.log("blah");
+    }
 
         useEffect(() => {
             async function fetchData() {
@@ -55,13 +55,10 @@ const GameLobby = () => {
                 {/* LEFT */}
                 <div className='player-list hidden w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto'>
                     <div className='w-full bg-primary flex flex-col items-center shadow-sm rounded-xl px-6 py-4 '>
-                        <div className='w-full flex items-center justify-between border-b pb-5 border-[#66666645]'>
-                            {players.map((player, index) => (
-                                <div key={player.id} className={player.id === user.id ? 'host' : ''}>
-                                    {player.name}
-                                </div>
-                            ))}
-                        </div>
+                        {/* <div className='w-full flex items-center justify-between border-b pb-5 border-[#66666645]'>
+                        </div> */}
+                        <PlayerList players={players} />
+                        <UpdatePlayersButton setPlayers={setPlayers} />
                     </div>
                 </div>
 
@@ -72,46 +69,57 @@ const GameLobby = () => {
                             <>
                                 <div className='w-full flex gap-2 items-center mb-1 justify-center '>
                                     <span className='colored-subtitle-text'>
-                                        Choose Length of Drawing Round
+                                        Number of people in Lobby: {players.length}
                                     </span>
-                                </div>
-
-                                <div className='w-full flex gap-2 items-center mb-10 justify-center '>
-                                    <select value={drawingTime} onChange={e => setDrawingTime(e.target.value)}>
-                                        <option value={30}>30s</option>
-                                        <option value={60}>60s</option>
-                                        <option value={90}>90s</option>
-                                    </select>
                                 </div>
 
                                 <div className='w-full flex gap-2 items-center mb-1 justify-center '>
                                     <span className='colored-subtitle-text'>
-                                        Choose Length of Prompt Round
+                                        Length of Drawing Round: {drawingTime}
                                     </span>
                                 </div>
 
-                                <div className='w-full flex gap-2 items-center mb-10 justify-center '>
-                                    <select value={writingTime} onChange={e => setWritingTime(e.target.value)}>
-                                        <option value={15}>15s</option>
-                                        <option value={30}>30s</option>
-                                        <option value={45}>45s</option>
-                                    </select>
+                                <div className='w-full flex gap-2 items-center mb-1 justify-center '>
+                                    <span className='colored-subtitle-text'>
+                                        Length of Prompt Round: {writingTime}
+                                    </span>
                                 </div>
-                                
+
                                 <CustomButton
-                                        onClick={handleStartGame}
-                                        containerStyles={'colored-button-style'}
-                                        title='Start Game'/>
+                                    onClick={handleStartGame}
+                                    containerStyles={'colored-button-style'}
+                                    title='Start Game' />
                                 <CustomButton
                                     onClick={handleLeaveLobby}
                                     containerStyles={'colored-button-style'}
-                                    title='Leave Lobby'/>
+                                    title='Leave Lobby' />
                             </>
                         )}
                         {!isHost && (
-                            <div>
-                                Drawing Time: {drawingTime}s, Writing Time: {writingTime}s
-                            </div>
+                            <>
+                                <div className='w-full flex gap-2 items-center mb-1 justify-center '>
+                                    <span className='colored-subtitle-text'>
+                                        Number of people in Lobby: {players.length}
+                                    </span>
+                                </div>
+
+                                <div className='w-full flex gap-2 items-center mb-1 justify-center '>
+                                    <span className='colored-subtitle-text'>
+                                        Length of Drawing Round: {drawingTime}
+                                    </span>
+                                </div>
+
+                                <div className='w-full flex gap-2 items-center mb-1 justify-center '>
+                                    <span className='colored-subtitle-text'>
+                                        Length of Prompt Round: {writingTime}
+                                    </span>
+                                </div>
+
+                                <CustomButton
+                                    onClick={handleLeaveLobby}
+                                    containerStyles={'colored-button-style'}
+                                    title='Leave Lobby' />
+                            </>
                         )}
                     </div>
                 </div>

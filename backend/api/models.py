@@ -34,7 +34,7 @@ class Session(models.Model):
     def __str__(self):
         return str(self.game_code)
     
-    def start_round(self):
+    def start(self):
         def generate_chains(users):
             shuffle(users)
             n = len(users)
@@ -54,7 +54,28 @@ class Session(models.Model):
         for chain in chains:
             chain_instance = self.chains.create()
             for j, user in enumerate(chain):
-                ChainUser.objects.create(user=user, chain=chain_instance, order=j)        
+                ChainUser.objects.create(user=user, chain=chain_instance, order=j)
+    
+    def check_completed_round(self):
+        round = self.round // 2
+        if self.round % 2 == 0: # description round
+            for chain in self.chains.all():
+                if len(chain.descriptions.all()) != round + 1:
+                    return
+
+            if self.round + 2 >= self.users.count():
+                self.round = -2
+                self.save()
+                return
+        else: # drawing round
+            for chain in self.chains.all():
+                if len(chain.drawings.all()) != round + 1:
+                    return
+        self.round += 1
+        self.save()
+        return
+        
+        
         
     
 class Chain(models.Model):
@@ -71,7 +92,7 @@ class ChainUser(models.Model):
 
 class Description(models.Model):
     description = models.TextField(max_length=100)
-    chain = models.ForeignKey(Chain, on_delete=models.CASCADE)
+    chain = models.ForeignKey(Chain, on_delete=models.CASCADE, related_name='descriptions')
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='descriptions')
 
@@ -81,7 +102,7 @@ class Description(models.Model):
 class Drawing(models.Model):
     id = models.AutoField(primary_key=True)
     drawing = models.FileField()
-    chain = models.ForeignKey(Chain, on_delete=models.CASCADE)
+    chain = models.ForeignKey(Chain, on_delete=models.CASCADE, related_name='drawings')
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='drawings')
 

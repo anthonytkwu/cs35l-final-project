@@ -58,8 +58,6 @@ const Login = () => {
                     message: "Problem with token creation/incorrect username or password",
                 })
             });
-
-        navigate('/home');
     };
 
     const [errMsg] = useState("");
@@ -137,7 +135,7 @@ const Login = () => {
 
                     <div className='mt-16 text-center'>
                         <p className='text-white text-base'>
-                            Connect with friends & draw some bullshit!
+                            Connect with friends & draw some stuff!
                         </p>
                     </div>
                 </div>
