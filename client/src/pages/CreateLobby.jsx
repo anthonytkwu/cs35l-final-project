@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TopBar2, CustomButton } from "../components";
 import { apiUrl } from "../config.js";
+import { handleGameDataAndNavigate } from "../utils.js"
 import { intercept } from "../hooks/Intercept.js";
 
 
@@ -27,7 +28,7 @@ const CreateLobby = () => {
         };
 
         intercept("/api/session/create/", 'POST', data, navigate)
-            .then((obj) => {
+            .then((data) => {
                 handleGameDataAndNavigate(data, navigate);
             })
             .catch((error) => {
