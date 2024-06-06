@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { getGameInformation } from "../api";
-import { TopBar2, TextInput, Loading, CustomButton, UserCard } from "../components";
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getGameInformation, postWaitForGameUpdates } from "../api";
+import { TopBar2, CustomButton, UserCard } from "../components";
 
 const GameLobby = () => {
     const navigate = useNavigate();
@@ -9,14 +9,15 @@ const GameLobby = () => {
     const [gameCode, setGameCode] = useState(null);
     const [errMsg, setErrMsg] = useState("");
     const [players, setPlayers] = useState([]);
-    //const [isHost, setIsHost] = useState(true);
     const [drawingTime, setDrawingTime] = useState("...");
     const [writingTime, setWritingTime] = useState("...");
+
+    const isMounted = useRef(true);
+    const isFetching = useRef(false);
 
     const PlayerList = ({ players }) => {
         return (
             <div className='player-list-container-style bg-[rgb(var(--color-grey))]'>
-                {/* Map over the players array and render each player */}
                 {players.map((player, index) => (
                     <div key={index}>
                         <UserCard _username={player} />
@@ -26,33 +27,71 @@ const GameLobby = () => {
         );
     };
 
-    async function fetchData() {
+    async function fetchWait() {
+        if (isFetching.current) {
+            return; // Prevent multiple simultaneous fetches
+        }
+
+        isFetching.current = true;
+        console.log("Waiting for game updates...");
+
         try {
-            console.log("Fetching game information...");
+            const data = await postWaitForGameUpdates({});
+            if (data && isMounted.current) {
+                setGameInfo(data);
+                setDrawingTime(data.draw_time);
+                setWritingTime(data.desc_time);
+                setGameCode(data.game_code);
+                setPlayers(data.users);
+                // Delay the next fetch call by 5 seconds
+                setTimeout(fetchWait, 5000);
+            } else {
+                throw new Error(data.message || "Failed to wait for game updates");
+            }
+        } catch (error) {
+            console.error("Error waiting for game updates: ", error);
+            if (isMounted.current) {
+                // Retry after 5 seconds if there's an error
+                setTimeout(fetchWait, 5000);
+            }
+        } finally {
+            isFetching.current = false;
+        }
+    }
+
+    async function fetchData() {
+        console.log("Fetching game information...");
+
+        try {
             const data = await getGameInformation(localStorage.getItem('game_code'));
-            setGameInfo(data); // Set gameInfo state variable with fetched data
-            setDrawingTime(data.draw_time);
-            setWritingTime(data.desc_time);
-            setGameCode(data.game_code);
-            setPlayers(data.users);
+            if (data) {
+                setGameInfo(data);
+                setDrawingTime(data.draw_time);
+                setWritingTime(data.desc_time);
+                setGameCode(data.game_code);
+                setPlayers(data.users);
+                fetchWait(); // Initiate long polling after successful fetch
+            } else {
+                throw new Error(data.message || "Failed to fetch game information");
+            }
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
+            console.error("Error fetching game information: ", error);
+            setTimeout(fetchData, 5000); // Retry after 5 seconds
         }
     }
 
     useEffect(() => {
-        const intervalId = setInterval(() => {
-            fetchData();
-        }, 10000); // Call fetchData every 10 seconds
+        isMounted.current = true;
+        fetchData(); // Fetch data initially
 
-        // Fetch data initially
-        fetchData();
-
-        return () => clearInterval(intervalId);
+        return () => {
+            isMounted.current = false; // Clean up the flag on component unmount
+            console.log("Cleaning up game lobby...");
+        };
     }, []);
 
     const handleLeaveLobby = () => {
-        //ws.send(JSON.stringify({ type: 'leave-lobby', userId: user.id }));
         navigate('/home');
     };
 
