@@ -1,30 +1,28 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form"
-import { TextInput, Loading, CustomButton} from "../components";
+import { useForm } from "react-hook-form";
+import { TextInput, Loading, CustomButton } from "../components";
 import { BgImage } from "../assets";
 import { apiUrl } from "../config.js";
-
 
 const Login = () => {
     const navigate = useNavigate();
     const {
         register,
         handleSubmit,
-        getValues,
         setError,
         formState: { errors },
-    } = useForm({
-        mode: "onChange",
-    });
+    } = useForm({ mode: "onChange" });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-
-    const onSubmit = async(data) => { 
+    const onSubmit = async (data) => {
         console.log("Attempting to navigate to home...");
 
         const formData = new FormData();
         formData.append('username', data.username);
         formData.append('password', data.password);
+
+        setIsSubmitting(true);
 
         fetch(`${apiUrl}/api/user/login/`, {
             method: 'POST',
@@ -32,36 +30,31 @@ const Login = () => {
         })
             .then((response) => {
                 if (response.ok) {
-                    response.json().then(obj => {
-
-                        console.log('access: ' + obj.access);
-                        console.log('refresh: ' + obj.refresh);
-                        localStorage.setItem('access', obj.access);
-                        localStorage.setItem('refresh', obj.refresh);
-                        return obj;
-                    }).catch(error => {
-                        console.error('Error parsing JSON:', error);
-                    });
+                    return response.json();
                 } else {
-                    console.error('Response not OK:', response.statusText);
+                    throw new Error('Username and/or password is incorrect');
                 }
             })
             .then((data) => {
+                console.log('access: ' + data.access);
+                console.log('refresh: ' + data.refresh);
+                localStorage.setItem('access', data.access);
+                localStorage.setItem('refresh', data.refresh);
                 console.log(data);
                 alert('Login complete, navigating to home page.');
                 navigate("/home");
             })
             .catch((error) => {
                 console.error('There was a problem with the fetch operation:', error);
-                setError("username", {
+                setError("password", {
                     type: "manual",
-                    message: "Problem with token creation/incorrect username or password",
-                })
+                    message: "Username and/or password is incorrect",
+                });
+            })
+            .finally(() => {
+                setIsSubmitting(false);
             });
     };
-
-    const [errMsg] = useState("");
-    const [isSubmitting] = useState(false);
 
     return (
         <div className='bg-bgColor w-full h-[100vh] flex items-center justify-center p-6'>
@@ -81,33 +74,24 @@ const Login = () => {
                         <TextInput 
                             name='email' 
                             placeholder='Username'
-                            label= 'Username'
+                            label='Username'
                             type='text'
                             register={register("username", {
                                 required: "Username is required"
                             })}
                             styles="w-full rounded-full"
-                            error= {errors.username ? errors.username.message : ""}/>
+                            error={errors.username ? errors.username.message : ""}/>
 
                         <TextInput 
                             name='password' 
                             placeholder='Password'
-                            label= 'Password'
+                            label='Password'
                             type='password'
                             styles='w-full rounded-full'
                             register={register("password", {
                                 required: "Password is required!",
                             })}
-                            error= {errors.password ? errors.password?.message : ""}/>                       
-                        {
-                            errMsg?.message && (
-                                <span className={`text-sm ${
-                                    errMsg?.status =="failed" ? "text-[#f64949fe]": "text-[#2ba150fe]"
-                                    } mt-0.5`}>
-                                    {errMsg?.message}
-                                </span>
-                            )
-                        }
+                            error={errors.password ? errors.password.message : ""}/>                       
                         {
                             isSubmitting ? (<Loading/> ) : ( 
                                 <CustomButton 
