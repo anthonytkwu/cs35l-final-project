@@ -68,6 +68,10 @@ const CreateLobby = () => {
             <TopBar2 />
 
             <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full'>
+                {/*flex box*/}
+                <div className='player-list hidden w-1/3 lg:w-1/4 h-full md:flex felx-col gap-6 overflow auto'>
+                    {/* do not delete this, it helps center the page*/}
+                </div>
                 <div className='w-full lg:w-1/2 h-full p-10 2xl:px-20 flex '>
                     <div className='settings w-full flex flex-col gap-2 items-center mb-1 justify-center '>
                         {isHost && (
