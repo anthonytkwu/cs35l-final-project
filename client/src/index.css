@@ -135,6 +135,11 @@
     border-color: #666;
 }
 
+.info-text-wrapper{
+    font-size: 16px;
+
+}
+
 .input-box-style{
     border-radius: 9999px; 
     width: 100%; 

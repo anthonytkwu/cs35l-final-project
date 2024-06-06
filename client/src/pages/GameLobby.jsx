@@ -6,6 +6,7 @@ import { TopBar2, TextInput, Loading, CustomButton, UserCard } from "../componen
 const GameLobby = () => {
     const navigate = useNavigate();
     const [gameInfo, setGameInfo] = useState(null);
+    const [gameCode, setGameCode] = useState(null);
     const [errMsg, setErrMsg] = useState("");
     const [players, setPlayers] = useState([]);
     const [isHost, setIsHost] = useState(true);
@@ -32,6 +33,7 @@ const GameLobby = () => {
             setGameInfo(data); // Set gameInfo state variable with fetched data
             setDrawingTime(data.draw_time);
             setWritingTime(data.desc_time);
+            setGameCode(data.game_code);
             setPlayers(data.users);
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
@@ -71,35 +73,41 @@ const GameLobby = () => {
 
                 {/* CENTER */}
                 <div className='w-full lg:w-1/2 h-full p-10 2xl:px-20 flex '>
-                    <div className='settings w-full flex flex-col gap-2 items-center mb-1 justify-center '>
+                    <div className='settings w-full flex flex-col gap-2 items-center mb-1'>
                         {isHost && (
                             <>
-                                <div className='w-full flex gap-2 items-center mb-1 justify-center '>
-                                    <span className='colored-subtitle-text'>
+                                <div className='flex items-center mb-1 pr-6 pl-6 pb-2 rounded-[5vh] justify-center bg-[rgb(var(--color-grey))]'>
+                                    <span className='text-[72px] text-[rgb(var(--color-ascent1))]'>{gameCode}</span>
+                                </div>
+                                <div className='info-text-wrapper'>
+                                    <span className='text-[18px] text-[rgb(var(--color-ascent1))]'>
                                         Players in Lobby: {players.length}
                                     </span>
                                 </div>
 
-                                <div className='w-full flex gap-2 items-center mb-1 justify-center '>
-                                    <span className='colored-subtitle-text'>
-                                        Length of Drawing Round: {drawingTime}
+                                <div className='info-text-wrapper'>
+                                    <span className='text-[18px] text-[rgb(var(--color-ascent1))]'>
+                                        Drawing Round: {drawingTime}s
                                     </span>
                                 </div>
 
-                                <div className='w-full flex gap-2 items-center mb-1 justify-center '>
-                                    <span className='colored-subtitle-text'>
-                                        Length of Prompt Round: {writingTime}
+                                <div className='info-text-wrapper mb-[10vh]'>
+                                    <span className='text-[18px] text-[rgb(var(--color-ascent1))]'>
+                                        Prompt Round: {writingTime}s
                                     </span>
                                 </div>
-
-                                <CustomButton
-                                    onClick={handleStartGame}
-                                    containerStyles={'colored-button-style'}
-                                    title='Start Game' />
-                                <CustomButton
-                                    onClick={handleLeaveLobby}
-                                    containerStyles={'colored-button-style'}
-                                    title='Leave Lobby' />
+                                
+                                <div className='flex flex-row gap-2'>
+                                    <CustomButton
+                                        onClick={handleStartGame}
+                                        containerStyles={'colored-button-style'}
+                                        title='Start Game' />
+                                    <CustomButton
+                                        onClick={handleLeaveLobby}
+                                        containerStyles={'colored-button-style'}
+                                        title='Leave Lobby' />
+                                </div>
+                                
                             </>
                         )}
                     </div>
