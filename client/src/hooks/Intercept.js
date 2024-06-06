@@ -20,6 +20,8 @@ export const intercept = async (destination, api_method, json_body, navigate) =>
     try {
         // try a request
         let response = await request(access);
+        console.error(response.status);
+
 
         if (response.status == 401) {
             console.log('refreshing access token.');
@@ -29,6 +31,7 @@ export const intercept = async (destination, api_method, json_body, navigate) =>
             if (newAccessToken && newAccessToken.access) {
                 // try new access token
                 response = await request(newAccessToken.access);
+                localStorage.setItem(newAccessToken.access);
             } else {
                 console.error('failed to refresh token');
                 throw new Error('failed to refresh token');
@@ -38,7 +41,7 @@ export const intercept = async (destination, api_method, json_body, navigate) =>
         if (response.ok) {
             return await response.json();
         } else {
-            console.error('Refresh response was not OK:', response.statusText);
+            console.error('Response was not OK:', response.statusText);
             throw new Error(response.statusText);
         }
 
