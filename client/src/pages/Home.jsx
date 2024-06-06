@@ -4,12 +4,16 @@ import { TopBar, ProfileCard, TextInput, Loading, CustomButton } from "../compon
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
 import { joinExistingGame } from "../api";
+import { apiUrl } from "../config.js";
+
 
 
 const Home = () => {
     const { user } = useSelector((state) => state.user);
     const [errMsg, setErrMsg] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [output, setOutput] = useState('');
+    const [showForm, setShowForm] = useState(true);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -24,24 +28,50 @@ const Home = () => {
         navigate(`/create-lobby`);
     }
 
-    const joinGame = async (data) => {
-        try {
-            setIsSubmitting(true);
-            console.log("Attempting to join lobby with code:", data.joinLobbyCode);
-            const response = await joinExistingGame(data.joinLobbyCode);
-            console.log(response);
-
-            if (response != null){
-                localStorage.setItem('game_code', data.joinLobbyCode);
-                navigate('/game-lobby');
-            }
-
-        } catch (error) {
-            setErrMsg({ message: error.message, status: 'failed' });
-        }
-        resetJoin();
-    }
+    const onJoinLobby = async (data) => {
+        console.log("Attempting to join game...");
     
+        const access = localStorage.getItem('access');
+        if (!access) {
+            setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
+            return;
+        }
+    
+        setShowForm(false);
+        setOutput('joining game');
+    
+        const gameData = {
+            game_id: data.joinLobbyCode, // Using the game_id from the form directly
+        };
+    
+        try {
+            const response = await fetch(`${apiUrl}/api/session/${gameData.game_id}/join/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${access}`,
+                    'Content-Type': 'application/json'
+                },
+            });
+    
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData);
+                localStorage.setItem('game_code', gameData.game_id)
+                setIsSubmitting(true);
+                setIsSubmitting(false);
+                navigate(`/game-lobby`);
+                resetJoin(); // Ensure to reset the form here
+            } else {
+                const errorText = await response.text();
+                console.error('Response text:', errorText);
+                throw new Error(errorText);
+            }
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+            setErrMsg({ message: 'There was a problem joining the lobby', status: 'failed' });
+        }
+    };
+
     return (
         <div className='w-full px-0 pb-20 2xl:px-40 bg-bgColor h-screen overflow-hidden'>
             <TopBar />
@@ -74,7 +104,7 @@ const Home = () => {
                     </div>
 
                     {/* Join Lobby Form */}
-                    <form className='lobby-input-style' onSubmit={handleSubmitJoin(joinGame)}>
+                    <form className='lobby-input-style' onSubmit={handleSubmitJoin(onJoinLobby)}>
                         <TextInput
                             name='joinLobbyCode'
                             placeholder='123456'
