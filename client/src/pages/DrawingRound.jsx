@@ -7,6 +7,8 @@ import { TopBar2 } from '../components';
 const DrawingRound = () => {
     const [gameInfo, setGameInfo] = useState(null);
     const [errMsg, setErrMsg] = useState("");
+    const [countdown, setCountdown] = useState(null); // Initialize countdown
+
     //canvas utils
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
@@ -25,6 +27,8 @@ const DrawingRound = () => {
             console.log("Fetching game information...");
             const data = await getGameInformation(localStorage.getItem('game_code'));
             setGameInfo(data); // Set gameInfo state variable with fetched data
+            setCountdown(parseInt(data.draw_time));
+            //setPrompt(data.prompt); // Set the prompt from the data
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
         }
@@ -46,6 +50,23 @@ const DrawingRound = () => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        if (countdown !== null) {
+            const timer = setInterval(() => {
+                setCountdown((prevCountdown) => {
+                    if (prevCountdown <= 1) {
+                        clearInterval(timer); 
+                        // Handle end of drawing round here, e.g., navigate to another page or show a message
+                        console.log("Drawing round ended");
+                        return 0;
+                    }
+                    return prevCountdown - 1;
+                });
+            }, 1000);
+
+            return () => clearInterval(timer); // Cleanup timer on component unmount
+        }
+    }, [countdown])
 
     const startDrawing = ({ nativeEvent }) => {
         const { offsetX, offsetY } = nativeEvent;
@@ -170,6 +191,11 @@ const DrawingRound = () => {
                     <FontSizeSlider lineWidth={lineWidth} onChange={(e) => setLineWidth(e.target.value)} />
                     <SaveButton onClick={saveAsSVG} />
                 </div>
+            </div>
+            <div className='w-full flex justify-center p-5'>
+                <span className='text-normal text-ascent-1'>
+                    {countdown} second(s) left before round ends
+                </span>
             </div>
         </div>
     );

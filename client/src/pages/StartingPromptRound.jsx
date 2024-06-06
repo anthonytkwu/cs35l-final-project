@@ -9,32 +9,54 @@ const StartingPromptRound = () => {
     const [gameInfo, setGameInfo] = useState(null);
     const [description, setDescription] = useState('');
     const [isEditing, setIsEditing] = useState(true);
-    const [countdown, setCountdown] = useState(5); // Initialize countdown (5 seconds)
+    const [countdown, setCountdown] = useState(null); // Initialize countdown
 
     async function fetchData() {
         try {
             console.log("Fetching game information...");
             const data = await getGameInformation(localStorage.getItem('game_code'));
             setGameInfo(data); // Set gameInfo state variable with fetched data
+            setCountdown(parseInt(data.desc_time));
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
         }
     }
 
     useEffect(() => {
-        const timer = setInterval(() => {
-            setCountdown((prevCountdown) => {
-                if (prevCountdown <= 1) {
-                    clearInterval(timer); 
-                    //navigate('/drawing-round'); // Navigate when countdown is finished
-                    return 0;
-                }
-                return prevCountdown - 1;
-            });
-        }, 1000);
+        fetchData(); // Fetch data when the component mounts
+    }, []);
 
-        return () => clearInterval(timer);
-    }, [navigate]);
+    // useEffect(() => {
+    //     const timer = setInterval(() => {
+    //         setCountdown((prevCountdown) => {
+    //             if (prevCountdown <= 1) {
+    //                 clearInterval(timer); 
+    //                 //navigate('/drawing-round'); // Navigate when countdown is finished
+    //                 return 0;
+    //             }
+    //             return prevCountdown - 1;
+    //         });
+    //     }, 1000);
+
+    //     return () => clearInterval(timer);
+    // }, [navigate]);
+
+    useEffect(() => {
+        if (countdown !== null) {
+            const timer = setInterval(() => {
+                setCountdown((prevCountdown) => {
+                    if (prevCountdown <= 1) {
+                        clearInterval(timer); 
+                        //navigate('/drawing-round'); // Navigate when countdown is finished
+                        return 0;
+                    }
+                    return prevCountdown - 1;
+                });
+            }, 1000);
+
+            return () => clearInterval(timer); // Cleanup timer on component unmount
+        }
+    }, [countdown, navigate]); // Run this effect when countdown changes
 
     const [isReady, setIsReady] = useState(false);    // Tracks whether the player is ready
 
