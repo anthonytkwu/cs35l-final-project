@@ -26,21 +26,6 @@ const StartingPromptRound = () => {
         fetchData(); // Fetch data when the component mounts
     }, []);
 
-    // useEffect(() => {
-    //     const timer = setInterval(() => {
-    //         setCountdown((prevCountdown) => {
-    //             if (prevCountdown <= 1) {
-    //                 clearInterval(timer); 
-    //                 //navigate('/drawing-round'); // Navigate when countdown is finished
-    //                 return 0;
-    //             }
-    //             return prevCountdown - 1;
-    //         });
-    //     }, 1000);
-
-    //     return () => clearInterval(timer);
-    // }, [navigate]);
-
     useEffect(() => {
         if (countdown !== null) {
             const timer = setInterval(() => {
