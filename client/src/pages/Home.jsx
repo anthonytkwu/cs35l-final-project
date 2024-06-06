@@ -11,8 +11,6 @@ const Home = () => {
     const [errMsg, setErrMsg] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-
     const {
         register: registerJoin,
         handleSubmit: handleSubmitJoin,
@@ -26,14 +24,15 @@ const Home = () => {
 
     const joinGame = async (data) => {
         try {
+            const gameId = data.joinLobbyCode;
             setIsSubmitting(true);
-            console.log("Attempting to join lobby with code:", data.joinLobbyCode);
-            const response = await joinExistingGame(data.joinLobbyCode);
+            console.log("Attempting to join lobby with code:", gameId);
+            const response = await joinExistingGame(gameId);
             console.log(response);
 
             if (response != null){
-                localStorage.setItem('game_code', data.joinLobbyCode);
-                navigate('/game-lobby');
+                localStorage.setItem('game_code', gameId);
+                navigate('/game-lobby', {state: {gameId}});
             }
 
         } catch (error) {

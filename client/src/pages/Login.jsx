@@ -35,11 +35,11 @@ const Login = () => {
                     throw new Error('Username and/or password is incorrect');
                 }
             })
-            .then((data) => {
-                console.log('access: ' + data.access);
-                console.log('refresh: ' + data.refresh);
-                localStorage.setItem('access', data.access);
-                localStorage.setItem('refresh', data.refresh);
+            .then((response) => {
+                console.log('access: ' + response.access);
+                console.log('refresh: ' + response.refresh);
+                localStorage.setItem('access', response.access);
+                localStorage.setItem('refresh', response.refresh);
                 console.log(data);
                 alert('Login complete, navigating to home page.');
                 navigate("/home");

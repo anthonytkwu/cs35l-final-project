@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { getGameInformation } from "../api";
 import { TopBar2, TextInput, Loading, CustomButton, UserCard } from "../components";
 
 const GameLobby = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { gameId } = location.state || {};
+
     const [gameInfo, setGameInfo] = useState(null);
     const [gameCode, setGameCode] = useState(null);
     const [errMsg, setErrMsg] = useState("");
@@ -29,12 +32,14 @@ const GameLobby = () => {
     async function fetchData() {
         try {
             console.log("Fetching game information...");
-            const data = await getGameInformation(localStorage.getItem('game_code'));
+            if (!gameId) throw new Error("Trying to join game lobby: no gameId found");
+            const data = await getGameInformation(gameId);
             setGameInfo(data); // Set gameInfo state variable with fetched data
             setDrawingTime(data.draw_time);
             setWritingTime(data.desc_time);
             setGameCode(data.game_code);
             setPlayers(data.users);
+            console.log(data);
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
         }

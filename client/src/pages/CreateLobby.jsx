@@ -46,8 +46,9 @@ const CreateLobby = () => {
           })
           .then((data) => {
             console.log(data);
-            localStorage.setItem('game_code', data.game_code);
-            navigate(`/game-lobby`);
+            const gameId = data.game_code;
+            //localStorage.setItem('game_code', data.game_code);
+            navigate(`/game-lobby`, {state: {gameId}});
           })
           .catch((error) => {
             console.error('There was a problem with the fetch operation:', error);
@@ -64,11 +65,11 @@ const CreateLobby = () => {
     };
 
     return (
-        <div className='game-lobby w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
+        <div className='game-lobby w-full px-0 pb-20 2xl:px-40 bg-bgColor h-screen overflow-hidden'>
             <TopBar2 />
 
-            <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full'>
-                <div className='w-full lg:w-1/2 h-full p-10 2xl:px-20 flex '>
+            <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full justify-center'>
+                <div className='w-full h-full p-10 2xl:px-20 flex '>
                     <div className='settings w-full flex flex-col gap-2 items-center mb-1 justify-center '>
                         {isHost && (
                             <>
