@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { TopBar, ProfileCard, TextInput, Loading, CustomButton } from "../components";
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
-import { apiUrl } from "../config.js";
+import { joinExistingGame } from "../api";
 
 
 const Home = () => {
@@ -20,27 +20,28 @@ const Home = () => {
         reset: resetJoin,
     } = useForm({ mode: "onChange" });
 
-    function createLobbyCall(event) {
+    function createLobbyCall() {
         navigate(`/create-lobby`);
     }
 
-    const onJoinLobby = async (data) => {
-        setIsSubmitting(true);
-        // Simulate API call to join a lobby
-        // Example: const exists = await api.joinLobby(data.lobbyCode);
-        console.log("Joining lobby with code:", data.joinLobbyCode);
+    const joinGame = async (data) => {
+        try {
+            setIsSubmitting(true);
+            console.log("Attempting to join lobby with code:", data.joinLobbyCode);
+            const response = await joinExistingGame(data.joinLobbyCode);
+            console.log(response);
 
-        setIsSubmitting(false);
-        if (true /* Replace with actual check from API response */) {
-            navigate(`/game-lobby`);
-            {/* Same thing here. use 'game-lobby' for now */ }
-            //navigate(`/game-lobby/${data.joinLobbyCode}`);
-        } else {
-            setErrMsg({ message: "Lobby does not exist", status: "failed" });
+            if (response != null){
+                localStorage.setItem('game_code', data.joinLobbyCode);
+                navigate('/game-lobby');
+            }
+
+        } catch (error) {
+            setErrMsg({ message: error.message, status: 'failed' });
         }
         resetJoin();
-    };
-
+    }
+    
     return (
         <div className='w-full px-0 pb-20 2xl:px-40 bg-bgColor h-screen overflow-hidden'>
             <TopBar />
@@ -73,7 +74,7 @@ const Home = () => {
                     </div>
 
                     {/* Join Lobby Form */}
-                    <form className='lobby-input-style' onSubmit={handleSubmitJoin(onJoinLobby)}>
+                    <form className='lobby-input-style' onSubmit={handleSubmitJoin(joinGame)}>
                         <TextInput
                             name='joinLobbyCode'
                             placeholder='123456'

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { getGameInformation } from "../api";
 import { TopBar2, TextInput, Loading, CustomButton, UserCard } from "../components";
 
@@ -40,7 +39,14 @@ const GameLobby = () => {
     }
 
     useEffect(() => {
+        const intervalId = setInterval(() => {
+            fetchData();
+        }, 10000); // Call fetchData every 10 seconds
+
+        // Fetch data initially
         fetchData();
+
+        return () => clearInterval(intervalId); 
     }, []);
 
     const handleLeaveLobby = () => {
