@@ -55,6 +55,10 @@ const DescriptionRound = () => {
     return (
         <div className="flex flex-col justify-start bg-bgColor">
             <div><TopBar2 /></div>
+            {/* Display the game code at the top */}
+            <div className='w-full flex justify-center p-5'>
+                <span className='text-4xl font-bold text-ascent-1'> Game ID: {localStorage.getItem('game_code')}</span>
+            </div>
             <div className="w-full flex justify-center p-5 bg-[rgb(var(--color-grey))]">
                 <span className='colored-subtitle-text pr-2'>Now it's your turn to describe the scene:</span>
             </div>

@@ -83,6 +83,11 @@ const StartingPromptRound = () => {
     return (
         <div className='w-full px-0 pb-20 2xl:px-40 bg-bgColor h-screen overflow-hidden flex flex-col justify-center items-center'>
             <TopBar2 />
+            {/* Display the game code at the top */}
+            <div className='w-full flex justify-center p-5'>
+                <span className='text-4xl font-bold text-ascent-1'> Game ID: {localStorage.getItem('game_code')}</span>
+            </div>
+
             <div className="w-full flex justify-center p-5 bg-[rgb(var(--color-grey))]">
                 <span className='colored-subtitle-text pr-2'>Type in a prompt:</span>
             </div>
