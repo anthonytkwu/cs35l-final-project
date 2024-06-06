@@ -3,10 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { TopBar, ProfileCard, TextInput, Loading, CustomButton } from "../components";
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
-import { joinExistingGame } from "../api";
 import { apiUrl } from "../config.js";
-
-
+import { handleGameDataAndNavigate } from '../utils'; // Import the utility function
 
 const Home = () => {
     const { user } = useSelector((state) => state.user);
@@ -30,20 +28,20 @@ const Home = () => {
 
     const onJoinLobby = async (data) => {
         console.log("Attempting to join game...");
-    
+
         const access = localStorage.getItem('access');
         if (!access) {
             setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
             return;
         }
-    
+
         setShowForm(false);
         setOutput('joining game');
-    
+
         const gameData = {
             game_id: data.joinLobbyCode, // Using the game_id from the form directly
         };
-    
+
         try {
             const response = await fetch(`${apiUrl}/api/session/${gameData.game_id}/join/`, {
                 method: 'GET',
@@ -52,14 +50,13 @@ const Home = () => {
                     'Content-Type': 'application/json'
                 },
             });
-    
+
             if (response.ok) {
                 const responseData = await response.json();
                 console.log(responseData);
-                localStorage.setItem('game_code', gameData.game_id)
+                handleGameDataAndNavigate(responseData, navigate); // Use the utility function
                 setIsSubmitting(true);
                 setIsSubmitting(false);
-                navigate(`/game-lobby`);
                 resetJoin(); // Ensure to reset the form here
             } else {
                 const errorText = await response.text();
