@@ -1,0 +1,24 @@
+define your data first, it should look somthing like this:
+
+intercept(destination, api_method, data, navigate)
+            .then((data) => {
+                // do with your .json object as you wish
+            })
+            .catch((error) => {
+                console.error('Error occurred:', error);
+            });
+
+
+Function inputs are described below:
+
+destination - api destination ex: "/api/session/create/"
+api_method: this will usually be 'POST', sometimes 'GET'. check anthony's documentation
+data: should look something like this
+const data = {
+            aspect1: variable1,
+            aspect2: variable2,
+        };
+navigate: make sure to import { useNavigate } from "react-router-dom"
+const navigate = useNavigate(); // <- define navigate then pass him into the function
+
+
