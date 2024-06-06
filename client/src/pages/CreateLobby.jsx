@@ -33,7 +33,7 @@ const CreateLobby = () => {
     fetch(`${apiUrl}/api/session/create/`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${access}`,
+        'Authorization': `Bearer ${access}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
