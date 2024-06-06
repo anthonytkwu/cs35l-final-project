@@ -171,7 +171,7 @@ Session Start:
         }
     (requires 3 or more people to be in the session, game must have not started yet)
     
-Upload Drawing
+Upload Drawing:
     Actions: POST
     -H "Content-Type: multipart/form-data"
     URL: api/session/<str:game_code>/<int:round>/<int:chain>/draw/
@@ -182,8 +182,58 @@ Upload Drawing
     Response:
         {}
 
-Upload Description
+Upload Description:
     Actions: POST
     URL: api/session/<str:game_code>/<int:round>/<int:chain>/draw/
     Request:
-    
+        {"description": "this is a test description of the drawing lol"}
+    Response:
+        {
+            "id":8,
+            "description":"test",
+            "created_at":"2024-06-06T06:55:21.722270Z",
+            "chain":10,
+            "author":"testuser2"
+        }
+
+Get Drawing Information:
+    Actions: GET
+    URL: api/session/<str:game_code>/<int:round>/<int:chain>/getDraw/
+    Request:
+        {}
+    Response (example: http://127.0.0.1:8000/api/session/145078/1/13/getDraw/):
+        {
+            "id":20,
+            "drawing":"http://localhost:8000/media/13_145078_1.svg",
+            "created_at":"2024-06-05T11:07:59.426722Z",
+            "chain":13,
+            "author":"testuser3"
+        }
+    Note: Say now it's round 2, which is a description round since it is an even round.
+          You make an api request (Session Info When Change) and find out that you are 
+          on chain 2 for this round. Thus, you need to make an api call that asks for the
+          drawing of the previous round in the chain. Hence, you make the call to this URL:
+          api/session/<str:game_code>/1/2/getDraw/.
+          This call only gives you information about the image, including the fact that the
+          drawing is located at the URL provided.
+
+Get Drawing Media:
+    Actions: GET
+    URL: use whatever was given to you from Drawing Information (typically media/{some file name})
+    Request:
+        {}
+    Response is just the file.
+
+Get Description:
+    Actions: GET
+    URL:
+    Request:
+        {}
+    Response:
+        {
+            "id":8,
+            "description":"test",
+            "created_at":"2024-06-06T06:55:21.722270Z",
+            "chain":10,
+            "author":"testuser2"
+        }

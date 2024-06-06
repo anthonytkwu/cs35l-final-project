@@ -9,7 +9,7 @@ curl -s -X POST htt
 
 TOKEN=$(curl -s -X POST http://localhost:8000/api/user/login/ \
      -H "Content-Type: application/json" \
-     -d '{"username": "testuser2", "password": "testpassword"}' \
+     -d '{"username": "testuser3", "password": "testpassword"}' \
      | jq -r '.access')
 
 
@@ -31,9 +31,25 @@ curl -s -X POST http://localhost:8000/api/session/283145/wait/ \
 curl -s -X POST http://localhost:8000/api/session/645146/0/11/desc \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer $TOKEN" \
-     -d '{description: "test"}'
+     -d '{"description": "test"}'
 
 curl -s -X POST http://localhost:8000/api/session/145078/1/13/draw/ \
      -H "Content-Type: multipart/form-data" \
      -H "Authorization: Bearer $TOKEN" \
      -F "drawing=@/Users/anthonywu/Downloads/penguin.svg"
+
+curl -s -X POST http://localhost:8000/api/session/435685/0/10/desc/ \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer $TOKEN" \
+     -d '{"description": "test"}'
+
+curl -s -X GET http://localhost:8000/api/session/145078/1/13/getDraw/ \
+     -H "Authorization: Bearer $TOKEN" \
+
+curl -s -X GET http://127.0.0.1:8000/media/13_145078_1.svg/ \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer $TOKEN" \
+
+curl -s -X POST http://localhost:8000/api/session/435685/0/10/getDesc/ \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer $TOKEN" \

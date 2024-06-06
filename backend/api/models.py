@@ -125,4 +125,6 @@ class Drawing(models.Model):
         super().delete(*args, **kwargs)
 
     def __str__(self):
-        return str(self.id)
+        if self.id:
+            return str(self.id)
+        return None

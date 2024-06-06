@@ -29,7 +29,6 @@ class SessionJoinView(generics.RetrieveAPIView):
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
     permission_classes = (IsAuthenticated,)
-    lookup_field = 'game_code'
 
     def get_object(self):
         game_code = self.kwargs.get('game_code')
@@ -52,10 +51,8 @@ class SessionJoinView(generics.RetrieveAPIView):
         return Response(serializer.data)
     
 class SessionInfoView(generics.RetrieveAPIView):
-    queryset = Session.objects.all()
     serializer_class = SessionSerializer
     permission_classes = (IsAuthenticated,)
-    lookup_field = 'game_code'
 
     def get_object(self):
         game_code = self.kwargs.get('game_code')
@@ -67,14 +64,14 @@ class SessionInfoView(generics.RetrieveAPIView):
     
     def retrieve(self, request, *args, **kwargs):
         session = self.get_object()
+        if request.user not in session.users.all():
+            return Response({'detail': 'Not in session'}, status=status.HTTP_401_UNAUTHORIZED)
         serializer = self.get_serializer(session)
         return Response(serializer.data)
     
 class SessionWaitView(generics.GenericAPIView):
-    queryset = Session.objects.all()
     serializer_class = SessionSerializer
     permission_classes = (IsAuthenticated,)
-    lookup_field = 'game_code'
 
     def post(self, request, *args, **kwargs):
         game_code = self.kwargs.get('game_code')
@@ -85,6 +82,10 @@ class SessionWaitView(generics.GenericAPIView):
             session = Session.objects.get(game_code=game_code)
         except Session.DoesNotExist:
             return Response({'detail': 'Session not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if request.user not in session.users.all():
+            return Response({'detail': 'Not in session'}, status=status.HTTP_401_UNAUTHORIZED)
+
 
         timeout = 1000  # timeout period in seconds
         start_time = time.time()
@@ -111,10 +112,8 @@ class SessionWaitView(generics.GenericAPIView):
                 time.sleep(0.5)
 
 class SessionStartView(generics.UpdateAPIView):
-    queryset = Session.objects.all()
     serializer_class = SessionSerializer
     permission_classes = (IsAuthenticated,)
-    lookup_field = 'game_code'
 
     def update(self, request, *args, **kwargs):
         game_code = self.kwargs.get('game_code')
@@ -123,7 +122,9 @@ class SessionStartView(generics.UpdateAPIView):
         except Session.DoesNotExist:
             return Response({'detail': 'Session not found'}, status=status.HTTP_404_NOT_FOUND)
         
-        if session.users.count() < 2:
+        if request.user not in session.users.all():
+            return Response({'detail': 'Not in session'}, status=status.HTTP_401_UNAUTHORIZED)
+        elif session.users.count() < 2:
             return Response({'detail': 'Not enough players'}, status=status.HTTP_400_BAD_REQUEST)
         elif session.round != -1:
             return Response({'detail': 'Session in progress'}, status=status.HTTP_400_BAD_REQUEST)
@@ -131,7 +132,6 @@ class SessionStartView(generics.UpdateAPIView):
         return Response(SessionSerializer(session).data)
     
 class DrawingCreateView(generics.CreateAPIView):
-    queryset = Drawing.objects.all()
     serializer_class = DrawingSerializer
     permission_classes = (AllowAny,)
 
@@ -175,7 +175,6 @@ class DrawingCreateView(generics.CreateAPIView):
 
 
 class DescCreateView(generics.CreateAPIView):
-    queryset = Description.objects.all()
     serializer_class = DescSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -192,10 +191,9 @@ class DescCreateView(generics.CreateAPIView):
             return Response({'detail': 'Chain mismatch'}, status=status.HTTP_400_BAD_REQUEST)
         
         chain = Chain.objects.get(id=chain_id)
-        user = User.objects.get(id=2)
-        # user = self.request.user
-        # if user != chain.users.all()[round]:
-        #     return Response({'detail': 'Not your turn'}, status=status.HTTP_400_BAD_REQUEST)
+        user = self.request.user
+        if user != chain.users.all()[round]:
+            return Response({'detail': 'Not your turn'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             if serializer.is_valid():
@@ -208,13 +206,16 @@ class DescCreateView(generics.CreateAPIView):
             return Response({'detail': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
 class DrawingRetrieveView(generics.RetrieveAPIView):
-    queryset = Drawing.objects.all()
     serializer_class = DrawingSerializer
     permission_classes = (IsAuthenticated,)
 
     def retrieve(self, request, *args, **kwargs):
+        game_code = self.kwargs.get('game_code')
         chain_id = self.kwargs.get('chain')
         round = self.kwargs.get('round')
+        if request.user not in Session.objects.get(game_code=game_code).users.all():
+            return Response({'detail': 'Not in session'}, status=status.HTTP_401_UNAUTHORIZED)
+
         if round % 2 == 0:
             return Response({'detail': 'Round is not drawing'}, status=status.HTTP_400_BAD_REQUEST)
         try:
@@ -228,7 +229,6 @@ class DrawingRetrieveView(generics.RetrieveAPIView):
         return Response(serializer.data)
 
 class MediaRetrieveView(generics.RetrieveAPIView):
-    queryset = Drawing.objects.all()
     permission_classes = (IsAuthenticated,)
 
     def get_object(self):
@@ -241,19 +241,23 @@ class MediaRetrieveView(generics.RetrieveAPIView):
     
     def retrieve(self, request, *args, **kwargs):
         drawing = self.get_object()
+        if request.user not in drawing.chain.session.users.all():
+            return Response({'detail': 'Not in session'}, status=status.HTTP_401_UNAUTHORIZED)
         file_handle = drawing.drawing.open()
         response = FileResponse(file_handle, content_type='image/svg+xml')
         return response
     
 class DescRetrieveView(generics.RetrieveAPIView):
-    queryset = Description.objects.all()
     serializer_class = DescSerializer
     permission_classes = (IsAuthenticated,)
 
     def retrieve(self, request, *args, **kwargs):
+        game_code = self.kwargs.get('game_code')
         chain_id = self.kwargs.get('chain')
         round = self.kwargs.get('round')
-        if round % 2 == 1:
+        if request.user not in Session.objects.get(game_code=game_code).users.all():
+            return Response({'detail': 'Not in session'}, status=status.HTTP_401_UNAUTHORIZED)
+        elif round % 2 == 1:
             return Response({'detail': 'Round is not desc'}, status=status.HTTP_400_BAD_REQUEST)
         try:
             desc = Chain.objects.get(id=chain_id).descriptions.all()[round // 2]
