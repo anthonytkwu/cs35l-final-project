@@ -21,6 +21,7 @@ const Login = () => {
         const formData = new FormData();
         formData.append('username', data.username);
         formData.append('password', data.password);
+        localStorage.setItem('current_user', data.username);
 
         setIsSubmitting(true);
 
@@ -32,6 +33,7 @@ const Login = () => {
                 if (response.ok) {
                     return response.json();
                 } else {
+                    localStorage.removeItem('current_user');
                     throw new Error('Username and/or password is incorrect');
                 }
             })
@@ -45,6 +47,7 @@ const Login = () => {
                 navigate("/home");
             })
             .catch((error) => {
+                localStorage.removeItem('current_user');
                 console.error('There was a problem with the fetch operation:', error);
                 setError("password", {
                     type: "manual",

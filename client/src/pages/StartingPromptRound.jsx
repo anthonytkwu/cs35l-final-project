@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getGameInformation } from "../api";
+import { getGameInformation, postUserDescription } from "../api";
 import { TextInput, TopBar2 } from "../components";
 
 const StartingPromptRound = () => {
@@ -16,23 +16,37 @@ const StartingPromptRound = () => {
             console.log("Fetching game information...");
             const data = await getGameInformation(localStorage.getItem('game_code'));
             setGameInfo(data); // Set gameInfo state variable with fetched data
-            setCountdown(parseInt(data.desc_time));
+            //setCountdown(parseInt(data.desc_time));
+            setCountdown(4);
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
         }
     }
 
+    async function postDescription(){
+        try{    
+            console.log("Attempting to upload description");
+            await postUserDescription({}, description);
+        } catch (error){
+            setErrMsg({ message: error.message, status: 'failed' });
+        }
+    }
+
     useEffect(() => {
-        fetchData(); // Fetch data when the component mounts
+         fetchData();
     }, []);
 
     useEffect(() => {
+        
         if (countdown !== null) {
             const timer = setInterval(() => {
                 setCountdown((prevCountdown) => {
                     if (prevCountdown <= 1) {
                         clearInterval(timer); 
                         //navigate('/drawing-round'); // Navigate when countdown is finished
+
+                        postDescription();
+                        navigate('/drawing-round');
                         return 0;
                     }
                     return prevCountdown - 1;
@@ -43,19 +57,6 @@ const StartingPromptRound = () => {
         }
     }, [countdown, navigate]); // Run this effect when countdown changes
 
-    const [isReady, setIsReady] = useState(false);    // Tracks whether the player is ready
-
-    const toggleReady = () => {
-        setIsReady(!isReady);               // Toggle readiness state
-        if (!isReady) {
-            // Perform server communication here, signaling the player is ready
-            console.log('Player is ready!');  // Placeholder for server interaction
-        } else {
-            // Optionally handle the case when the player toggles off ready
-            console.log('Player is not ready!');
-        }
-    };
-
     const handleInputChange = (e) => {
         setDescription(e.target.value);
     };
@@ -63,7 +64,6 @@ const StartingPromptRound = () => {
     const handleButtonClick = () => {
         setIsEditing(!isEditing);
     };
-
 
     return (
         <div className='w-full px-0 pb-20 2xl:px-40 bg-bgColor h-screen overflow-hidden flex flex-col justify-center items-center'>
@@ -77,7 +77,7 @@ const StartingPromptRound = () => {
                 <span className='colored-subtitle-text pr-2'>Type in a prompt:</span>
             </div>
 
-            <div className='flex items-center mb-[1%] mt-[5%] gap-3'>
+            <div className='flex items-center mb-[1%] mt-[5%]'>
                 <TextInput
                     placeholder='...a dog eating a banana'
                     type='text'
@@ -86,7 +86,7 @@ const StartingPromptRound = () => {
                     onChange={handleInputChange}
                     disabled={!isEditing}/>
                 
-                <button className='colored-button-style mt-2.5' onClick={handleButtonClick}>
+                <button className='colored-button-style mt-2.5 w-[200px]' onClick={handleButtonClick}>
                     {isEditing ? 'Ready!' : 'Not Ready'}
                 </button>
             </div>
