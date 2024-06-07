@@ -122,15 +122,8 @@ const DescriptionRound = () => {
         
         try {
             const response = await intercept(url, 'GET', null, navigate);
-            const imageResponse = await interceptSVG(`${response.drawing}/`, 'GET', null, navigate);
-
-            if (imageResponse.ok) {
-                const blob = await imageResponse.blob();
-                const imageUrl = URL.createObjectURL(blob);
-                setImg(imageUrl);
-            } else {
-                console.error('Error fetching image:', imageResponse.statusText);
-            }
+            const svgResponse = await interceptSVG(`${response.drawing}/`, 'GET', null, navigate);
+            setImg(`data:image/svg+xml;base64,${btoa(svgResponse)}`);  
         } catch (error) {
             console.error('Error occurred while fetching image:', error);
         }
@@ -147,8 +140,8 @@ const DescriptionRound = () => {
                 <span className='colored-subtitle-text pr-2'>Now it's your turn to describe the scene:</span>
             </div>
             <div className='flex flex-col items-center'>
-                <div className='w-[900px] h-[400px] flex m-4'>
-                    <img src={img} alt='Drawing' height="87" width="100" />
+                <div className='w-[900px] h-[400px] flex m-4 bg-white'>
+                    <img src={img} alt='Drawing'/>
                 </div>
                 <div className='flex items-center mb-[1%] gap-3'>
                     <TextInput

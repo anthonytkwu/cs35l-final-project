@@ -231,7 +231,9 @@ export const interceptSVG = async (destination, api_method, form_data, navigate)
 
     try {
         // try a request
+
         let response = await request(access);
+        
 
         if (response.status == 401) {
             console.log('refreshing access token.');
@@ -258,9 +260,7 @@ export const interceptSVG = async (destination, api_method, form_data, navigate)
         }
 
         if (response.ok) {
-            const obj = await response.json();
-            console.log(obj);
-            return obj;
+            return await response.text();
         } else {
             console.error('Response was not OK:', response.statusText);
             throw new Error(response.statusText);
