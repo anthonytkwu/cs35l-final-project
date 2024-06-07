@@ -4,16 +4,20 @@ import { refreshToken } from "./RefreshToken";
 
 export const intercept = async (destination, api_method, json_body, navigate) => {
     const access = localStorage.getItem('access'); 
-    
+
     const request = async (access) => {
-        const response = await fetch(`${apiUrl}${destination}`, {
+        const options = {
             method: api_method,
             headers: {
               'Authorization': `Bearer ${access}`,
               'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(json_body),
-          });
+            }
+        };
+        if (json_body) {
+            options.body = JSON.stringify(json_body);
+        }
+        console.log(`${apiUrl}${destination}`);
+        const response = await fetch(`${apiUrl}${destination}`, options);
         return response;
     }
 
@@ -24,15 +28,24 @@ export const intercept = async (destination, api_method, json_body, navigate) =>
         if (response.status == 401) {
             console.log('refreshing access token.');
             // refreshes the access token
-            const newAccessToken = await refreshToken();
-
-            if (newAccessToken && newAccessToken.access) {
-                // try new access token
-                response = await request(newAccessToken.access);
-                localStorage.setItem("access", newAccessToken.access);
-            } else {
+            try {
+                console.log("BEFORE");
+                const newAccessToken = await refreshToken();
+                if (newAccessToken && newAccessToken.access) {
+                    // try new access token
+                    try { 
+                        response = await request(newAccessToken.access);
+                        localStorage.setItem("access", newAccessToken.access);
+                    } catch (error) {
+                        console.error('failed retry with new access token');
+                        navigate('/login');
+                        throw new Error();
+                    }
+                } 
+            } catch (error) {
                 console.error('failed to refresh token');
-                throw new Error('failed to refresh token');
+                navigate('/login');
+                throw new Error('Token refresh failed: ', error);
             }
         }
 
@@ -47,7 +60,6 @@ export const intercept = async (destination, api_method, json_body, navigate) =>
 
     } catch (error) {
         console.error('There was an error with the fetch.');
-        navigate('/login');
     }
 
 
