@@ -87,7 +87,7 @@ class SessionWaitView(generics.GenericAPIView):
             return Response({'detail': 'Not in session'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-        timeout = 15  # timeout period in seconds
+        timeout = 5  # timeout period in seconds
         start_time = time.time()
 
         client_session_state = request.data['last_modified']

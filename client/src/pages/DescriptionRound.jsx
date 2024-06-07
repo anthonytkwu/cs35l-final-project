@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextInput, TopBar2 } from '../components';
-import { getGameInformation, postWaitForGameUpdates, interceptSVG } from "../api";
+import { getGameInformation, postWaitForGameUpdates, interceptSVG, postUserDescription } from "../api";
 import { intercept } from "../hooks/Intercept.js";
 
 const DescriptionRound = () => {
@@ -14,15 +14,41 @@ const DescriptionRound = () => {
     const [img, setImg] = useState("");
     const isFetching = useRef(false);
     const isMounted = useRef(true);
+    const [hasResponded, setHasResponded] = useState(false);
+    const descriptionPosted = useRef(false);
 
     const handleInputChange = (e) => {
         setDescription(e.target.value);
     };
 
     const handleButtonClick = () => {
-        console.log(description);
-        setIsEditing(false);
-    };
+        console.log("Button clicked. hasResponded:", hasResponded);
+        if (!descriptionPosted.current) {
+          setIsEditing(false);
+          postDescription();
+        } else {
+          console.log("Button click ignored because already responded");
+        }
+      };
+
+    const postDescription = async () => {
+        if (descriptionPosted.current) {
+          console.log("Skipping postDescription because already responded");
+          return;
+        }
+    
+        try {
+          descriptionPosted.current = true;
+          console.log("Attempting to upload description:", description);
+          await postUserDescription({}, description);
+          console.log("Description uploaded:", description, "User:", localStorage.getItem("current_user"));
+          setHasResponded(true);
+          fetchWait();
+        } catch (error) {
+          console.error("Error uploading description:", error);
+          setErrMsg({ message: error.message, status: "failed" });
+        }
+      };
 
     async function fetchData() {
         try {
@@ -32,6 +58,7 @@ const DescriptionRound = () => {
             setCountdown(parseInt(data.desc_time));
             getImage(data);
             console.log(data);
+            fetchWait();
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
         }
@@ -50,13 +77,13 @@ const DescriptionRound = () => {
                     navigate("/drawing-round");
                 }
                 if (isMounted.current) {
-                    setTimeout(fetchWait, 2500); // Only set timeout if still mounted
+                    setTimeout(fetchWait, 500); // Only set timeout if still mounted
                 }
             }
         } catch (error) {
             if (isMounted.current) {
                 console.error("Error waiting for game updates:", error);
-                setTimeout(fetchWait, 2500);
+                setTimeout(fetchWait, 500);
             }
         } finally {
             isFetching.current = false;
@@ -66,8 +93,6 @@ const DescriptionRound = () => {
     useEffect(() => {
         isMounted.current = true;
         fetchData();
-        fetchWait();
-
         return () => {
             isMounted.current = false;
         };
@@ -131,7 +156,8 @@ const DescriptionRound = () => {
                         type='text'
                         value={description}
                         styles="w-[400px] rounded-full"
-                        onChange={handleInputChange}
+                        onChange={(e) => setDescription(e.target.value)}
+
                         disabled={!isEditing} />
 
                     <button
