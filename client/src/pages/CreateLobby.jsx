@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TopBar2, CustomButton } from "../components";
 import { apiUrl } from "../config.js";
-import { handleGameDataAndNavigate } from "../utils.js"
+import { handleGameDataAndNavigate } from "../utils.js";
 import { intercept } from "../hooks/Intercept.js";
-import { createGame } from "../api.js"
 
 const CreateLobby = () => {
   const navigate = useNavigate();
@@ -14,23 +13,32 @@ const CreateLobby = () => {
   const [draw_time, setDrawingTime] = useState(60);
   const [desc_time, setWritingTime] = useState(30);
 
-    function createLobbyCall() {
-        const access = localStorage.getItem('access');
-        if (!access) {
-            setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
-            return;
-        }
-        setOutput('created with draw time: ' + draw_time + ' and desc time: ' + desc_time);
-
-        const data = {
-            desc_time: desc_time,
-            draw_time: draw_time,
-        };
-
-        createGame(data, navigate);
-
-
+  function createLobbyCall() {
+    const access = localStorage.getItem("access");
+    if (!access) {
+      setErrMsg({
+        message: "Authentication token is missing",
+        status: "failed",
+      });
+      return;
     }
+    setOutput(
+      "created with draw time: " + draw_time + " and desc time: " + desc_time
+    );
+
+    const data = {
+      desc_time: desc_time,
+      draw_time: draw_time,
+    };
+
+    intercept("/api/session/create/", "POST", data, navigate)
+      .then((data) => {
+        handleGameDataAndNavigate(data, navigate);
+      })
+      .catch((error) => {
+        console.error("Error occurred:", error);
+      });
+  }
 
   const handleLeaveLobby = () => {
     navigate("/home");
@@ -72,34 +80,39 @@ const CreateLobby = () => {
                   </span>
                 </div>
 
-                                <div className='w-full flex gap-2 items-center mb-10 justify-center '>
-                                    <select value={desc_time} onChange={e => setWritingTime(e.target.value)}>
-                                        <option value={15}>15s</option>
-                                        <option value={30}>30s</option>
-                                        <option value={45}>45s</option>
-                                    </select>
-                                </div>
-
-                                <CustomButton
-                                    onClick={handleCreateLobby}
-                                    containerStyles={'colored-button-style'}
-                                    title='Confirm Settings' />
-                                <CustomButton
-                                    onClick={handleLeaveLobby}
-                                    containerStyles={'colored-button-style'}
-                                    title='Return Home' />
-                            </>
-                        )}
-                        {!isHost && (
-                            <div>
-                                Drawing Time: {draw_time}s, Writing Time: {desc_time}s
-                            </div>
-                        )}
-                    </div>
+                <div className="w-full flex gap-2 items-center mb-10 justify-center ">
+                  <select
+                    value={desc_time}
+                    onChange={(e) => setWritingTime(e.target.value)}
+                  >
+                    <option value={15}>15s</option>
+                    <option value={30}>30s</option>
+                    <option value={45}>45s</option>
+                  </select>
                 </div>
-            </div>
+
+                <CustomButton
+                  onClick={handleCreateLobby}
+                  containerStyles={"colored-button-style"}
+                  title="Confirm Settings"
+                />
+                <CustomButton
+                  onClick={handleLeaveLobby}
+                  containerStyles={"colored-button-style"}
+                  title="Return Home"
+                />
+              </>
+            )}
+            {!isHost && (
+              <div>
+                Drawing Time: {draw_time}s, Writing Time: {desc_time}s
+              </div>
+            )}
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default CreateLobby;
