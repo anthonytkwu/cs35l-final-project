@@ -51,6 +51,35 @@ export async function getGameInformation(gameId) {
     }
 }
 
+export async function getDrawingRoundPrompt(round) {
+    try {
+        const access = localStorage.getItem('access'); 
+        const userChain = localStorage.getItem('current_user_chain');
+        const gameId = localStorage.getItem('game_code');
+        if (!access) {
+            throw new Error('Authentication token is missing');
+        }
+        else if (!userChain){
+            throw new Error('Unable to find user chain value');
+        }
+        const response = await fetch(`${apiUrl}/api/session/${gameId}/${round - 1}/${userChain}/getDesc/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        throw new Error('There was a problem fetching game information');
+    }
+}
+
 export async function postWaitForGameUpdates(body) {
     const gameDataString = localStorage.getItem('game_data');
     if (!gameDataString) {
@@ -226,3 +255,5 @@ export async function postUserDrawing(body, drawingPath){
         throw new Error('There was a problem with the fetch operation');
     }
 }
+
+

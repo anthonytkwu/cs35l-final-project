@@ -1,13 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { getGameInformation, postUserDrawing } from "../api";
+import { getGameInformation, getDrawingRoundPrompt, postUserDrawing } from "../api";
 import { ColorPicker, EraseButton, FontSizeSlider, RedoButton, SaveButton, UndoButton } from '../components/DrawingComponents';
 import { TopBar2 } from '../components';
 
-
 const DrawingRound = () => {
-    const [gameRound, setGameRound] = useState(null);
     const [errMsg, setErrMsg] = useState("");
     const [countdown, setCountdown] = useState(5); // Initialize countdown
+    const [gameRound, setGameRound] = useState(-1);
 
     //canvas utils
     const canvasRef = useRef(null);
@@ -27,12 +26,24 @@ const DrawingRound = () => {
             console.log("Fetching game information...");
             const data = await getGameInformation(localStorage.getItem('game_code'));
             console.log(data);
-            setGameRound(data.round); // Set gameInfo state variable with fetched data
+            setGameRound(data.round);
+            console.log(gameRound);
+            fetchPrompt(data.round); // Set gameInfo state variable with fetched data
             //setCountdown(parseInt(data.draw_time));
             setCountdown(10);
-            setPrompt(data.prompt); // Set the prompt from the data
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
+        }
+    }
+
+    async function fetchPrompt(round){
+        try{
+            console.log("Fetching prompt...");
+            const data = await getDrawingRoundPrompt(round);
+            console.log(data);
+            setPrompt(data.description); 
+        } catch (error){
+            setErrMsg({message: error.message, status: 'failed'});
         }
     }
 
