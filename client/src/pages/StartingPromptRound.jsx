@@ -48,7 +48,7 @@ const StartingPromptRound = () => {
         const username = localStorage.getItem("current_user");
         if (data.round > 0) {
           //console.log("game data is this right now: " + data.chains);
-          localStorage.setItem('current_round', data.round);
+          localStorage.setItem("current_round", data.round);
           navigate("/drawing-round");
         }
         // Delay the next fetch call by 5 seconds
@@ -60,7 +60,7 @@ const StartingPromptRound = () => {
       console.error("Error waiting for game updates: ", error);
       if (isMounted.current) {
         // Retry after 5 seconds if there's an error
-        setTimeout(fetchWait, 2500);
+        setTimeout(fetchWait, 0);
       }
     } finally {
       isFetching.current = false;
@@ -82,28 +82,41 @@ const StartingPromptRound = () => {
   }
 
   useEffect(() => {
-    isMounted.current = true;
+    isMounted.current = true; // Set to true when component mounts
+  
     fetchData();
+  
+    return () => {
+      isMounted.current = false; // Set to false when component unmounts
+    };
   }, []);
+  
 
   useEffect(() => {
+    let mounted = true; // Flag to check mount status
+
     if (countdown !== null) {
       const timer = setInterval(() => {
-        setCountdown((prevCountdown) => {
-          if (prevCountdown <= 1) {
-            clearInterval(timer);
-
-            if (!hasResponded) postDescription();
-            fetchWait();
-            return 0;
-          }
-          return prevCountdown - 1;
-        });
+        if (mounted) {
+          setCountdown((prevCountdown) => {
+            if (prevCountdown <= 1) {
+              clearInterval(timer);
+              if (!hasResponded) {
+                postDescription();
+              }
+              return 0;
+            }
+            return prevCountdown - 1;
+          });
+        }
       }, 1000);
 
-      return () => clearInterval(timer); // Cleanup timer on component unmount
+      return () => {
+        clearInterval(timer); // Cleanup timer on component unmount
+        mounted = false; // Set flag as unmounted
+      };
     }
-  }, [countdown, navigate]); // Run this effect when countdown changes
+  }, [countdown, hasResponded]);
 
   const handleInputChange = (e) => {
     //console.log("Input Changed: ", e.target.value); // This should log every key press
@@ -139,16 +152,16 @@ const StartingPromptRound = () => {
           onChange={handleInputChange} // Directly use the handler here to test
           placeholder="Enter text here"
           style={{
-            width: '100%', // Full width
-            maxWidth: '400px', // Maximum width
-            padding: '10px 20px', // Padding inside the input
-            fontSize: '16px', // Text size
-            color: '#ffffff', // Text color
-            backgroundColor: '#1F1F1F', // Background color
-            borderRadius: '30px', // Rounded corners
-            outline: 'none', // Removing the outline on focus
-            marginTop: '10px', // Moves the input down
-            marginRight: '30px', // Moves the input to the right
+            width: "100%", // Full width
+            maxWidth: "400px", // Maximum width
+            padding: "10px 20px", // Padding inside the input
+            fontSize: "16px", // Text size
+            color: "#ffffff", // Text color
+            backgroundColor: "#1F1F1F", // Background color
+            borderRadius: "30px", // Rounded corners
+            outline: "none", // Removing the outline on focus
+            marginTop: "10px", // Moves the input down
+            marginRight: "30px", // Moves the input to the right
           }}
         />
 

@@ -111,7 +111,7 @@ export async function postUserDescription(body, description){
     const url = `${apiUrl}/api/session/${gameData.game_code}/${gameData.round}/${userChain}/desc/`;
     const requestData = {
         //api doesn't take empty desc, so should we generate a random one
-        description: description
+        description: description || '[no description]'
     };
 
     // Add additional body data
@@ -209,7 +209,7 @@ export async function postUserDrawing(body, drawingPath){
 }
 
 
-export const interceptSVG = async (destination, api_method, json_body, navigate) => {
+export const interceptSVG = async (destination, api_method, form_data, navigate) => {
     const access = localStorage.getItem('access'); 
 
     const request = async (access) => {
@@ -217,12 +217,13 @@ export const interceptSVG = async (destination, api_method, json_body, navigate)
             method: api_method,
             headers: {
               'Authorization': `Bearer ${access}`,
-              'Content-Type': 'multipart/form-data'
-            }
+              //'Content-Type': 'multipart/form-data'
+            },
+            body: form_data,
         };
-        if (json_body) {
-            options.body = JSON.stringify(json_body);
-        }
+        // if (json_body) {
+        //     options.body = JSON.stringify(json_body);
+        // }
         console.log(`${apiUrl}${destination}`);
         const response = await fetch(`${apiUrl}${destination}`, options);
         return response;

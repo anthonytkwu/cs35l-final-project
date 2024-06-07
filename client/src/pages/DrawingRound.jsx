@@ -1,14 +1,20 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { getGameInformation, postUserDrawing } from "../api";
+import { useNavigate } from 'react-router-dom';
+import { getGameInformation, postUserDrawing, postWaitForGameUpdates, interceptSVG } from "../api";
 import { ColorPicker, EraseButton, FontSizeSlider, RedoButton, SaveButton, UndoButton } from '../components/DrawingComponents';
 import { TopBar2 } from '../components';
 import { intercept } from "../hooks/Intercept.js";
 
 
 const DrawingRound = () => {
+    const navigate = useNavigate();
     const [gameRound, setGameRound] = useState(null);
     const [errMsg, setErrMsg] = useState("");
     const [countdown, setCountdown] = useState(5); // Initialize countdown
+
+
+    const isFetching = useRef(false);
+    const isMounted = useRef(true);
 
     //canvas utils
     const canvasRef = useRef(null);
@@ -21,22 +27,23 @@ const DrawingRound = () => {
     const [isErasing, setIsErasing] = useState(false);
     const [paths, setPaths] = useState([]); // Stores SVG paths
     const [redoPaths, setRedoPaths] = useState([]); // Stores redo SVG paths
-    const [prompt, setPrompt] = useState("_PROMPT GOES HERE_"); // stores game-prompt from server
+    const [prompt, setPrompt] = useState(""); // stores game-prompt from server
 
     function getDescription(gameData, navigate) {
 
         const username = localStorage.getItem('current_user')
-        console.log("current username " + username)
-        const data = {};
+        //console.log("current username " + username)
     
         //    URL: api/session/<str:game_code>/<int:round>/<int:chain>/getDesc/
-        console.log(gameData)
-        console.log(gameData.chains[username])
+        //console.log(gameData)
+        //console.log(gameData.chains[username])
         const url = `/api/session/${gameData.game_code}/${gameData.round - 1}/${gameData.chains[username]}/getDesc/`
-        console.log(url)
-        intercept(url, 'GET', data, navigate)
+        //console.log(url)
+        intercept(url, 'GET', null, navigate)
             .then((data) => {
-                console.log(data)
+                //console.log(data)
+                setPrompt(data.description); // Set the prompt from the data
+                return data
             })
             .catch((error) => {
                 console.error('Error occurred');
@@ -45,16 +52,88 @@ const DrawingRound = () => {
     
     }
 
-    async function fetchData() {
+
+    async function fetchWait(navigate) {
+
+        if (isFetching.current) {
+          return; // Prevent multiple simultaneous fetches
+        }
+    
+        isFetching.current = true;
+        console.log("Waiting for game updates...");
+    
+        try {
+          const data = await postWaitForGameUpdates({}); //call doesnt ever return
+          console.log(`current round: ${data.round}`)
+          if (data && isMounted.current) {
+            localStorage.setItem("game_data", JSON.stringify(data));
+            const username = localStorage.getItem("current_user");
+            if (data.round > localStorage.getItem('current_round')) {
+              localStorage.setItem('current_round', data.round);
+              //console.log("game data is this right now: " + data.chains);
+              localStorage.setItem('current_round', data.round);
+              navigate("/description-round");
+            }
+            // Delay the next fetch call by 5 seconds
+            setTimeout(fetchWait, 0);
+          } else {
+            throw new Error(data.message || "Failed to wait for game updates");
+          }
+        } catch (error) {
+          console.error("Error waiting for game updates: ", error);
+          if (isMounted.current) {
+            // Retry after 5 seconds if there's an error
+            setTimeout(fetchWait, 2500);
+          }
+        } finally {
+          isFetching.current = false;
+        }
+      }  async function fetchWait() {
+        if (isFetching.current) {
+          return; // Prevent multiple simultaneous fetches
+        }
+    
+        isFetching.current = true;
+        console.log("Waiting for game updates...");
+    
+        try {
+          const data = await postWaitForGameUpdates({}); //call doesnt ever return
+          if (data && isMounted.current) {
+            localStorage.setItem("game_code", data.game_code);
+            localStorage.setItem("game_data", JSON.stringify(data));
+            const username = localStorage.getItem("current_user");
+            if (data.round > localStorage.getItem('current_round')) {
+              //console.log("game data is this right now: " + data.chains);
+              localStorage.setItem('current_round', data.round);
+              navigate("/description-round");
+            }
+            // Delay the next fetch call by 5 seconds
+            setTimeout(fetchWait, 0);
+          } else {
+            throw new Error(data.message || "Failed to wait for game updates");
+          }
+        } catch (error) {
+          console.error("Error waiting for game updates: ", error);
+          if (isMounted.current) {
+            // Retry after 5 seconds if there's an error
+            setTimeout(fetchWait, 2500);
+          }
+        } finally {
+          isFetching.current = false;
+        }
+      }
+
+
+    async function fetchData(navigate) {
         try {
             console.log("Fetching game information...");
             const data = await getGameInformation(localStorage.getItem('game_code'));
-            console.log("this is the data: " + data.chains);
+            //console.log("this is the data: " + data.chains);
             setGameRound(data.round); // Set gameInfo state variable with fetched data
             setCountdown(parseInt(data.draw_time));
+            getDescription(data);
+            fetchWait(navigate)
             //setCountdown(10);
-            getDescription(data)
-            setPrompt(data.prompt); // Set the prompt from the data
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
         }
@@ -83,7 +162,7 @@ const DrawingRound = () => {
         context.lineCap = 'round';
         contextRef.current = context;
 
-        fetchData();
+        fetchData(navigate);
     }, []);
 
     useEffect(() => {
@@ -177,7 +256,8 @@ const DrawingRound = () => {
     };
 
 
-    const saveAsSVG = () => {
+    const saveAsSVG = async () => {
+        // Generate SVG paths
         const svgPaths = paths.map((path) => {
             const pathData = path.points
                 .map((point, index) => (index === 0 ? `M${point.x},${point.y}` : `L${point.x},${point.y}`))
@@ -185,17 +265,59 @@ const DrawingRound = () => {
             return `<path d="${pathData}" stroke="${path.color}" stroke-width="${path.lineWidth}" fill="none" />`;
         }).join('');
 
+        // Create SVG content
         const svgContent = `
             <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
                 ${svgPaths}
             </svg>`;
+
+        // Convert SVG content to a Blob
         const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
-        const link = document.createElement('a');
-        const fileName = `${localStorage.getItem('current_user_chain')}__${localStorage.getItem('game_code')}__${gameRound}`;
-        link.href = URL.createObjectURL(blob);
-        link.download = fileName + ".svg";
-        link.click();
+
+        // FormData to hold the SVG file
+        const formData = new FormData();
+        formData.append("drawing", blob, "drawing.svg");   
+        const data = await getGameInformation(localStorage.getItem("game_code"));
+        const round = localStorage.getItem('current_round');
+        console.log(data)
+        const userChain = data.chains[localStorage.getItem('current_user')];
+        const url = `/api/session/${localStorage.getItem("game_code")}/${round}/${userChain}/draw/`
+        interceptSVG(url, "POST", formData, navigate)
+        
     };
+
+
+    // const saveDrawing = () => {
+    //     canvasRef.current.toBlob((blob) => {
+    //         const file = new File([blob], "drawing.png", { type: "image/png" });
+    //         uploadDrawing(file);
+    //     });
+    // };
+
+    // const uploadDrawing = async (file) => {
+    //     const formData = new FormData();
+    //     formData.append("drawing", file);
+    
+    //     const data = await getGameInformation(localStorage.getItem("game_code"));
+    //     const round = localStorage.getItem('current_round');
+    //     console.log(data)
+    //     const userChain = data.chains[localStorage.getItem('current_user')];
+    //     const url = `/api/session/${localStorage.getItem("game_code")}/${round}/${userChain}/draw/`;
+
+    //     interceptSVG(url, "POST", formData, navigate)
+    // };
+    
+
+    // Upload Drawing:
+    // Actions: POST
+    // -H "Content-Type: multipart/form-data"
+    // URL: api/session/<str:game_code>/<int:round>/<int:chain>/draw/
+    // Request:
+    //     {}
+    // Form Data:
+    //     drawing=@/path/to/your/svg/img.svg
+    // Response:
+    //     {}
 
 
     return (
