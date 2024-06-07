@@ -91,10 +91,11 @@ const StartingPromptRound = () => {
       const timer = setInterval(() => {
         setCountdown((prevCountdown) => {
           if (prevCountdown <= 1) {
+            handleButtonClick();
             clearInterval(timer);
 
-            if (!hasResponded) postDescription();
-            fetchWait();
+            // if (!hasResponded) postDescription();
+            // fetchWait();
             return 0;
           }
           return prevCountdown - 1;
@@ -138,6 +139,7 @@ const StartingPromptRound = () => {
           value={description}
           onChange={handleInputChange} // Directly use the handler here to test
           placeholder="Enter text here"
+          disabled={!isEditing}
           style={{
             width: '100%', // Full width
             maxWidth: '400px', // Maximum width
@@ -155,6 +157,7 @@ const StartingPromptRound = () => {
         <button
           className="colored-button-style mt-2.5 w-[200px]"
           onClick={handleButtonClick}
+          disabled={!isEditing}
         >
           {isEditing ? "Ready!" : "Not Ready"}
         </button>
