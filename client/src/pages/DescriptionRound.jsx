@@ -124,10 +124,6 @@ const DescriptionRound = () => {
                         if (!descriptionPosted.current) {
                             postDescription();
                         }
-                        clearInterval(timer);
-                        // Handle end of drawing round here, e.g., navigate to another page or show a message
-                        console.log("Description round ended");
-                        return 0;
                     }
                     return prevCountdown - 1;
                 });
