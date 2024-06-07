@@ -27,6 +27,10 @@ const Home = () => {
         navigate(`/create-lobby`);
     }
 
+    function goToHistory() {
+        navigate(`/search-history`);
+    }
+
     const onJoinLobby = async (data) => {
         console.log("Attempting to join game...");
 
@@ -66,6 +70,14 @@ const Home = () => {
                 {/* LEFT */}
                 <div className='hidden w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto'>
                     <ProfileCard user={user} />
+                    <div className='flex items-center justify-center'>
+                        <form className='lobby-input-style' onSubmit={goToHistory}>
+                            <CustomButton
+                                type='submit'
+                                containerStyles={'colored-button-style'}
+                                title='Search Game History' />
+                        </form>
+                    </div>
                 </div>
 
                 {/* CENTER */}

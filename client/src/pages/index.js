@@ -8,5 +8,6 @@ import GameLobby from "./GameLobby";
 import DrawingRound from "./DrawingRound";
 import DescriptionRound from "./DescriptionRound";
 import GameReview from "./GameReview";
+import SearchHistory from "./SearchHistory";
 
-export { Login, Home, Register, TimerComponent, GameLobby, CreateLobby, StartingPromptRound, DrawingRound, DescriptionRound, GameReview};
+export { Login, Home, Register, TimerComponent, GameLobby, CreateLobby, StartingPromptRound, DrawingRound, DescriptionRound, GameReview, SearchHistory};
