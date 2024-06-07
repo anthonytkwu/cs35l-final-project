@@ -105,7 +105,7 @@ const DescriptionRound = () => {
                     if (prevCountdown <= 1) {
                         clearInterval(timer);
                         // Handle end of drawing round here, e.g., navigate to another page or show a message
-                        console.log("Drawing round ended");
+                        console.log("Description round ended");
                         return 0;
                     }
                     return prevCountdown - 1;
@@ -153,13 +153,8 @@ const DescriptionRound = () => {
 
                         disabled={!isEditing} />
 
-                    <button
-                        className='colored-button-style mt-2.5'
-                        onClick={handleButtonClick}
-                        disabled={!isEditing}
-                    >
-                        {isEditing ? 'Not Submitted' : 'Submitted!'}
-                    </button>
+                    {isEditing && 
+                        <button className='colored-button-style mt-2.5' onClick={handleButtonClick}>SUBMIT</button>}
                 </div>
                 <div className='w-full flex justify-center p-5'>
                     <span className='text-normal text-ascent-1'>

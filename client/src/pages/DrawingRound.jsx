@@ -13,7 +13,7 @@ const DrawingRound = () => {
     const [gameRound, setGameRound] = useState(null);
     const [errMsg, setErrMsg] = useState("");
     const [countdown, setCountdown] = useState(5); // Initialize countdown
-
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const isFetching = useRef(false);
     const isMounted = useRef(true);
@@ -50,10 +50,7 @@ const DrawingRound = () => {
             .catch((error) => {
                 console.error('Error occurred');
             });
-    
-    
     }
-
 
     const fetchWait = async () => {
         if (isFetching.current || !isMounted.current) return;
@@ -95,17 +92,6 @@ const DrawingRound = () => {
         }
     }
 
-    async function postDrawing(){
-        try{    
-            console.log("Attempting to upload description");
-            await postUserDrawing({}, "");
-            fetchWait(navigate)
-            console.log("SUCCESS [PD]")
-        } catch (error){
-            setErrMsg({ message: error.message, status: 'failed' });
-        }
-    }
-
     useEffect(() => {
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
@@ -142,6 +128,7 @@ const DrawingRound = () => {
     }, [countdown])
 
     const startDrawing = ({ nativeEvent }) => {
+        if (isSubmitted) return;
         const { offsetX, offsetY } = nativeEvent;
         contextRef.current.beginPath();
         contextRef.current.moveTo(offsetX, offsetY);
@@ -181,7 +168,7 @@ const DrawingRound = () => {
 
 
     const undo = () => {
-        if (lines.length === 0) return;
+        if (lines.length === 0 || isSubmitted) return;
         const newLines = [...lines];
         const redoLine = newLines.pop();
         setRedoLines([...redoLines, redoLine]);
@@ -198,7 +185,7 @@ const DrawingRound = () => {
 
 
     const redo = () => {
-        if (redoLines.length === 0) return;
+        if (redoLines.length === 0 || isSubmitted) return;
         const newRedoLines = [...redoLines];
         const line = newRedoLines.pop();
         setRedoLines(newRedoLines);
@@ -230,6 +217,8 @@ const DrawingRound = () => {
     
         // Convert SVG content to a Blob
         const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
+
+        setIsSubmitted(true);
     
         // FormData to hold the SVG file
         const formData = new FormData();
@@ -238,6 +227,8 @@ const DrawingRound = () => {
         const round = localStorage.getItem('current_round');
         const userChain = data.chains[localStorage.getItem('current_user')];
         const url = `${apiUrl}/api/session/${localStorage.getItem("game_code")}/${round}/${userChain}/draw/`;
+        console.log('issubmit:', isSubmitted);
+        
     
         try {
             await interceptSVG(url, "POST", formData, navigate);
@@ -247,40 +238,6 @@ const DrawingRound = () => {
             setErrMsg({ message: error.message, status: 'failed' });
         }
     };
-
-
-    // const saveDrawing = () => {
-    //     canvasRef.current.toBlob((blob) => {
-    //         const file = new File([blob], "drawing.png", { type: "image/png" });
-    //         uploadDrawing(file);
-    //     });
-    // };
-
-    // const uploadDrawing = async (file) => {
-    //     const formData = new FormData();
-    //     formData.append("drawing", file);
-    
-    //     const data = await getGameInformation(localStorage.getItem("game_code"));
-    //     const round = localStorage.getItem('current_round');
-    //     console.log(data)
-    //     const userChain = data.chains[localStorage.getItem('current_user')];
-    //     const url = `/api/session/${localStorage.getItem("game_code")}/${round}/${userChain}/draw/`;
-
-    //     interceptSVG(url, "POST", formData, navigate)
-    // };
-    
-
-    // Upload Drawing:
-    // Actions: POST
-    // -H "Content-Type: multipart/form-data"
-    // URL: api/session/<str:game_code>/<int:round>/<int:chain>/draw/
-    // Request:
-    //     {}
-    // Form Data:
-    //     drawing=@/path/to/your/svg/img.svg
-    // Response:
-    //     {}
-
 
     return (
         <div className="flex flex-col justify-start bg-bgColor">
@@ -315,7 +272,7 @@ const DrawingRound = () => {
                         onChange={(e) => setColor(e.target.value)}
                         style={{ height: "100px" }} />
                     <FontSizeSlider lineWidth={lineWidth} onChange={(e) => setLineWidth(e.target.value)} />
-                    <SaveButton onClick={saveAsSVG} />
+                    {!isSubmitted && <SaveButton onClick={saveAsSVG}/>}
                 </div>
             </div>
             <div className='w-full flex justify-center p-5'>
