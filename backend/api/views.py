@@ -265,9 +265,14 @@ class PastSessionsView(generics.ListAPIView):
     serializer_class = SessionSerializer
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):        
+        return Session.objects.filter(users__in=[self.request.user]).filter(round=-2)
+    
+class PastSessionsViewWith(generics.ListAPIView):
+    serializer_class = SessionSerializer
+    permission_classes = (IsAuthenticated,)
+
     def get_queryset(self):
-        if self.request.user.is_anonymous:
-            return Response({'detail': 'Not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
-        
-        s = Session.objects.filter(users__in=[self.request.user])
-        return s.filter(round=-2)
+        otherUser = User.objects.get_by_natural_key(self.kwargs.get("username"))
+        return Session.objects.filter(users__in=[self.request.user, otherUser]).filter(round=-2)
+    
