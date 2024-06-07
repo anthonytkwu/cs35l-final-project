@@ -136,7 +136,6 @@ const StartingPromptRound = () => {
       };
     }
   }, [countdown, hasResponded]);
-  }, [countdown, hasResponded]);
 
   const handleInputChange = (e) => {
     console.log("Input changed:", e.target.value);

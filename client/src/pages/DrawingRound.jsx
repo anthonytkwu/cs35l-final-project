@@ -53,75 +53,32 @@ const DrawingRound = () => {
     }
 
 
-    async function fetchWait(navigate) {
+    const fetchWait = async () => {
+        if (isFetching.current || !isMounted.current) return;
+        isFetching.current = true;
 
-        if (isFetching.current) {
-          return; // Prevent multiple simultaneous fetches
-        }
-    
-        isFetching.current = true;
-        console.log("Waiting for game updates...");
-    
         try {
-          const data = await postWaitForGameUpdates({}); //call doesnt ever return
-          console.log(`current round: ${data.round}`)
-          if (data && isMounted.current) {
-            localStorage.setItem("game_data", JSON.stringify(data));
-            const username = localStorage.getItem("current_user");
-            if (data.round > localStorage.getItem('current_round')) {
-              localStorage.setItem('current_round', data.round);
-              //console.log("game data is this right now: " + data.chains);
-              localStorage.setItem('current_round', data.round);
-              navigate("/description-round");
+            const data = await postWaitForGameUpdates({});
+            if (data && isMounted.current) {
+                localStorage.setItem("game_data", JSON.stringify(data));
+                if (data.round > localStorage.getItem('current_round')) {
+                    localStorage.setItem('current_round', data.round);
+                    navigate("/description-round");
+                }
+                if (isMounted.current) {
+                    setTimeout(fetchWait, 2500); // Only set timeout if still mounted
+                }
             }
-            // Delay the next fetch call by 5 seconds
-            setTimeout(fetchWait, 0);
-          } else {
-            throw new Error(data.message || "Failed to wait for game updates");
-          }
         } catch (error) {
-          console.error("Error waiting for game updates: ", error);
-          if (isMounted.current) {
-            // Retry after 5 seconds if there's an error
-            setTimeout(fetchWait, 2500);
-          }
-        } finally {
-          isFetching.current = false;
-        }
-      }  async function fetchWait() {
-        if (isFetching.current) {
-          return; // Prevent multiple simultaneous fetches
-        }
-    
-        isFetching.current = true;
-        console.log("Waiting for game updates...");
-    
-        try {
-          const data = await postWaitForGameUpdates({}); //call doesnt ever return
-          if (data && isMounted.current) {
-            localStorage.setItem("game_code", data.game_code);
-            localStorage.setItem("game_data", JSON.stringify(data));
-            const username = localStorage.getItem("current_user");
-            if (data.round > localStorage.getItem('current_round')) {
-              //console.log("game data is this right now: " + data.chains);
-              localStorage.setItem('current_round', data.round);
-              navigate("/description-round");
+            if (isMounted.current) {
+                console.error("Error waiting for game updates:", error);
+                setTimeout(fetchWait, 2500);
             }
-            // Delay the next fetch call by 5 seconds
-            setTimeout(fetchWait, 0);
-          } else {
-            throw new Error(data.message || "Failed to wait for game updates");
-          }
-        } catch (error) {
-          console.error("Error waiting for game updates: ", error);
-          if (isMounted.current) {
-            // Retry after 5 seconds if there's an error
-            setTimeout(fetchWait, 2500);
-          }
         } finally {
-          isFetching.current = false;
+            isFetching.current = false;
         }
-      }
+    };
+
 
 
     async function fetchData(navigate) {
