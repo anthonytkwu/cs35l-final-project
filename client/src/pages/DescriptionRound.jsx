@@ -18,7 +18,7 @@ const DescriptionRound = () => {
     };
 
     const handleButtonClick = () => {
-        setIsEditing(!isEditing);
+        setIsEditing(false);
     };
 
     async function fetchData() {
@@ -79,7 +79,7 @@ const DescriptionRound = () => {
                         disabled={!isEditing} />
 
                     <button className='colored-button-style mt-2.5' onClick={handleButtonClick}>
-                        {isEditing ? 'DONE!' : 'EDIT'}
+                        {isEditing ? 'Not Submitted' : 'Submitted!'}
                     </button>
                 </div>
                 <div className='w-full flex justify-center p-5'>
