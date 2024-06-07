@@ -14,41 +14,44 @@ const DescriptionRound = () => {
     const [img, setImg] = useState("");
     const isFetching = useRef(false);
     const isMounted = useRef(true);
-    const [hasResponded, setHasResponded] = useState(false);
     const descriptionPosted = useRef(false);
+    const fetchWaitCalled = useRef(false);
+    const timerRef = useRef(null);
+    const currentRound = parseInt(localStorage.getItem('current_round'), 10);
+    console.log(currentRound);
+
 
     const handleInputChange = (e) => {
         setDescription(e.target.value);
     };
 
     const handleButtonClick = () => {
-        console.log("Button clicked. hasResponded:", hasResponded);
+        console.log("Button clicked. hasResponded:", descriptionPosted.current);
         if (!descriptionPosted.current) {
-          setIsEditing(false);
-          postDescription();
+            setIsEditing(false);
+            postDescription();
         } else {
-          console.log("Button click ignored because already responded");
+            console.log("Button click ignored because already responded");
         }
-      };
+    };
 
     const postDescription = async () => {
         if (descriptionPosted.current) {
-          console.log("Skipping postDescription because already responded");
-          return;
+            console.log("Skipping postDescription because already responded");
+            return;
         }
-    
+
         try {
-          descriptionPosted.current = true;
-          console.log("Attempting to upload description:", description);
-          await postUserDescription({}, description);
-          console.log("Description uploaded:", description, "User:", localStorage.getItem("current_user"));
-          setHasResponded(true);
-          fetchWait();
+            descriptionPosted.current = true;
+            console.log("Attempting to upload description:", description);
+            await postUserDescription({}, description);
+            console.log("Description uploaded:", description, "User:", localStorage.getItem("current_user"));
+            fetchWait();
         } catch (error) {
-          console.error("Error uploading description:", error);
-          setErrMsg({ message: error.message, status: "failed" });
+            console.error("Error uploading description:", error);
+            setErrMsg({ message: error.message, status: "failed" });
         }
-      };
+    };
 
     async function fetchData() {
         try {
@@ -57,26 +60,30 @@ const DescriptionRound = () => {
             setGameInfo(data); // Set gameInfo state variable with fetched data
             setCountdown(parseInt(data.desc_time));
             getImage(data);
-            console.log(data);
-            fetchWait();
+            console.log("Fetched game information:", data);
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
         }
     }
 
     const fetchWait = async () => {
-        if (isFetching.current || !isMounted.current) return;
+        if (isFetching.current || !isMounted.current || fetchWaitCalled.current) return;
         isFetching.current = true;
+        fetchWaitCalled.current = true;
 
         try {
             const data = await postWaitForGameUpdates({});
             if (data && isMounted.current) {
+                console.log('Fetched game update data:', data);
                 localStorage.setItem("game_data", JSON.stringify(data));
-                if (data.round > localStorage.getItem('current_round')) {
-                    localStorage.setItem('current_round', data.round);
+                console.log('Current Round:', currentRound, 'Data Round:', data.round);
+                if (data.round > currentRound) {
+                    console.log('Updating current_round in localStorage and navigating');
+                    localStorage.setItem('current_round', data.round.toString());
                     navigate("/drawing-round");
-                }
-                if (isMounted.current) {
+                } else if (data.round == -2) {
+                    navigate("/game-review")
+                } else {
                     setTimeout(fetchWait, 500); // Only set timeout if still mounted
                 }
             }
@@ -87,6 +94,7 @@ const DescriptionRound = () => {
             }
         } finally {
             isFetching.current = false;
+            fetchWaitCalled.current = false;
         }
     };
 
@@ -95,24 +103,40 @@ const DescriptionRound = () => {
         fetchData();
         return () => {
             isMounted.current = false;
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+                timerRef.current = null;
+                console.log("Countdown timer cleared on unmount.");
+            }
         };
     }, []);
 
     useEffect(() => {
-        if (countdown !== null) {
-            const timer = setInterval(() => {
+        if (countdown !== null && timerRef.current === null) {
+            console.log("Starting countdown timer:", countdown);
+            timerRef.current = setInterval(() => {
                 setCountdown((prevCountdown) => {
+                    console.log("Countdown:", prevCountdown);
                     if (prevCountdown <= 1) {
-                        clearInterval(timer);
-                        // Handle end of drawing round here, e.g., navigate to another page or show a message
-                        console.log("Drawing round ended");
+                        clearInterval(timerRef.current);
+                        timerRef.current = null;
+                        console.log("Countdown finished. hasResponded:", descriptionPosted.current);
+                        if (!descriptionPosted.current) {
+                            postDescription();
+                        }
                         return 0;
                     }
                     return prevCountdown - 1;
                 });
             }, 1000);
 
-            return () => clearInterval(timer); // Cleanup timer on component unmount
+            return () => {
+                if (timerRef.current !== null) {
+                    clearInterval(timerRef.current);
+                    timerRef.current = null;
+                    console.log("Countdown timer cleared in effect cleanup.");
+                }
+            };
         }
     }, [countdown]);
 
@@ -149,9 +173,9 @@ const DescriptionRound = () => {
                         type='text'
                         value={description}
                         styles="w-[400px] rounded-full"
-                        onChange={(e) => setDescription(e.target.value)}
-
-                        disabled={!isEditing} />
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                    />
 
                     <button
                         className='colored-button-style mt-2.5'
