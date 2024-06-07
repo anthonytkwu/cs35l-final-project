@@ -26,6 +26,6 @@ export const refreshToken = async () => {
         }
     } catch (error) {
         console.error('There was a problem with the refresh fetch operation', error);
-        return null;
+        throw new Error();
     }
 };
