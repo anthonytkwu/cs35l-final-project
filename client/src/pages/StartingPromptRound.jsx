@@ -119,7 +119,7 @@ const StartingPromptRound = () => {
             timerRef.current = null;
             console.log("Countdown finished. hasResponded:", hasResponded);
             if (!descriptionPosted.current) {
-              postDescription();
+              postDescription({}, description);
             }
             return 0;
           }
@@ -186,13 +186,8 @@ const StartingPromptRound = () => {
             marginRight: '30px',
           }}
         />
-        <button
-          className="colored-button-style mt-2.5 w-[200px]"
-          onClick={handleButtonClick}
-          disabled={!isEditing}
-        >
-          {isEditing ? "Ready!" : "Not Ready"}
-        </button>
+        {isEditing && 
+            <button className="colored-button-style mt-2.5 w-[200px]" onClick={handleButtonClick}>Ready</button>}
       </div>
 
       <div className="w-full h-1/3 flex flex-row gap-2 mb-1 justify-center">

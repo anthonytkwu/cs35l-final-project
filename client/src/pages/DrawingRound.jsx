@@ -79,8 +79,6 @@ const DrawingRound = () => {
         }
     };
 
-
-
     async function fetchData(navigate) {
         try {
             console.log("Fetching game information...");
