@@ -23,7 +23,7 @@ class Session(models.Model):
 
     def generate_unique_code(self):
         while True:
-            code = randint(0, 999999)
+            code = randint(100000, 999999)
             if not Session.objects.filter(game_code=code).exists():
                 return code
             
