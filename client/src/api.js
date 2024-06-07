@@ -224,8 +224,8 @@ export const interceptSVG = async (destination, api_method, form_data, navigate)
         // if (json_body) {
         //     options.body = JSON.stringify(json_body);
         // }
-        console.log(`${apiUrl}${destination}`);
-        const response = await fetch(`${apiUrl}${destination}`, options);
+        console.log(`${destination}`);
+        const response = await fetch(`${destination}`, options);
         return response;
     }
 

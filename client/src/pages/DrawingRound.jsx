@@ -4,6 +4,8 @@ import { getGameInformation, postUserDrawing, postWaitForGameUpdates, interceptS
 import { ColorPicker, EraseButton, FontSizeSlider, RedoButton, SaveButton, UndoButton } from '../components/DrawingComponents';
 import { TopBar2 } from '../components';
 import { intercept } from "../hooks/Intercept.js";
+import { apiUrl } from "../config.js";
+
 
 
 const DrawingRound = () => {
@@ -238,7 +240,7 @@ const DrawingRound = () => {
         const round = localStorage.getItem('current_round');
         console.log(data)
         const userChain = data.chains[localStorage.getItem('current_user')];
-        const url = `/api/session/${localStorage.getItem("game_code")}/${round}/${userChain}/draw/`
+        const url = `${apiUrl}/api/session/${localStorage.getItem("game_code")}/${round}/${userChain}/draw/`
         interceptSVG(url, "POST", formData, navigate)
         
     };

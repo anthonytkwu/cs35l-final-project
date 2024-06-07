@@ -1,24 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TextInput, TopBar2 } from '../components';
-import { getGameInformation } from "../api";
-import exampleDrawing from "../assets/temp/example-drawing.png";
-
-//gamecode/currentround-1/currentchain/getDesc
-
+import { getGameInformation, postWaitForGameUpdates, interceptSVG } from "../api";
+import { intercept } from "../hooks/Intercept.js";
 
 const DescriptionRound = () => {
+    const navigate = useNavigate();
     const [errMsg, setErrMsg] = useState("");
     const [gameInfo, setGameInfo] = useState(null);
     const [description, setDescription] = useState('');
     const [isEditing, setIsEditing] = useState(true);
     const [countdown, setCountdown] = useState(null); // Initialize countdown
+    const [img, setImg] = useState("");
+    const isFetching = useRef(false);
+    const isMounted = useRef(true);
 
     const handleInputChange = (e) => {
         setDescription(e.target.value);
     };
 
     const handleButtonClick = () => {
-        console.log(description)
+        console.log(description);
         setIsEditing(false);
     };
 
@@ -28,14 +30,47 @@ const DescriptionRound = () => {
             const data = await getGameInformation(localStorage.getItem('game_code'));
             setGameInfo(data); // Set gameInfo state variable with fetched data
             setCountdown(parseInt(data.desc_time));
+            getImage(data);
             console.log(data);
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
         }
     }
 
+    const fetchWait = async () => {
+        if (isFetching.current || !isMounted.current) return;
+        isFetching.current = true;
+
+        try {
+            const data = await postWaitForGameUpdates({});
+            if (data && isMounted.current) {
+                localStorage.setItem("game_data", JSON.stringify(data));
+                if (data.round > localStorage.getItem('current_round')) {
+                    localStorage.setItem('current_round', data.round);
+                    navigate("/drawing-round");
+                }
+                if (isMounted.current) {
+                    setTimeout(fetchWait, 2500); // Only set timeout if still mounted
+                }
+            }
+        } catch (error) {
+            if (isMounted.current) {
+                console.error("Error waiting for game updates:", error);
+                setTimeout(fetchWait, 2500);
+            }
+        } finally {
+            isFetching.current = false;
+        }
+    };
+
     useEffect(() => {
+        isMounted.current = true;
         fetchData();
+        fetchWait();
+
+        return () => {
+            isMounted.current = false;
+        };
     }, []);
 
     useEffect(() => {
@@ -54,7 +89,27 @@ const DescriptionRound = () => {
 
             return () => clearInterval(timer); // Cleanup timer on component unmount
         }
-    }, [countdown])
+    }, [countdown]);
+
+    const getImage = async (gameData) => {
+        const username = localStorage.getItem('current_user');
+        const url = `/api/session/${gameData.game_code}/${gameData.round - 1}/${gameData.chains[username]}/getDraw/`;
+        
+        try {
+            const response = await intercept(url, 'GET', null, navigate);
+            const imageResponse = await interceptSVG(`${response.drawing}/`, 'GET', null, navigate);
+
+            if (imageResponse.ok) {
+                const blob = await imageResponse.blob();
+                const imageUrl = URL.createObjectURL(blob);
+                setImg(imageUrl);
+            } else {
+                console.error('Error fetching image:', imageResponse.statusText);
+            }
+        } catch (error) {
+            console.error('Error occurred while fetching image:', error);
+        }
+    };
 
     return (
         <div className="flex flex-col justify-start bg-bgColor">
@@ -68,7 +123,7 @@ const DescriptionRound = () => {
             </div>
             <div className='flex flex-col items-center'>
                 <div className='w-[900px] h-[400px] flex m-4'>
-                    <img src={exampleDrawing} alt='exampleDrawing' />
+                    <img src={img} alt='Drawing' height="87" width="100" />
                 </div>
                 <div className='flex items-center mb-[1%] gap-3'>
                     <TextInput
@@ -76,7 +131,7 @@ const DescriptionRound = () => {
                         type='text'
                         value={description}
                         styles="w-[400px] rounded-full"
-                        onChange={(e) => setDescription(e.target.value)}
+                        onChange={handleInputChange}
                         disabled={!isEditing} />
 
                     <button
