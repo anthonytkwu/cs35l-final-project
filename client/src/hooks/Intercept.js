@@ -4,16 +4,19 @@ import { refreshToken } from "./RefreshToken";
 
 export const intercept = async (destination, api_method, json_body, navigate) => {
     const access = localStorage.getItem('access'); 
-    
+
     const request = async (access) => {
-        const response = await fetch(`${apiUrl}${destination}`, {
+        const options = {
             method: api_method,
             headers: {
               'Authorization': `Bearer ${access}`,
               'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(json_body),
-          });
+            }
+        };
+        if (json_body) {
+            options.body = JSON.stringify(json_body);
+        }
+        const response = await fetch(`${apiUrl}${destination}`, options);
         return response;
     }
 
