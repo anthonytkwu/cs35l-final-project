@@ -78,7 +78,11 @@ const DescriptionRound = () => {
                         onChange={handleInputChange}
                         disabled={!isEditing} />
 
-                    <button className='colored-button-style mt-2.5' onClick={handleButtonClick}>
+                    <button
+                        className='colored-button-style mt-2.5'
+                        onClick={handleButtonClick}
+                        disabled={!isEditing}
+                    >
                         {isEditing ? 'Not Submitted' : 'Submitted!'}
                     </button>
                 </div>
