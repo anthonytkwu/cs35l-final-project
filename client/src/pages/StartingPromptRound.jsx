@@ -35,14 +35,9 @@ const StartingPromptRound = () => {
   };
 
   const fetchWait = async () => {
-    if (isFetching.current || !isMounted.current || fetchWaitCalled.current) {
-      console.log("Fetch wait skipped. isFetching:", isFetching.current, "isMounted:", isMounted.current, "fetchWaitCalled:", fetchWaitCalled.current);
-      return;
-    }
-
+    if (!isMounted.current || fetchWaitCalled.current) return;
     isFetching.current = true;
     fetchWaitCalled.current = true;
-    console.log("Waiting for game updates...");
 
     try {
       const data = await postWaitForGameUpdates({});
@@ -51,12 +46,10 @@ const StartingPromptRound = () => {
         localStorage.setItem("game_code", data.game_code);
         localStorage.setItem("game_data", JSON.stringify(data));
         if (data.round > 0) {
-          //console.log("game data is this right now: " + data.chains);
           localStorage.setItem("current_round", data.round);
           navigate("/drawing-round");
         } else {
-          console.log("No new round, retrying fetchWait in 5 seconds");
-          setTimeout(fetchWait, 5000); // retry every 5 seconds if no new round
+          setTimeout(fetchWait, 2500); // retry every 2.5 seconds if no new round
         }
       } else {
         throw new Error(data.message || "Failed to wait for game updates");
@@ -64,11 +57,11 @@ const StartingPromptRound = () => {
     } catch (error) {
       console.error("Error waiting for game updates:", error);
       if (isMounted.current) {
-        // Retry after 5 seconds if there's an error
-        setTimeout(fetchWait, 0);
+        setTimeout(fetchWait, 2500);
       }
     } finally {
       isFetching.current = false;
+      fetchWaitCalled.current = false;
     }
   };
 
@@ -106,7 +99,6 @@ const StartingPromptRound = () => {
       }
     };
   }, []);
-  
 
   useEffect(() => {
     if (countdown !== null && timerRef.current === null) {

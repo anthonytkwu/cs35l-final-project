@@ -4,6 +4,8 @@ import { getGameInformation, postUserDrawing, postWaitForGameUpdates, interceptS
 import { ColorPicker, EraseButton, FontSizeSlider, RedoButton, SaveButton, UndoButton } from '../components/DrawingComponents';
 import { TopBar2 } from '../components';
 import { intercept } from "../hooks/Intercept.js";
+import { apiUrl } from "../config.js";
+
 
 
 const DrawingRound = () => {
@@ -66,13 +68,13 @@ const DrawingRound = () => {
                     navigate("/description-round");
                 }
                 if (isMounted.current) {
-                    setTimeout(fetchWait, 2500); // Only set timeout if still mounted
+                    setTimeout(fetchWait, 500); // Only set timeout if still mounted
                 }
             }
         } catch (error) {
             if (isMounted.current) {
                 console.error("Error waiting for game updates:", error);
-                setTimeout(fetchWait, 2500);
+                setTimeout(fetchWait, 500);
             }
         } finally {
             isFetching.current = false;
@@ -87,7 +89,6 @@ const DrawingRound = () => {
             setGameRound(data.round); // Set gameInfo state variable with fetched data
             setCountdown(parseInt(data.draw_time));
             getDescription(data);
-            fetchWait(navigate)
             //setCountdown(10);
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });
@@ -98,6 +99,7 @@ const DrawingRound = () => {
         try{    
             console.log("Attempting to upload description");
             await postUserDrawing({}, "");
+            fetchWait(navigate)
             console.log("SUCCESS [PD]")
         } catch (error){
             setErrMsg({ message: error.message, status: 'failed' });
@@ -219,26 +221,31 @@ const DrawingRound = () => {
                 .join(' ');
             return `<path d="${pathData}" stroke="${path.color}" stroke-width="${path.lineWidth}" fill="none" />`;
         }).join('');
-
+    
         // Create SVG content
         const svgContent = `
             <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
                 ${svgPaths}
             </svg>`;
-
+    
         // Convert SVG content to a Blob
         const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
-
+    
         // FormData to hold the SVG file
         const formData = new FormData();
         formData.append("drawing", blob, "drawing.svg");   
         const data = await getGameInformation(localStorage.getItem("game_code"));
         const round = localStorage.getItem('current_round');
-        console.log(data)
         const userChain = data.chains[localStorage.getItem('current_user')];
-        const url = `/api/session/${localStorage.getItem("game_code")}/${round}/${userChain}/draw/`
-        interceptSVG(url, "POST", formData, navigate)
-        
+        const url = `${apiUrl}/api/session/${localStorage.getItem("game_code")}/${round}/${userChain}/draw/`;
+    
+        try {
+            await interceptSVG(url, "POST", formData, navigate);
+            fetchWait(navigate);  // Call fetchWait after successful upload
+        } catch (error) {
+            console.error('Error uploading SVG:', error);
+            setErrMsg({ message: error.message, status: 'failed' });
+        }
     };
 
 
