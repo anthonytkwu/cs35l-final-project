@@ -7,7 +7,7 @@ const StartingPromptRound = () => {
     const navigate = useNavigate();
     const [errMsg, setErrMsg] = useState("");
     const [gameInfo, setGameInfo] = useState(null);
-    const [description, setDescription] = useState('');
+    const [description, setDescription] = useState("");
     const [isEditing, setIsEditing] = useState(true);
     const [hasResponded, setHasResponded] = useState(false);
     const [countdown, setCountdown] = useState(null); // Initialize countdown
@@ -41,13 +41,9 @@ const StartingPromptRound = () => {
             if (data && isMounted.current) {
                 localStorage.setItem('game_code', data.game_code);
                 localStorage.setItem('game_data', JSON.stringify(data));
-
+                const username = localStorage.getItem('current_user')
                 if (data.round > 0) {
-                    for (let element of data.chains) {
-                        if (element[localStorage.getItem('current_user')]) {
-                            localStorage.setItem('current_user_chain', element[localStorage.getItem('current_user')]);
-                        }
-                    }
+                    console.log('game data is this right now: ' + data.chains)
                     navigate('/drawing-round');
                 }
                 // Delay the next fetch call by 5 seconds
@@ -69,10 +65,12 @@ const StartingPromptRound = () => {
     async function postDescription() {
         try {
             console.log("Attempting to upload description");
-            await postUserDescription({}, description);
+            await postUserDescription({}, `${description}`);
             console.log('Description uploaded: ' + `${localStorage.getItem('current_user')}`);
         } catch (error) {
-            setErrMsg({ message: error.message, status: 'failed' });
+            setErrMsg({ message: error.message, status: 'LOLOLOL' });
+            console.log(`${description} FLAG`)
+            console.error(errMsg)
         }
     }
 
@@ -102,6 +100,7 @@ const StartingPromptRound = () => {
     }, [countdown, navigate]); // Run this effect when countdown changes
 
     const handleInputChange = (e) => {
+        console.log("Input Changed: ", e.target.value);  // This should log every key press
         setDescription(e.target.value);
     };
 

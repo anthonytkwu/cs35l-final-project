@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { getGameInformation, postUserDrawing, getDescription } from "../api";
+import { getGameInformation, postUserDrawing } from "../api";
 import { ColorPicker, EraseButton, FontSizeSlider, RedoButton, SaveButton, UndoButton } from '../components/DrawingComponents';
 import { TopBar2 } from '../components';
+import { intercept } from "../hooks/Intercept.js";
 
 
 const DrawingRound = () => {
@@ -22,11 +23,33 @@ const DrawingRound = () => {
     const [redoPaths, setRedoPaths] = useState([]); // Stores redo SVG paths
     const [prompt, setPrompt] = useState("_PROMPT GOES HERE_"); // stores game-prompt from server
 
+    function getDescription(gameData, navigate) {
+
+        const username = localStorage.getItem('current_user')
+        console.log("current username " + username)
+        const data = {};
+    
+        //    URL: api/session/<str:game_code>/<int:round>/<int:chain>/getDesc/
+        console.log(gameData)
+        console.log(gameData.chains[username])
+        const url = `/api/session/${gameData.game_code}/${gameData.round - 1}/${gameData.chains[username]}/getDesc/`
+        console.log(url)
+        intercept(url, 'GET', data, navigate)
+            .then((data) => {
+                console.log(data)
+            })
+            .catch((error) => {
+                console.error('Error occurred');
+            });
+    
+    
+    }
+
     async function fetchData() {
         try {
             console.log("Fetching game information...");
             const data = await getGameInformation(localStorage.getItem('game_code'));
-            console.log(data);
+            console.log("this is the data: " + data.chains);
             setGameRound(data.round); // Set gameInfo state variable with fetched data
             //setCountdown(parseInt(data.draw_time));
             setCountdown(10);

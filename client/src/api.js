@@ -4,40 +4,6 @@ import { intercept } from "./hooks/Intercept.js"
 import { useNavigate } from "react-router-dom";
 import { handleGameDataAndNavigate } from "./utils.js"
 
-export async function createGame(data, navigate){
-    intercept("/api/session/create/", 'POST', data, navigate)
-    .then((data) => {
-        handleGameDataAndNavigate(data, navigate);
-    })
-    .catch((error) => {
-        console.error('Error occurred:', error);
-    });
-}
-
-export async function joinExistingGame(gameId){
-    try{
-        const access = localStorage.getItem('access'); 
-        if (!access) {
-            throw new Error('Authentication token is missing');
-        }
-        const response = await fetch(`${apiUrl}/api/session/${gameId}/info/`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${access}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return await response.json();
-    }catch (error){
-        console.error("There was a problem with the get operation", error);
-        throw new Error('There was a problem joining existing game');
-    }
-}
-
 export async function getGameInformation(gameId) {
     try {
         const access = localStorage.getItem('access'); 
@@ -61,6 +27,7 @@ export async function getGameInformation(gameId) {
         throw new Error('There was a problem fetching game information');
     }
 }
+
 
 export async function postWaitForGameUpdates(body) {
     const gameDataString = localStorage.getItem('game_data');
@@ -123,7 +90,10 @@ export async function postWaitForGameUpdates(body) {
 
 export async function postUserDescription(body, description){
     const gameDataString = localStorage.getItem('game_data');
-    const userChain = localStorage.getItem('current_user_chain');
+    const gameData = JSON.parse(gameDataString);
+    console.log(gameData)
+    console.log(localStorage.getItem('current_user'))
+    const userChain = gameData.chains[localStorage.getItem('current_user')]
 
     if (!gameDataString) {
         console.error('No game data found in local storage');
@@ -137,11 +107,10 @@ export async function postUserDescription(body, description){
         console.error('Unable to find user chain in local storage');
         throw new Error('Unable to find user chain in local storage');
     }
-    const gameData = JSON.parse(gameDataString);
     const url = `${apiUrl}/api/session/${gameData.game_code}/${gameData.round}/${userChain}/desc/`;
     const requestData = {
         //api doesn't take empty desc, so should we generate a random one
-        description: description ? description : '[no description]'
+        description: description
     };
 
     // Add additional body data
@@ -238,23 +207,3 @@ export async function postUserDrawing(body, drawingPath){
     }
 }
 
-export async function getDescription(gameData, navigate) {
-
-    const username = localStorage.getItem('username')
-    const data = {};
-
-    //    URL: api/session/<str:game_code>/<int:round>/<int:chain>/getDesc/
-    const unsername = localStorage.getItem('username')
-    console.log(gameData)
-    const url = `/api/session/${gameData.game_code}/${gameData.round - 1}/${gameData.chains[0]['asdf']}/getDesc/`
-    console.log(url)
-    intercept(url, 'GET', data, navigate)
-        .then((data) => {
-            console.log(data)
-        })
-        .catch((error) => {
-            console.error('Error occurred');
-        });
-
-
-}
