@@ -51,7 +51,8 @@ const StartingPromptRound = () => {
         localStorage.setItem("game_code", data.game_code);
         localStorage.setItem("game_data", JSON.stringify(data));
         if (data.round > 0) {
-          localStorage.setItem('current_round', data.round);
+          //console.log("game data is this right now: " + data.chains);
+          localStorage.setItem("current_round", data.round);
           navigate("/drawing-round");
         } else {
           console.log("No new round, retrying fetchWait in 5 seconds");
@@ -63,7 +64,8 @@ const StartingPromptRound = () => {
     } catch (error) {
       console.error("Error waiting for game updates:", error);
       if (isMounted.current) {
-        setTimeout(fetchWait, 5000);
+        // Retry after 5 seconds if there's an error
+        setTimeout(fetchWait, 0);
       }
     } finally {
       isFetching.current = false;
@@ -104,6 +106,7 @@ const StartingPromptRound = () => {
       }
     };
   }, []);
+  
 
   useEffect(() => {
     if (countdown !== null && timerRef.current === null) {
@@ -132,6 +135,7 @@ const StartingPromptRound = () => {
         }
       };
     }
+  }, [countdown, hasResponded]);
   }, [countdown, hasResponded]);
 
   const handleInputChange = (e) => {

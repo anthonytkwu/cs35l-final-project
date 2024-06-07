@@ -2,7 +2,7 @@ import React from "react";
 
 const TextInput = React.forwardRef(
     (
-        { type, placeholder, styles, label, labelStyles, register, name, error, disabled }, 
+        { type, placeholder, styles, label, labelStyles, register, name, error, disabled, onChange }, 
         ref
     ) => {
         return (
@@ -20,7 +20,9 @@ const TextInput = React.forwardRef(
                         className={`bg-secondary rounded border border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text-[#666] ${styles}`}
                         {...register}
                         aria-invalid={error ? 'true' : 'false'}
-                        disabled={disabled}/>
+                        disabled={disabled}
+                        onChange={onChange}
+                        />
                 </div>
                 {error && (
                     <span className='text-xs text-[#f64949fe] mt-0.5 '>
