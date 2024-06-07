@@ -34,5 +34,6 @@ urlpatterns = [
     path('api/session/<str:game_code>/<int:round>/<int:chain>/desc/', DescCreateView.as_view(), name='desc-session'),
     path('api/session/<str:game_code>/<int:round>/<int:chain>/getDraw/', DrawingRetrieveView.as_view(), name='get-drawing'),
     path('api/session/<str:game_code>/<int:round>/<int:chain>/getDesc/', DescRetrieveView.as_view(), name='get-desc'),
+    path('api/user/past_sessions/', PastSessionsView.as_view(), name='past-sessions'),
     path('media/<str:filename>/', MediaRetrieveView.as_view(), name='get-media'),
 ]

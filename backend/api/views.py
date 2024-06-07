@@ -90,26 +90,17 @@ class SessionWaitView(generics.GenericAPIView):
         timeout = 1000  # timeout period in seconds
         start_time = time.time()
 
-        if session.round == -1:
-            client_session_state = request.data['last_modified']
-            while True:
-                # Retrieve the current state of the session
-                session.refresh_from_db()
-                server_session_state = SessionSerializer(session).data['last_modified']
+        client_session_state = request.data['last_modified']
+        while True:
+            # Retrieve the current state of the session
+            session.refresh_from_db()
+            server_session_state = SessionSerializer(session).data['last_modified']
 
-                # Check if the session on the server side has changed
-                if client_session_state != server_session_state or time.time() - start_time > timeout:
-                    return Response(SessionSerializer(session).data, status=status.HTTP_200_OK)
-                # Sleep for a short time to avoid busy waiting
-                time.sleep(0.5)
-        else:
-            client_session_state = request.data['round']
-            while True:
-                session.refresh_from_db()
-                server_session_state = SessionSerializer(session).data['round']
-                if client_session_state != server_session_state or time.time() - start_time > timeout:
-                    return Response(SessionSerializer(session).data, status=status.HTTP_200_OK)
-                time.sleep(0.5)
+            # Check if the session on the server side has changed
+            if client_session_state != server_session_state or time.time() - start_time > timeout:
+                return Response(SessionSerializer(session).data, status=status.HTTP_200_OK)
+            # Sleep for a short time to avoid busy waiting
+            time.sleep(0.5)
 
 class SessionStartView(generics.UpdateAPIView):
     serializer_class = SessionSerializer
@@ -124,7 +115,7 @@ class SessionStartView(generics.UpdateAPIView):
         
         if request.user not in session.users.all():
             return Response({'detail': 'Not in session'}, status=status.HTTP_401_UNAUTHORIZED)
-        elif session.users.count() < 2:
+        elif session.users.count() < 3:
             return Response({'detail': 'Not enough players'}, status=status.HTTP_400_BAD_REQUEST)
         elif session.round != -1:
             return Response({'detail': 'Session in progress'}, status=status.HTTP_400_BAD_REQUEST)
@@ -198,6 +189,7 @@ class DescCreateView(generics.CreateAPIView):
         try:
             if serializer.is_valid():
                 serializer.save(author=user, chain=chain, description=self.request.data['description'])
+                Session.objects.get(game_code=game_code).check_completed_round()
             else:
                 print(serializer.errors)
         except Chain.DoesNotExist:
@@ -269,3 +261,13 @@ class DescRetrieveView(generics.RetrieveAPIView):
         serializer = self.get_serializer(desc)
         return Response(serializer.data)
     
+class PastSessionsView(generics.ListAPIView):
+    serializer_class = SessionSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return Response({'detail': 'Not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        s = Session.objects.filter(users__in=[self.request.user])
+        return s.filter(round=-2)

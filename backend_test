@@ -9,7 +9,7 @@ curl -s -X POST htt
 
 TOKEN=$(curl -s -X POST http://localhost:8000/api/user/login/ \
      -H "Content-Type: application/json" \
-     -d '{"username": "testuser3", "password": "testpassword"}' \
+     -d '{"username": "testuser2", "password": "testpassword"}' \
      | jq -r '.access')
 
 
@@ -18,17 +18,17 @@ RESPONSE=$(curl -s -X POST http://localhost:8000/api/session/create/ \
      -H "Authorization: Bearer $TOKEN" \
      -d '{"draw_time": 30, "desc_time": 30}')
 
-RESPONSE=$(curl -s -X GET http://localhost:8000/api/session/283145/join/ \
+RESPONSE=$(curl -s -X PUT http://localhost:8000/api/session/360770/start/ \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer $TOKEN")
 
 
-curl -s -X POST http://localhost:8000/api/session/283145/wait/ \
+RESPONSE=$(curl -s -X POST http://localhost:8000/api/session/360770/wait/ \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer $TOKEN" \
-     -d '$RESPONSE' | cat >output.html
+     -d '{"game_code":360770,"draw_time":30,"desc_time":30,"created_at":"2024-06-07T00:43:50.922116Z","round":-1,"last_modified":"2024-06-07T00:52:01.893581Z","users":["testuser1","testuser2","testuser3"],"chains":[]}')
 
-curl -s -X POST http://localhost:8000/api/session/645146/0/11/desc \
+curl -s -X POST http://localhost:8000/api/session/360770/0/17/desc/ \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer $TOKEN" \
      -d '{"description": "test"}'
