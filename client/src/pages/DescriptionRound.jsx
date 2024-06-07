@@ -3,6 +3,9 @@ import { TextInput, TopBar2 } from '../components';
 import { getGameInformation } from "../api";
 import exampleDrawing from "../assets/temp/example-drawing.png";
 
+//gamecode/currentround-1/currentchain/getDesc
+
+
 const DescriptionRound = () => {
     const [errMsg, setErrMsg] = useState("");
     const [gameInfo, setGameInfo] = useState(null);

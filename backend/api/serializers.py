@@ -22,11 +22,11 @@ class SessionSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['users'] = [user.username for user in instance.users.all()]
         if instance.round != -2:
-            representation['chains'] = list()
+            representation['chains'] = dict()
             for chain in instance.chains.all():
-                representation['chains'].append({chain.users.all()[instance.round].username: chain.id})
+                representation['chains'][chain.users.all()[instance.round].username] = chain.id
         else:
-            representation['chains'] = {}
+            representation['chains'] = dict()
             for chain in instance.chains.all():
                 representation['chains'][chain.id] = [user.username for user in chain.users.all()]
 

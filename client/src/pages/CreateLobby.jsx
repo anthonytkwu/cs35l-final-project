@@ -4,7 +4,7 @@ import { TopBar2, CustomButton } from "../components";
 import { apiUrl } from "../config.js";
 import { handleGameDataAndNavigate } from "../utils.js"
 import { intercept } from "../hooks/Intercept.js";
-
+import { createGame } from "../api.js"
 
 const CreateLobby = () => {
   const navigate = useNavigate();
@@ -27,13 +27,7 @@ const CreateLobby = () => {
             draw_time: draw_time,
         };
 
-        intercept("/api/session/create/", 'POST', data, navigate)
-            .then((data) => {
-                handleGameDataAndNavigate(data, navigate);
-            })
-            .catch((error) => {
-                console.error('Error occurred:', error);
-            });
+        createGame(data, navigate);
 
 
     }

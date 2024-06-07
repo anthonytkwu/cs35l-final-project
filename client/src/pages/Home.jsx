@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
 import { apiUrl } from "../config.js";
 import { handleGameDataAndNavigate } from '../utils'; // Import the utility function
+import { intercept } from "../hooks/Intercept.js";
 
 const Home = () => {
     const { user } = useSelector((state) => state.user);
@@ -42,31 +43,19 @@ const Home = () => {
             game_id: data.joinLobbyCode, // Using the game_id from the form directly
         };
 
-        try {
-            const response = await fetch(`${apiUrl}/api/session/${gameData.game_id}/join/`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${access}`,
-                    'Content-Type': 'application/json'
-                },
-            });
 
-            if (response.ok) {
-                const responseData = await response.json();
-                console.log(responseData);
-                handleGameDataAndNavigate(responseData, navigate); // Use the utility function
-                setIsSubmitting(true);
-                setIsSubmitting(false);
-                resetJoin(); // Ensure to reset the form here
-            } else {
-                const errorText = await response.text();
-                console.error('Response text:', errorText);
-                throw new Error(errorText);
-            }
-        } catch (error) {
-            console.error('There was a problem with the fetch operation:', error);
-            setErrMsg({ message: 'There was a problem joining the lobby', status: 'failed' });
-        }
+        intercept(`/api/session/${gameData.game_id}/join/`, 'GET', null, navigate)
+        .then((data) => {
+            console.log(data);
+            handleGameDataAndNavigate(data, navigate);
+            setIsSubmitting(true);
+            setIsSubmitting(false);
+            resetJoin();
+        })
+        .catch((error) => {
+            console.error('Error occurred:', error);
+        });
+
     };
 
     return (

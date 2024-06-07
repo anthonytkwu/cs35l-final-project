@@ -48,11 +48,8 @@ const GameLobby = () => {
                 localStorage.setItem('game_data', JSON.stringify(data))
 
                 if (data.round != -1) {
-                    for (let element of data.chains){
-                        if (element[localStorage.getItem('current_user')]){
-                            localStorage.setItem('current_user_chain', element[localStorage.getItem('current_user')]);
-                        }
-                    }
+                    localStorage.setItem('current_user_chain', data.chains[localStorage.getItem('username')]);
+                    console.log(localStorage.getItem('current_user_chain'));
                     console.log('Leaving game lobby: ' + `${localStorage.getItem('game_code')}`);
                     navigate('/starting-prompt-round');
                 }

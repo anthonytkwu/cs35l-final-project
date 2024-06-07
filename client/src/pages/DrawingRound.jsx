@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { getGameInformation, postUserDrawing } from "../api";
+import { getGameInformation, postUserDrawing, getDescription } from "../api";
 import { ColorPicker, EraseButton, FontSizeSlider, RedoButton, SaveButton, UndoButton } from '../components/DrawingComponents';
 import { TopBar2 } from '../components';
 
@@ -30,6 +30,7 @@ const DrawingRound = () => {
             setGameRound(data.round); // Set gameInfo state variable with fetched data
             //setCountdown(parseInt(data.draw_time));
             setCountdown(10);
+            getDescription(data)
             setPrompt(data.prompt); // Set the prompt from the data
         } catch (error) {
             setErrMsg({ message: error.message, status: 'failed' });

@@ -51,7 +51,7 @@ const StartingPromptRound = () => {
                     navigate('/drawing-round');
                 }
                 // Delay the next fetch call by 5 seconds
-                setTimeout(fetchWait, 2500);
+                setTimeout(fetchWait, 0);
             } else {
                 throw new Error(data.message || "Failed to wait for game updates");
             }

@@ -1,7 +1,18 @@
 import { apiUrl } from "./config.js";
 import { ACCESS_TOKEN } from "./config"
+import { intercept } from "./hooks/Intercept.js"
+import { useNavigate } from "react-router-dom";
+import { handleGameDataAndNavigate } from "./utils.js"
 
-
+export async function createGame(data, navigate){
+    intercept("/api/session/create/", 'POST', data, navigate)
+    .then((data) => {
+        handleGameDataAndNavigate(data, navigate);
+    })
+    .catch((error) => {
+        console.error('Error occurred:', error);
+    });
+}
 
 export async function joinExistingGame(gameId){
     try{
@@ -225,4 +236,25 @@ export async function postUserDrawing(body, drawingPath){
         console.error('There was a problem with the fetch operation:', error);
         throw new Error('There was a problem with the fetch operation');
     }
+}
+
+export async function getDescription(gameData, navigate) {
+
+    const username = localStorage.getItem('username')
+    const data = {};
+
+    //    URL: api/session/<str:game_code>/<int:round>/<int:chain>/getDesc/
+    const unsername = localStorage.getItem('username')
+    console.log(gameData)
+    const url = `/api/session/${gameData.game_code}/${gameData.round - 1}/${gameData.chains[0]['asdf']}/getDesc/`
+    console.log(url)
+    intercept(url, 'GET', data, navigate)
+        .then((data) => {
+            console.log(data)
+        })
+        .catch((error) => {
+            console.error('Error occurred');
+        });
+
+
 }

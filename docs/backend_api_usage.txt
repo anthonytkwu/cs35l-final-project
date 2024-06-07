@@ -237,6 +237,7 @@ Get Description:
             "chain":10,
             "author":"testuser2"
         }
+    /gamecode/currentround-1/currentchain/getDesc
 
 Get Past Games user was in:
     Actions: GET
