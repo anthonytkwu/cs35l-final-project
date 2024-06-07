@@ -3,6 +3,7 @@ import { ACCESS_TOKEN } from "./config"
 import { intercept } from "./hooks/Intercept.js"
 import { useNavigate } from "react-router-dom";
 import { handleGameDataAndNavigate } from "./utils.js"
+import { refreshToken } from "./hooks/RefreshToken.js";
 
 export async function getGameInformation(gameId) {
     try {
