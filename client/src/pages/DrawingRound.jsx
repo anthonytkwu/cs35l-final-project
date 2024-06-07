@@ -1,13 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { getGameInformation } from "../api";
+import { getGameInformation, postUserDrawing } from "../api";
 import { ColorPicker, EraseButton, FontSizeSlider, RedoButton, SaveButton, UndoButton } from '../components/DrawingComponents';
 import { TopBar2 } from '../components';
 
 
 const DrawingRound = () => {
-    const [gameInfo, setGameInfo] = useState(null);
+    const [gameRound, setGameRound] = useState(null);
     const [errMsg, setErrMsg] = useState("");
-    const [countdown, setCountdown] = useState(null); // Initialize countdown
+    const [countdown, setCountdown] = useState(5); // Initialize countdown
 
     //canvas utils
     const canvasRef = useRef(null);
@@ -26,10 +26,22 @@ const DrawingRound = () => {
         try {
             console.log("Fetching game information...");
             const data = await getGameInformation(localStorage.getItem('game_code'));
-            setGameInfo(data); // Set gameInfo state variable with fetched data
-            setCountdown(parseInt(data.draw_time));
-            //setPrompt(data.prompt); // Set the prompt from the data
+            console.log(data);
+            setGameRound(data.round); // Set gameInfo state variable with fetched data
+            //setCountdown(parseInt(data.draw_time));
+            setCountdown(10);
+            setPrompt(data.prompt); // Set the prompt from the data
         } catch (error) {
+            setErrMsg({ message: error.message, status: 'failed' });
+        }
+    }
+
+    async function postDrawing(){
+        try{    
+            console.log("Attempting to upload description");
+            await postUserDrawing({}, "");
+            console.log("SUCCESS [PD]")
+        } catch (error){
             setErrMsg({ message: error.message, status: 'failed' });
         }
     }
@@ -58,6 +70,7 @@ const DrawingRound = () => {
                         clearInterval(timer); 
                         // Handle end of drawing round here, e.g., navigate to another page or show a message
                         console.log("Drawing round ended");
+                        //postDrawing();
                         return 0;
                     }
                     return prevCountdown - 1;
@@ -154,8 +167,9 @@ const DrawingRound = () => {
             </svg>`;
         const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
         const link = document.createElement('a');
+        const fileName = `${localStorage.getItem('current_user_chain')}__${localStorage.getItem('game_code')}__${gameRound}`;
         link.href = URL.createObjectURL(blob);
-        link.download = 'drawing.svg';
+        link.download = fileName + ".svg";
         link.click();
     };
 
