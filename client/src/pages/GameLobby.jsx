@@ -53,6 +53,7 @@ const GameLobby = () => {
                             localStorage.setItem('current_user_chain', element[localStorage.getItem('current_user')]);
                         }
                     }
+                    console.log('Leaving game lobby: ' + `${localStorage.getItem('game_code')}`);
                     navigate('/starting-prompt-round');
                 }
                 // Delay the next fetch call by 5 seconds

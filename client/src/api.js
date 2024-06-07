@@ -1,29 +1,7 @@
 import { apiUrl } from "./config.js";
 import { ACCESS_TOKEN } from "./config"
 
-export async function getGameInformation(gameId) {
-    try {
-        const access = localStorage.getItem('access'); 
-        if (!access) {
-            throw new Error('Authentication token is missing');
-        }
-        const response = await fetch(`${apiUrl}/api/session/${gameId}/info/`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${access}`,
-                'Content-Type': 'application/json'
-            }
-        });
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-        throw new Error('There was a problem fetching game information');
-    }
-}
 
 export async function joinExistingGame(gameId){
     try{
@@ -46,6 +24,30 @@ export async function joinExistingGame(gameId){
     }catch (error){
         console.error("There was a problem with the get operation", error);
         throw new Error('There was a problem joining existing game');
+    }
+}
+
+export async function getGameInformation(gameId) {
+    try {
+        const access = localStorage.getItem('access'); 
+        if (!access) {
+            throw new Error('Authentication token is missing');
+        }
+        const response = await fetch(`${apiUrl}/api/session/${gameId}/info/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        throw new Error('There was a problem fetching game information');
     }
 }
 
@@ -110,7 +112,6 @@ export async function postWaitForGameUpdates(body) {
 
 export async function postUserDescription(body, description){
     const gameDataString = localStorage.getItem('game_data');
-    const user = localStorage.getItem('current_user');
     const userChain = localStorage.getItem('current_user_chain');
 
     if (!gameDataString) {
@@ -138,6 +139,62 @@ export async function postUserDescription(body, description){
             requestData[key] = body[key];
         }
     }
+
+    const access = localStorage.getItem('access');
+    if (!access) {
+        console.error('Authentication token is missing');
+        throw new Error('Authentication token is missing');
+    }
+
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${access}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData), // Send JSON data
+    };
+
+    try {
+        const response = await fetch(url, requestOptions);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Response text:', errorText);
+            throw new Error(errorText);
+        }
+
+        return await response.json(); // Parse and return JSON directly
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        throw new Error('There was a problem with the fetch operation');
+    }
+}
+
+export async function postUserDrawing(body, drawingPath){
+    const gameDataString = localStorage.getItem('game_data');
+    const userChain = localStorage.getItem('current_user_chain');
+
+    if (!gameDataString) {
+        console.error('No game data found in local storage');
+        throw new Error('No game data found in local storage');
+    }
+    else if (!userChain){
+        console.error('Unable to find user chain in local storage');
+        throw new Error('Unable to find user chain in local storage');
+    }
+    const gameData = JSON.parse(gameDataString);
+    const url = `${apiUrl}/api/session/${gameData.game_code}/${gameData.round}/${userChain}/draw/`;
+    const requestData = {};
+
+    // Add additional body data
+    for (const key in body) {
+        if (body.hasOwnProperty(key)) {
+            requestData[key] = body[key];
+        }
+    }
+
+    requestData['drawing'] = "C:/Users/awu17/Downloads/drawing.svg";
 
     const access = localStorage.getItem('access');
     if (!access) {
