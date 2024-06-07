@@ -221,7 +221,7 @@ class DrawingRetrieveView(generics.RetrieveAPIView):
         return Response(serializer.data)
 
 class MediaRetrieveView(generics.RetrieveAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def get_object(self):
         filename = self.kwargs.get('filename')
