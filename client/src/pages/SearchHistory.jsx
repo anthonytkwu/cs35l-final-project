@@ -1,17 +1,55 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getGameInformation, postWaitForGameUpdates } from "../api";
 import { TopBar2, CustomButton, TextInput, } from "../components";
-import { apiUrl } from "../config.js";
+import { useForm } from "react-hook-form";
+import { Loading } from "../components";
+import { intercept } from "../hooks/Intercept.js";
+import { handleGameDataAndNavigate } from "../utils.js";
+
+
 
 const SearchHistory = () => {
 
+    const [errMsg, setErrMsg] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
-    const [gameID, setGameID] = useState("");
+
+    const {
+        register: registerJoin,
+        handleSubmit: handleSubmitJoin,
+        formState: { errors: errorsJoin },
+    } = useForm({ mode: "onChange" });
+
 
     function backToHome() {
         navigate(`/home`);
     }
+
+    const FindGame = async (data) => {
+        console.log("Attempting to find game...");
+
+        const access = localStorage.getItem('access');
+        if (!access) {
+            setErrMsg({ message: 'Authentication token is missing', status: 'failed' });
+            return;
+        }
+
+        const gameData = {
+            game_id: data.findGameCode,
+        };
+
+        intercept(`/api/session/${gameData.game_id}/join/`, 'GET', null, navigate)
+        .then((data) => {
+            console.log(data);
+            navigate("/game-review");
+            setIsSubmitting(true);
+            setIsSubmitting(false);            
+        })
+        .catch((error) => {
+            console.error('Error occurred:', error);
+        });
+
+    };
 
     return (
         <div className='w-full px-0 pb-20 2xl:px-40 bg-bgColor h-screen overflow-hidden'>
@@ -35,20 +73,33 @@ const SearchHistory = () => {
                         </span>
                     </div>
 
-                    {/* Join Lobby Form */}
-                    <form className='lobby-input-style' >
+                    {/* Game Search Form */}
+                    <form className='lobby-input-style' onSubmit={handleSubmitJoin(FindGame)}>
                         <TextInput
-                            name='joinLobbyCode'
+                            name='findGameCode'
                             placeholder='123456'
                             label='Enter Six Digit Code'
                             type='text'
+                            register={registerJoin("findGameCode", {
+                                required: "Lobby code is required",
+                                minLength: {
+                                    value: 6,
+                                    message: "Lobby code must be 6 digits"
+                                },
+                                maxLength: {
+                                    value: 6,
+                                    message: "Lobby code must be 6 digits"
+                                }
+                            })}
                             styles='w-full rounded-full'
-                        />
+                            error={errorsJoin.findGameCode ? errorsJoin.findGameCode.message : ""} />
 
-                        <CustomButton
+                        {isSubmitting ? <Loading /> : <CustomButton
                             type='submit'
                             containerStyles={'colored-button-style'}
                             title='Join' />
+                        }
+                        {errMsg && <span className="text-red-500">{errMsg.message}</span>}
                     </form>
 
                     <CustomButton
@@ -60,7 +111,7 @@ const SearchHistory = () => {
             </div>
 
         </div>
-    )
-}
+    );
+};
 
 export default SearchHistory
