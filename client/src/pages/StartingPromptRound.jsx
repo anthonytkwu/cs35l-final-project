@@ -48,7 +48,7 @@ const StartingPromptRound = () => {
         const username = localStorage.getItem("current_user");
         if (data.round > 0) {
           //console.log("game data is this right now: " + data.chains);
-          localStorage.storeItem('current_round', data.round);
+          localStorage.setItem('current_round', data.round);
           navigate("/drawing-round");
         }
         // Delay the next fetch call by 5 seconds

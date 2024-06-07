@@ -111,7 +111,7 @@ export async function postUserDescription(body, description){
     const url = `${apiUrl}/api/session/${gameData.game_code}/${gameData.round}/${userChain}/desc/`;
     const requestData = {
         //api doesn't take empty desc, so should we generate a random one
-        description: description
+        description: description || '[no description]' 
     };
 
     // Add additional body data
