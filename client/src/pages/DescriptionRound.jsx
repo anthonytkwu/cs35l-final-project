@@ -18,6 +18,7 @@ const DescriptionRound = () => {
     };
 
     const handleButtonClick = () => {
+        console.log(description)
         setIsEditing(false);
     };
 
@@ -75,7 +76,7 @@ const DescriptionRound = () => {
                         type='text'
                         value={description}
                         styles="w-[400px] rounded-full"
-                        onChange={handleInputChange}
+                        onChange={(e) => setDescription(e.target.value)}
                         disabled={!isEditing} />
 
                     <button className='colored-button-style mt-2.5' onClick={handleButtonClick}>

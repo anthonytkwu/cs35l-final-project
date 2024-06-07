@@ -53,3 +53,11 @@ curl -s -X GET http://127.0.0.1:8000/media/13_145078_1.svg/ \
 curl -s -X POST http://localhost:8000/api/session/435685/0/10/getDesc/ \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer $TOKEN" \
+
+
+If you cannot "end" the game: do this:
+python3 backend/manage.py shell
+>> from api import models
+>> s = models.Session.objects.get(game_code={whatever game code lol})
+>> s.round = -2
+>> s.save()
