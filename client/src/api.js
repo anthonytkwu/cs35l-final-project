@@ -171,7 +171,7 @@ export async function postUserDescription(body, description){
     }
 }
 
-export async function postUserDrawing(body, drawingPath){
+export async function postUserDrawing(body, file){
     const gameDataString = localStorage.getItem('game_data');
     const userChain = localStorage.getItem('current_user_chain');
 
@@ -185,16 +185,8 @@ export async function postUserDrawing(body, drawingPath){
     }
     const gameData = JSON.parse(gameDataString);
     const url = `${apiUrl}/api/session/${gameData.game_code}/${gameData.round}/${userChain}/draw/`;
-    const requestData = {};
-
-    // Add additional body data
-    for (const key in body) {
-        if (body.hasOwnProperty(key)) {
-            requestData[key] = body[key];
-        }
-    }
-
-    requestData['drawing'] = "C:/Users/awu17/Downloads/drawing.svg";
+    const formData = new FormData();
+    formData.append('drawing', file);
 
     const access = localStorage.getItem('access');
     if (!access) {
@@ -206,9 +198,9 @@ export async function postUserDrawing(body, drawingPath){
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${access}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'multipart/form-data'   //chat gpt says you don't need this part
         },
-        body: JSON.stringify(requestData), // Send JSON data
+        form: formData
     };
 
     try {

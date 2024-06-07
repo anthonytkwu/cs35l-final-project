@@ -166,13 +166,17 @@ const DrawingRound = () => {
                 ${svgPaths}
             </svg>`;
         const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
-        const link = document.createElement('a');
-        const fileName = `${localStorage.getItem('current_user_chain')}__${localStorage.getItem('game_code')}__${gameRound}`;
-        link.href = URL.createObjectURL(blob);
-        link.download = fileName + ".svg";
-        link.click();
+        const file = new File([blob], getUploadFileName(), { type: 'image/svg+xml' });
+        return file;
     };
 
+    const uploadSVG = () => {
+        postDrawing(saveAsSVG());
+    };
+
+    function getUploadFileName(){
+        return `${localStorage.getItem('current_user_chain')}__${localStorage.getItem('game_code')}__${gameRound}` + '.svg';
+    }
 
     return (
         <div className="flex flex-col justify-start bg-bgColor">
@@ -207,7 +211,7 @@ const DrawingRound = () => {
                         onChange={(e) => setColor(e.target.value)}
                         style={{ height: "100px" }} />
                     <FontSizeSlider lineWidth={lineWidth} onChange={(e) => setLineWidth(e.target.value)} />
-                    <SaveButton onClick={saveAsSVG} />
+                    <SaveButton onClick={uploadSVG} />
                 </div>
             </div>
             <div className='w-full flex justify-center p-5'>
