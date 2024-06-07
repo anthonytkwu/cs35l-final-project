@@ -38,9 +38,10 @@ const SearchHistory = () => {
             game_id: data.findGameCode,
         };
 
-        intercept(`/api/session/${gameData.game_id}/join/`, 'GET', null, navigate)
+        intercept(`/api/session/${gameData.game_id}/info/`, 'GET', null, navigate)
         .then((data) => {
-            console.log(data);
+            localStorage.setItem("game_code", data.game_code);
+            console.log(localStorage.getItem("game_code"));
             navigate("/game-review");
             setIsSubmitting(true);
             setIsSubmitting(false);            
