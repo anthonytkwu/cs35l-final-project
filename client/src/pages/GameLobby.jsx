@@ -175,11 +175,11 @@ const GameLobby = () => {
                                 containerStyles={"colored-button-style"}
                                 title="Start Game"
                             />
-                            <CustomButton
+                            {/* <CustomButton
                                 onClick={handleLeaveLobby}
                                 containerStyles={"colored-button-style"}
                                 title="Leave Lobby"
-                            />
+                            /> */}
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { TopBar, ProfileCard, TextInput, Loading, CustomButton } from "../components";
+import { TopBar, ProfileCard, TextInput, Loading, CustomButton, UserCard } from "../components";
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
 import { apiUrl } from "../config.js";
@@ -8,13 +8,14 @@ import { handleGameDataAndNavigate } from '../utils'; // Import the utility func
 import { intercept } from "../hooks/Intercept.js";
 
 const Home = () => {
-    const { user } = useSelector((state) => state.user);
+    //const { user } = useSelector((state) => state.user);
     const [errMsg, setErrMsg] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [output, setOutput] = useState('');
     const [showForm, setShowForm] = useState(true);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const currentUser = localStorage.getItem('current_user');
 
     const {
         register: registerJoin,
@@ -69,8 +70,11 @@ const Home = () => {
             <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full'>
                 {/* LEFT */}
                 <div className='hidden w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto'>
-                    <ProfileCard user={user} />
-                    <div className='flex items-center justify-center'>
+                    {/* <ProfileCard user={user} /> */}
+                    {/* <UserCard _username={currentUser} /> */}
+                    
+                    <div className='flex flex-col items-center justify-center'>
+                        <UserCard _username={currentUser} />
                         <form className='lobby-input-style' onSubmit={goToHistory}>
                             <CustomButton
                                 type='submit'

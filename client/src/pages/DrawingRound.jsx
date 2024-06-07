@@ -51,8 +51,8 @@ const DrawingRound = () => {
             const data = await getGameInformation(localStorage.getItem('game_code'));
             console.log("this is the data: " + data.chains);
             setGameRound(data.round); // Set gameInfo state variable with fetched data
-            //setCountdown(parseInt(data.draw_time));
-            setCountdown(10);
+            setCountdown(parseInt(data.draw_time));
+            //setCountdown(10);
             getDescription(data)
             setPrompt(data.prompt); // Set the prompt from the data
         } catch (error) {
