@@ -124,11 +124,10 @@ const StartingPromptRound = () => {
                     type='text'
                     value={description}
                     styles="w-[400px] rounded-full"
-                    onChange={(e) => setDescription(e.target.value)}
-                    disabled={!isEditing} />
-                <button className='colored-button-style mt-2.5 w-[200px]' type="submit">
-                    {isEditing ? 'Ready!' : 'Not Ready'}
-                </button>
+                    onChange={(e) => this.setState({description: e.target.value})}
+                    disabled={!isEditing}/>
+                {isEditing && <button className='colored-button-style mt-2.5 w-[200px]' type="submit"> Submit </button>}
+                
             </form>
             <div className='w-full h-1/3 flex flex-row gap-2 mb-1 justify-center'>
                 <span className='text-normal text-ascent-1 '>
