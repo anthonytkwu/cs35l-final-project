@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form";
 import { Loading } from "../components";
 import { intercept } from "../hooks/Intercept.js";
 import { handleGameDataAndNavigate } from "../utils.js";
-
+import { useEffect } from "react";
+import { interceptSVG } from "../api.js";
 
 
 const SearchHistory = () => {
@@ -13,6 +14,7 @@ const SearchHistory = () => {
     const [errMsg, setErrMsg] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
+    const [codes, setCodes] = useState([]);
 
     const {
         register: registerJoin,
@@ -24,6 +26,27 @@ const SearchHistory = () => {
     function backToHome() {
         navigate(`/home`);
     }
+
+
+    useEffect(() => {
+        intercept("/api/past_sessions/", 'GET', null, navigate)
+            .then((obj) => {
+                console.log("HERE: " + JSON.stringify(obj));
+                const fetchedCodes = obj.map((item) => item.game_code);
+                console.log(fetchedCodes);
+                setCodes(fetchedCodes);
+            })
+            .catch((error) => {
+                console.error('Error fetching past sessions:', error);
+            });
+    }, [navigate]);
+
+    /*
+    for (let i = 0; i < Math.max(codes.length); i++) {
+        if (i < codes.length) combinedArray.push({ type: 'string', content: codes[i] });
+    }
+    */
+
 
     const FindGame = async (data) => {
         // console.log("Attempting to find game...");
@@ -58,16 +81,22 @@ const SearchHistory = () => {
 
             <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full'>
                 {/* LEFT */}
-                <div className='hidden w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto'>
+                <div className='hidden w-1/8 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto'>
                     <div className='flex items-center justify-center'>
                         <form className='lobby-input-style'>
-
                         </form>
                     </div>
                 </div>
+                <div className='w-1/4 max-h-3/4 overflow-y-scroll border border-gray-300 p-4 rounded-[5vh] bg-[rgb(var(--color-grey))]'>
+                    {codes.map((item, index) => (
+                        <div key={index} className="py-2">
+                            <p className="flex justify-center mb-2" >{item.content}</p>
+                        </div>
+                    ))}
+                </div>
 
                 {/* CENTER */}
-                <div className='w-full lg:w-1/2 h-full p-10 2xl:px-20 flex flex-col justify-center '>
+                <div className='w-full lg:w-1/3 h-full p-10 2xl:px-20 flex flex-col justify-center '>
                     <div className='w-full flex gap-2 items-center mb-1 justify-center'>
                         <span className='colored-subtitle-text'>
                             Search Old Game
