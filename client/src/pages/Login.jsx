@@ -122,7 +122,7 @@ const Login = () => {
 
                     <div className='mt-16 text-center'>
                         <p className='text-white text-base'>
-                            Connect with friends & draw some stuff!
+                            Connect with friends & draw some pictures!
                         </p>
                     </div>
                 </div>
