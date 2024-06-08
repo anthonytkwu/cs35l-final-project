@@ -312,7 +312,7 @@ const DrawingRound = () => {
             lineWidth={lineWidth}
             onChange={(e) => setLineWidth(e.target.value)}
           />
-          {!isSubmitted && <SaveButton onClick={saveAsSVG} />}
+          {!isSubmitted && <SaveButton onClick={saveAndNavigate} />}
         </div>
       </div>
       <div className="w-full flex justify-center p-5">
