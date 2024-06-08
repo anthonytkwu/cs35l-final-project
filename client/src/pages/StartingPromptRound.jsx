@@ -21,9 +21,9 @@ const StartingPromptRound = () => {
   const fetchData = async () => {
     try {
       isFetching.current = true;
-      console.log("Fetching game information...");
+      // console.log("Fetching game information...");
       const data = await getGameInformation(localStorage.getItem("game_code"));
-      console.log("Game information fetched:", data);
+      // console.log("Game information fetched:", data);
       setGameInfo(data);
       setCountdown(parseInt(data.desc_time));
       isFetching.current = false;
@@ -41,7 +41,7 @@ const StartingPromptRound = () => {
 
     try {
       const data = await postWaitForGameUpdates({});
-      console.log("Game updates response:", data);
+      // console.log("Game updates response:", data);
       if (data && isMounted.current) {
         localStorage.setItem("game_code", data.game_code);
         localStorage.setItem("game_data", JSON.stringify(data));
@@ -67,15 +67,15 @@ const StartingPromptRound = () => {
 
   const postDescription = async () => {
     if (descriptionPosted.current) {
-      console.log("Skipping postDescription because already responded");
+      // console.log("Skipping postDescription because already responded");
       return;
     }
 
     try {
       descriptionPosted.current = true;
-      console.log("Attempting to upload description:", description);
+      // console.log("Attempting to upload description:", description);
       await postUserDescription({}, description);
-      console.log("Description uploaded:", description, "User:", localStorage.getItem("current_user"));
+      // console.log("Description uploaded:", description, "User:", localStorage.getItem("current_user"));
       setHasResponded(true);
       fetchWait();
     } catch (error) {
@@ -85,31 +85,31 @@ const StartingPromptRound = () => {
   };
 
   useEffect(() => {
-    console.log("Component mounted. Fetching initial data...");
+    // console.log("Component mounted. Fetching initial data...");
     isMounted.current = true;
     fetchData();
 
     return () => {
-      console.log("Component unmounted.");
+      // console.log("Component unmounted.");
       isMounted.current = false;
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
-        console.log("Countdown timer cleared on unmount.");
+        // console.log("Countdown timer cleared on unmount.");
       }
     };
   }, []);
 
   useEffect(() => {
     if (countdown !== null && timerRef.current === null) {
-      console.log("Starting countdown timer:", countdown);
+      // console.log("Starting countdown timer:", countdown);
       timerRef.current = setInterval(() => {
         setCountdown((prevCountdown) => {
-          console.log("Countdown:", prevCountdown);
+          // console.log("Countdown:", prevCountdown);
           if (prevCountdown <= 1) {
             clearInterval(timerRef.current);
             timerRef.current = null;
-            console.log("Countdown finished. hasResponded:", hasResponded);
+            // console.log("Countdown finished. hasResponded:", hasResponded);
             if (!descriptionPosted.current) {
               postDescription({}, description);
             }
@@ -123,24 +123,24 @@ const StartingPromptRound = () => {
         if (timerRef.current !== null) {
           clearInterval(timerRef.current);
           timerRef.current = null;
-          console.log("Countdown timer cleared in effect cleanup.");
+          // console.log("Countdown timer cleared in effect cleanup.");
         }
       };
     }
   }, [countdown, hasResponded]);
 
   const handleInputChange = (e) => {
-    console.log("Input changed:", e.target.value);
+    // console.log("Input changed:", e.target.value);
     setDescription(e.target.value);
   };
 
   const handleButtonClick = () => {
-    console.log("Button clicked. hasResponded:", hasResponded);
+    // console.log("Button clicked. hasResponded:", hasResponded);
     if (!descriptionPosted.current) {
       setIsEditing(false);
       postDescription();
     } else {
-      console.log("Button click ignored because already responded");
+      // console.log("Button click ignored because already responded");
     }
   };
 

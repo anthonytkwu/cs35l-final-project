@@ -84,7 +84,7 @@ const DrawingRound = () => {
 
   const fetchData = async () => {
     try {
-      console.log("Fetching game information...");
+      // console.log("Fetching game information...");
       const data = await getGameInformation(localStorage.getItem("game_code"));
       setGameRound(data.round); // Set gameInfo state variable with fetched data
       setCountdown(parseInt(data.draw_time));
@@ -121,7 +121,7 @@ const DrawingRound = () => {
               saveAndNavigate();
               hasSaved.current = true; // Set the flag to true
             }
-            console.log("Drawing round ended");
+            // console.log("Drawing round ended");
             return 0;
           }
           return prevCountdown - 1;

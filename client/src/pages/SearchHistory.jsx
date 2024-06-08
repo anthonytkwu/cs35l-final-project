@@ -26,7 +26,7 @@ const SearchHistory = () => {
     }
 
     const FindGame = async (data) => {
-        console.log("Attempting to find game...");
+        // console.log("Attempting to find game...");
 
         const access = localStorage.getItem('access');
         if (!access) {
@@ -41,7 +41,7 @@ const SearchHistory = () => {
         intercept(`/api/session/${gameData.game_id}/info/`, 'GET', null, navigate)
         .then((data) => {
             localStorage.setItem("game_code", data.game_code);
-            console.log(localStorage.getItem("game_code"));
+            // console.log(localStorage.getItem("game_code"));
             navigate("/game-review");
             setIsSubmitting(true);
             setIsSubmitting(false);            

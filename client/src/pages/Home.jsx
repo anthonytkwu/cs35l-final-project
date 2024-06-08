@@ -33,7 +33,7 @@ const Home = () => {
     }
 
     const onJoinLobby = async (data) => {
-        console.log("Attempting to join game...");
+        // console.log("Attempting to join game...");
 
         const access = localStorage.getItem('access');
         if (!access) {
@@ -51,7 +51,7 @@ const Home = () => {
 
         intercept(`/api/session/${gameData.game_id}/join/`, 'GET', null, navigate)
         .then((data) => {
-            console.log(data);
+            // console.log(data);
             handleGameDataAndNavigate(data, navigate);
             setIsSubmitting(true);
             setIsSubmitting(false);

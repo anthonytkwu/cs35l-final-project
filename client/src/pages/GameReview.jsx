@@ -68,7 +68,7 @@ const GameReview = () => {
 
     async function fetchData() {
         try {
-            console.log("Fetching game information...");
+            // console.log("Fetching game information...");
             const data = await getGameInformation(localStorage.getItem('game_code'));
             setGameInfo(data); // Set gameInfo state variable with fetched data
             setPlayers(data.users);

@@ -34,7 +34,7 @@ const GameLobby = () => {
         }
 
         isFetching.current = true;
-        console.log("Waiting for game updates...");
+        // console.log("Waiting for game updates...");
 
         try {
             const data = await postWaitForGameUpdates({});
@@ -49,8 +49,8 @@ const GameLobby = () => {
 
                 if (data.round != -1) {
                     localStorage.setItem('current_user_chain', data.chains[localStorage.getItem('username')]);
-                    console.log(localStorage.getItem('current_user_chain'));
-                    console.log('Leaving game lobby: ' + `${localStorage.getItem('game_code')}`);
+                    // console.log(localStorage.getItem('current_user_chain'));
+                    // console.log('Leaving game lobby: ' + `${localStorage.getItem('game_code')}`);
                     navigate('/starting-prompt-round');
                 }
                 // Delay the next fetch call by 5 seconds
@@ -70,7 +70,7 @@ const GameLobby = () => {
     }
 
     async function fetchData() {
-        console.log("Fetching game information...");
+        // console.log("Fetching game information...");
 
         try {
             const data = await getGameInformation(localStorage.getItem("game_code"));
@@ -97,7 +97,7 @@ const GameLobby = () => {
 
         return () => {
             isMounted.current = false; // Clean up the flag on component unmount
-            console.log("Cleaning up game lobby...");
+            // console.log("Cleaning up game lobby...");
         };
     }, []);
 
