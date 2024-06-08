@@ -3,7 +3,6 @@ import { TopBar2, CustomButton, UserCard } from "../components";
 import { getGameInformation, interceptSVG } from "../api";
 import { intercept } from "../hooks/Intercept.js";
 import { useNavigate } from "react-router-dom";
-import "./GameReview.css";
 
 const GameReview = () => {
     const [errMsg, setErrMsg] = useState("");
@@ -180,14 +179,14 @@ const GameReview = () => {
                         selectedPlayer={selectedPlayer} 
                         onSelectPlayer={handleSelectPlayer} />
                 </div>
-                <div className='w-2/5 h-[75vh] rounded-[5vh] bg-[rgb(var(--color-grey))] p-3'>
+                <div className='w-2/5 h-[75vh] rounded-[5vh] bg-[rgb(var(--color-grey))] p-3 overflow-y-auto'>
                     {selectedPlayer && userAlbum[selectedPlayer] && Array.isArray(userAlbum[selectedPlayer]) ? (
                         userAlbum[selectedPlayer].slice(0, displayCount).map((item, index) => (
-                            <div key={index} className="overflow-y-auto">
+                            <div key={index}>
                                 {item && item.type === 'string' ? (
-                                    <div className="desc-style text-[rgb(var(--color-ascent1))] bg-bgColor">{item.content}</div>
+                                    <div className="review-text-style text-[rgb(var(--color-ascent1))] bg-bgColor">{item.content}</div>
                                 ) : item && item.type === 'svg' ? (
-                                    <div className="image-style bg-[rgb(var(--color-white))]"> <img src={item.content} alt="drawing" /> </div>
+                                    <div className="review-image-style bg-[rgb(var(--color-white))]"> <img src={item.content} alt="drawing"/> </div>
                                 ) : null}
                             </div>
                         ))
