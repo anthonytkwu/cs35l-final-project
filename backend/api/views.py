@@ -124,7 +124,7 @@ class SessionStartView(generics.UpdateAPIView):
     
 class DrawingCreateView(generics.CreateAPIView):
     serializer_class = DrawingSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
         game_code = int(self.kwargs.get('game_code'))
@@ -142,6 +142,8 @@ class DrawingCreateView(generics.CreateAPIView):
         user = self.request.user
         if user != chain.users.all()[round]:
             return Response({'detail': 'Not your turn'}, status=status.HTTP_400_BAD_REQUEST)
+        if chain.drawings.count() > round // 2:
+            return Response({'detail': 'Already submitted'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             if serializer.is_valid():
@@ -173,18 +175,19 @@ class DescCreateView(generics.CreateAPIView):
         game_code = int(self.kwargs.get('game_code'))
         round = int(self.kwargs.get('round'))
         chain_id = int(self.kwargs.get('chain'))
-        print(Session.objects.get(game_code=game_code).round)
         if Session.objects.get(game_code=game_code).round != round:
             return Response({'detail': 'Round mismatch'}, status=status.HTTP_400_BAD_REQUEST)
         if round < 0 or round % 2 == 1:
             return Response({'detail': 'Round is not desc'}, status=status.HTTP_400_BAD_REQUEST)
         if Chain.objects.get(id=chain_id).session.game_code != game_code:
             return Response({'detail': 'Chain mismatch'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         chain = Chain.objects.get(id=chain_id)
         user = self.request.user
         if user != chain.users.all()[round]:
             return Response({'detail': 'Not your turn'}, status=status.HTTP_400_BAD_REQUEST)
+        if chain.descriptions.count() > round // 2:
+            return Response({'detail': 'Already submitted'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             if serializer.is_valid():
