@@ -7,14 +7,27 @@ To ensure you have the dependencies, run this command (assuming you have Python 
 pip install -r requirements.txt
 ```
 
-To start the backend, run this command:
+To setup the backend:
 ```
-./run_me_to_start_server_and_migrate
+python3 backend/manage.py makemigrations
+python3 backend/manage.py migrate
 ```
 
-To start the front end:
+To setup the the front end:
 ```
-./run_me_to_start_front_end
+cd client
+npm install
+```
+
+To start the backend (accessible to other computers depending on firewall):
+```
+python3 backend/manage.py runserver 0.0.0.0:8000
+```
+Please edit client/src/config.js to the appropriate IP: http://localhost:8000 or http://{backend_IP}:8000
+
+To start the React development server:
+```
+npm start
 ```
 
 ## Basic Idea of Our Project
