@@ -3,6 +3,7 @@ import { TopBar2, CustomButton, UserCard } from "../components";
 import { getGameInformation, interceptSVG } from "../api";
 import { intercept } from "../hooks/Intercept.js";
 import { useNavigate } from "react-router-dom";
+import "./GameReview.css";
 
 const GameReview = () => {
     const [errMsg, setErrMsg] = useState("");
@@ -82,6 +83,7 @@ const GameReview = () => {
 
     const handleSelectPlayer = (player) => {
         setSelectedPlayer(player);
+        setDisplayCount(1);
     };
 
     async function getDescription(gameChain, roundNumber, navigate) {
@@ -178,14 +180,14 @@ const GameReview = () => {
                         selectedPlayer={selectedPlayer} 
                         onSelectPlayer={handleSelectPlayer} />
                 </div>
-                <div className='w-2/5 h-[75vh] rounded-[5vh] bg-[rgb(var(--color-grey))]'>
+                <div className='w-2/5 h-[75vh] rounded-[5vh] bg-[rgb(var(--color-grey))] p-3'>
                     {selectedPlayer && userAlbum[selectedPlayer] && Array.isArray(userAlbum[selectedPlayer]) ? (
                         userAlbum[selectedPlayer].slice(0, displayCount).map((item, index) => (
-                            <div key={index}>
+                            <div key={index} className="overflow-y-auto">
                                 {item && item.type === 'string' ? (
-                                    <p>{item.content}</p>
+                                    <div className="desc-style text-[rgb(var(--color-ascent1))] bg-bgColor">{item.content}</div>
                                 ) : item && item.type === 'svg' ? (
-                                    <img src={item.content} alt="drawing" />
+                                    <div className="image-style bg-[rgb(var(--color-white))]"> <img src={item.content} alt="drawing" /> </div>
                                 ) : null}
                             </div>
                         ))
@@ -208,23 +210,6 @@ const GameReview = () => {
                     containerStyles={'colored-button-style w-[170px]'}
                     title='Next' />
             </div>
-
-            {/* <div className='flex flex-col gap-[10px] overflow-y-scroll justify-center m-[2%] items-center'>
-                <div className='w-full flex gap-2 items-center mb-1 justify-center'>
-                    <span className='colored-subtitle-text'>
-                        Gallery
-                    </span>
-                </div>
-                <div className='w-4/5 max-h-3/4 overflow-y-scroll border border-gray-300 p-4 rounded-[5vh] bg-[rgb(var(--color-grey))]'>
-                    {combinedArray.slice(0, displayCount).map((item, index) => (
-                        <div key={index} className="py-7">
-                            {item.type === 'svg' ? (
-                                <div className="flex justify-center mb-2" dangerouslySetInnerHTML={{ __html: item.content }}/>) 
-                                : ( <p className="flex justify-center mb-2">{item.content}</p>)}
-                        </div>
-                    ))}
-                </div>
-            </div> */}
         </div>
     );
 }
