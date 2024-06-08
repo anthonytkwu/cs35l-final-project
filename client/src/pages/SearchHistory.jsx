@@ -127,7 +127,7 @@ const SearchHistory = () => {
                         {isSubmitting ? <Loading /> : <CustomButton
                             type='submit'
                             containerStyles={'colored-button-style'}
-                            title='Join' />
+                            title='See Game' />
                         }
                         {errMsg && <span className="text-red-500">{errMsg.message}</span>}
                     </form>
