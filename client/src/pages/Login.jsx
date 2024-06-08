@@ -16,7 +16,7 @@ const Login = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const onSubmit = async (data) => {
-        console.log("Attempting to navigate to home...");
+        // console.log("Attempting to navigate to home...");
 
         const formData = new FormData();
         formData.append('username', data.username);
@@ -38,11 +38,11 @@ const Login = () => {
                 }
             })
             .then((data) => {
-                console.log('access: ' + data.access);
-                console.log('refresh: ' + data.refresh);
+                // console.log('access: ' + data.access);
+                // console.log('refresh: ' + data.refresh);
                 localStorage.setItem('access', data.access);
                 localStorage.setItem('refresh', data.refresh);
-                console.log(data);
+                // console.log(data);
                 alert('Login complete, navigating to home page.');
                 navigate("/home");
             })

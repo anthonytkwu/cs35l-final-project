@@ -270,5 +270,4 @@ export const interceptSVG = async (destination, api_method, form_data, navigate)
         console.error('There was an error with the fetch.');
     }
 
-
 }

@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 
 rm backend/api/migrations/0*.py
 

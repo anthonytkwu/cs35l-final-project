@@ -34,7 +34,7 @@ const Register = () => {
                 throw new Error('Network response was not ok.');
             })
             .then((data) => {
-                console.log(data);
+                // console.log(data);
                 alert('Registration complete, routing to login page.');
                 navigate("/login");
             })
