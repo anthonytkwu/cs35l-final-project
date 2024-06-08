@@ -90,7 +90,7 @@ const SearchHistory = () => {
                 <div className='w-1/4 max-h-3/4 overflow-y-scroll border border-gray-300 p-4 rounded-[5vh] bg-[rgb(var(--color-grey))]'>
                     {codes.map((item, index) => (
                         <div key={index} className="py-2">
-                            <p className="flex justify-center mb-2" >{item.content}</p>
+                            <p className="flex justify-center mb-2" >{item}</p>
                         </div>
                     ))}
                 </div>
