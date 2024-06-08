@@ -32,7 +32,7 @@ const TopBar = () => {
                     <TbSocial />
                 </div>
                 <span className='application-title-text'>
-                    Telephone Picasso
+                    Garlic Phone
                 </span>
             </div>
             {/* ICONS */}

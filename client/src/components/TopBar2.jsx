@@ -32,7 +32,7 @@ const TopBar2 = () => {
                     <TbSocial />
                 </div>
                 <span className='text-xl md:text-2xl text-[#065ad8] font-semibold'>
-                    Telephone Picasso
+                    Garlic Phone
                 </span>
             </div>
 
